@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar, Clock, Phone, User, Tag, CheckCircle, AlertCircle } from 'lucide-react';
 
-function BookingRecord({ bookData }) {
+function BookingRecord({ bookData , type = 0}) {
   // Format date to be more readable
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -109,11 +109,13 @@ function BookingRecord({ bookData }) {
         </div>
       )}
 
-      {/* Creation date information */}
-      <div className="text-sm text-gray-500 mt-4 pt-3 border-t border-gray-200 flex items-center">
-        <Clock size={16} className="ml-1" />
-        <span>تم إنشاء الحجز في: {new Date(bookData.created_at).toLocaleString('ar-EG')}</span>
-      </div>
+      {type != 1 && (
+        <div className="text-sm text-gray-500 mt-4 pt-3 border-t border-gray-200 flex items-center">
+          <Clock size={16} className="ml-1" />
+          <span>تم إنشاء الحجز في: {new Date(bookData.created_at).toLocaleString('ar-EG')}</span>
+        </div>
+      )}
+      
     </div>
   );
 }

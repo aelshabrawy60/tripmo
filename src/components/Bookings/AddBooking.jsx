@@ -25,7 +25,7 @@ const AddBooking = ({
     name: '',
     phone: '',
     numberOfSeats: 1,
-    date: initialData?.tripData?.availability_type == "fixed" ? initialData?.tripData?.available_day : '',
+    date: initialData?.date? initialData.date : initialData?.tripData?.availability_type == "fixed" ? initialData?.tripData?.available_day : '',
     tripData: initialData?.tripData || {},
     groupId: groupId,
   });
@@ -40,7 +40,7 @@ const AddBooking = ({
     if (initialData) {
       setFormData(prev => ({
         ...prev,
-        date: initialData?.tripData?.availability_type == "fixed" ? initialData?.tripData?.available_day : '',
+        date: initialData?.date? initialData.date : initialData?.tripData?.availability_type == "fixed" ? initialData?.tripData?.available_day : '',
         tripData: initialData?.tripData || {},
         groupId: groupId,
       }));
@@ -281,7 +281,7 @@ const AddBooking = ({
               </div>
 
               <div className='mb-4'>
-                <DateChooser tripData={formData.tripData} onDateChange={handleDateChange}/>
+                <DateChooser tripData={formData.tripData} onDateChange={handleDateChange} intiateDate={new Date(formData.date)}/>
               </div>
               
               <PersonsNumChooser onChange={handlePersonsChange}/>

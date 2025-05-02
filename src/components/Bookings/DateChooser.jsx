@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 
-function DateChooser({ tripData = {}, onDateChange }) {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) {
+  const [selectedDate, setSelectedDate] = useState(intiateDate);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDays, setSelectedDays] = useState(tripData.weekly_days || []);

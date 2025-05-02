@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 function PersonsNumChooser({ onChange }) {
   const [count, setCount] = useState(1);
   
-  const handleDecrement = () => {
+  const handleDecrement = (e) => {
+    // Prevent default form submission
+    e.preventDefault();
     if (count > 1) {
       const newValue = count - 1;
       setCount(newValue);
@@ -11,7 +13,9 @@ function PersonsNumChooser({ onChange }) {
     }
   };
   
-  const handleIncrement = () => {
+  const handleIncrement = (e) => {
+    // Prevent default form submission
+    e.preventDefault();
     const newValue = count + 1;
     setCount(newValue);
     onChange(newValue);
@@ -23,6 +27,7 @@ function PersonsNumChooser({ onChange }) {
 
         <div className="flex items-center border border-gray-200 rounded-lg p-2 bg-gray-50 w-fit">
         <button 
+            type="button" // Add this to prevent form submission
             onClick={handleDecrement}
             disabled={count <= 1}
             aria-label="Decrease number of persons"
@@ -37,6 +42,7 @@ function PersonsNumChooser({ onChange }) {
         </div>
         
         <button 
+            type="button" // Add this to prevent form submission
             onClick={handleIncrement}
             aria-label="Increase number of persons"
             className="w-9 h-9 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-lg hover:bg-gray-300 transition-colors"

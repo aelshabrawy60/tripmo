@@ -125,7 +125,7 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
         </div>
 
         {tripBookings.length > 0 ? (
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 gap-2 flex flex-col">
             {tripBookings.map((booking, index) => (
               <motion.div 
                 key={booking.id}
@@ -133,7 +133,7 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <BookingRecord bookData={booking} />
+                <BookingRecord bookData={booking} type={1}/>
               </motion.div>
             ))}
           </div>

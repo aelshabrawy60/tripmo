@@ -82,7 +82,7 @@ function BookingPage() {
 
             <AddBooking 
               groupId={groupId} 
-              initialData={{"tripData": selectedTrip}} 
+              initialData={{"tripData": selectedTrip, "date": selectedDate}} 
               onSuccess={handleBookingSuccess}
             />
 
