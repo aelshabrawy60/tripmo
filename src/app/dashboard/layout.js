@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
     <>
         <SharedContext.Provider value={{ groupId, role }}>
           <Sidebar title="TRIPMO" groupId={groupId} role={role}/>
-          <div className="lg:mr-[260px] overflow-scroll h-screen pb-12 no-scrollbar">
+          <div className="lg:mr-[260px]">
               {children}
           </div>
         </SharedContext.Provider>

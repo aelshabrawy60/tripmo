@@ -41,5 +41,4 @@ body {
   color: var(--foreground);
   font-family: var(--font-tajawal);
   direction: rtl;
-  overflow: hidden;
 }

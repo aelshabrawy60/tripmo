@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import BookingRecord from './BookingRecord';
 import { motion } from 'framer-motion';
 import AddBooking from './AddBooking';
+import BookingCard from './BookingCard';
 
 function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
   const tripId  = tripData.id;
@@ -119,13 +120,13 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
     <div className="space-y-4">
       {renderSeatsInfo()}
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-4 bg-gray-50 border-b border-gray-200">
+      <div className="p-1 rounded-lg overflow-hidden">
+        <div className="p-4 bg-gray-50 border-b mb-2 border-gray-200">
           <h2 className="text-lg font-semibold text-gray-800">قائمة الحجوزات</h2>
         </div>
 
         {tripBookings.length > 0 ? (
-          <div className="divide-y divide-gray-200 gap-2 flex flex-col">
+          <div className="gap-1 flex flex-col">
             {tripBookings.map((booking, index) => (
               <motion.div 
                 key={booking.id}
@@ -133,7 +134,7 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <BookingRecord bookData={booking} type={1}/>
+                <BookingCard bookData={booking} type={1}/>
               </motion.div>
             ))}
           </div>
