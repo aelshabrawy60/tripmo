@@ -10,6 +10,7 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
   const [seatsInfo, setSeatsInfo] = useState({ availableSeats: 0, maxSeats: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [localRefreshTrigger, setLocalRefreshTrigger] = useState(0);
 
   // Fetch trip bookings based on tripId and date
   const fetchTripBookings = async () => {
@@ -45,7 +46,16 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
       setTripBookings(bookings);
     };
     getTripBookings();
-  }, [tripId, date, refreshTrigger]);
+  }, [tripId, date, refreshTrigger, localRefreshTrigger]);
+
+  // Handle booking deletion
+  const handleDeleteBooking = (deletedBookingId) => {
+    setLocalRefreshTrigger(prev => prev + 1);
+  };
+  const handleEditBooking = (editedBookingId) => {
+    // Increment local refresh trigger to refetch data
+    setLocalRefreshTrigger(prev => prev + 1);
+  };
 
   // Calculate booking percentage
   const bookedPercentage = seatsInfo.maxSeats ? 
@@ -134,7 +144,7 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <BookingCard bookData={booking} type={1}/>
+                <BookingCard bookData={booking} type={1} onDeleteBooking={handleDeleteBooking} tripData={tripData} onEditBooking={handleEditBooking} />
               </motion.div>
             ))}
           </div>

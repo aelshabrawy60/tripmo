@@ -13,7 +13,7 @@ export async function getBookingPrice(tripId, numberOfSeats, TripData = null){
 }
 
 
-export async function checkBookingAvailability(tripId, date, numberOfSeats, TripData = null) {
+export async function checkBookingAvailability(tripId, date, numberOfSeats, TripData = null, edit = false, editingBookingId = null) {
     if (!TripData) {
         TripData = await fetchTripData(tripId);
     }
@@ -39,7 +39,7 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, Trip
         }
     }
 
-    const seatsAvailable = await isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats);
+    const seatsAvailable = await isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, edit, editingBookingId);
     if (!seatsAvailable) {
         return { success: false, message: "Not enough seats available." };
     }
@@ -87,16 +87,20 @@ export async function addBooking(name, group_id, tripId, date, phone, numberOfSe
 
 
 
-export async function editBooking(booking_id, name, group_id, tripId, date, phone, numberOfSeats, user_role) {
+export async function editBooking(booking_id, tripId, date, numberOfSeats, user_role) {
+    // check avalibility first
+    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, null , true, booking_id);
+
+    if (!availability.success) {
+        console.error("Booking not available:", availability.message);
+        return { success: false, message: availability.message };
+    }
+
     const {data, error} = await supabaseAdmin
         .from('bookings')
         .update({
-            name: name,
-            group_id: group_id,
-            trip_id: tripId,
-            date: date,
-            phone: phone,
-            number_of_seats: numberOfSeats,
+            day: date,
+            persons: numberOfSeats,
         })
         .eq('id', booking_id)
         .select('*')
@@ -106,7 +110,7 @@ export async function editBooking(booking_id, name, group_id, tripId, date, phon
         console.error("Error updating booking:", error);
         return null;
     }
-    return data;
+    return { success: true, data };
 }
 
 export async function cancelBooking(booking_id, user_role){
@@ -123,7 +127,7 @@ export async function cancelBooking(booking_id, user_role){
         console.error("Error deleting booking:", error);
         return null;
     }
-    return data;
+    return {"success": true, data};
 }
 
 export async function fetchAllBookings(groupId, startFilter = null, endFilter = null) {
@@ -174,7 +178,8 @@ export async function fetchTripBookings(tripId, date) {
 
     if (!tripData) {
         return null;
-    }
+    }    
+
 
     const maxSeats = tripData.max_clients;
     const bookedSeats = data.reduce((acc, booking) => acc + booking.persons, 0);

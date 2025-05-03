@@ -172,6 +172,9 @@ const AddBooking = ({
           name: '',
           phone: '',
           groupId: groupId,
+          numberOfSeats: 1,
+          date: initialData?.date? initialData.date : initialData?.tripData?.availability_type == "fixed" ? initialData?.tripData?.available_day : '',
+          tripData: initialData?.tripData || {},
         });
         
         // Call success callback if provided

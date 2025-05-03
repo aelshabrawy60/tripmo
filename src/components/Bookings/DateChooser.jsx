@@ -52,7 +52,9 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
     }
   };
 
-  const handleDateClick = (date) => {
+  const handleDateClick = (e, date) => {
+    // Prevent default form submission
+    e.preventDefault();
     // Skip if type is fixed
     if (tripData.availability_type === "fixed") return;
 
@@ -110,7 +112,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
       days.push(
         <div 
           key={`day-${day}`} 
-          onClick={() => isSelectable && handleDateClick(date)}
+          onClick={(e) => isSelectable && handleDateClick(e, date)}
           className={`h-12 w-full flex flex-col items-center justify-center rounded text-sm
             ${isSelected ? 'bg-blue-600 text-white' : ''}
             ${isSelectable && !isSelected ? 'hover:bg-blue-100 cursor-pointer' : ''}
@@ -147,6 +149,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
         <div className="">
           <div className="relative">
             <button
+              type='button'
               className="w-full flex items-center gap-2 px-3 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               onClick={() => setShowCalendar(!showCalendar)}
             >
@@ -160,6 +163,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
           <div className="absolute mt-1 p-3 bg-white border border-gray-300 rounded-md shadow-lg z-10">
             <div className="flex items-center justify-between mb-2">
               <button 
+                type='button'
                 onClick={handleNextMonth}
                 className="p-1 hover:bg-gray-200 rounded-full"
               >
@@ -172,7 +176,8 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
                   calendar: 'gregory' // Explicitly use Gregorian calendar
                 }).format(currentMonth)}
               </div>
-              <button 
+              <button
+                type='button' 
                 onClick={handlePrevMonth}
                 className="p-1 hover:bg-gray-200 rounded-full"
               >
@@ -198,6 +203,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
             
             <div className="mt-3 flex justify-end">
               <button
+                type='button'
                 onClick={() => setShowCalendar(false)}
                 className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
               >
@@ -217,6 +223,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
         <div className="">
           <div className="relative">
             <button
+              type='button'
               className="w-full flex items-center gap-2 px-3 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               onClick={() => setShowCalendar(!showCalendar)}
             >
@@ -230,6 +237,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
           <div className="absolute mt-1 p-3 bg-white border border-gray-300 rounded-md shadow-lg z-10">
             <div className="flex items-center justify-between mb-2">
               <button 
+                type='button'
                 onClick={handleNextMonth}
                 className="p-1 hover:bg-gray-200 rounded-full"
               >
@@ -243,6 +251,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
                 }).format(currentMonth)}
               </div>
               <button 
+                type='button'
                 onClick={handlePrevMonth}
                 className="p-1 hover:bg-gray-200 rounded-full"
               >
@@ -268,6 +277,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
             
             <div className="flex justify-between mt-3">
               <button
+                type='button'
                 onClick={() => setShowCalendar(false)}
                 className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
               >

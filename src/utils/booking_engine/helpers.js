@@ -2,12 +2,14 @@ import { supabaseAdmin } from "../supabase/service";
 
 
 export function isDayBetween(startDate, endDate, date) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
     const target = new Date(date);
 
-    return target >= start && target <= end;
+    const isAfterStart = !startDate || target >= new Date(startDate);
+    const isBeforeEnd = !endDate || target <= new Date(endDate);
+
+    return isAfterStart && isBeforeEnd;
 }
+
 
 export function isDayinWeeklyDays(weeklyDays, date) {
     const dayOfWeek = new Date(date).getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -21,8 +23,8 @@ export function isDayInPast(date) {
     return targetDate < today;
 }
 
-export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats) {
-    const { data, error } = await supabaseAdmin
+export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, edit = false, editingBookingId = null) {
+    let { data, error } = await supabaseAdmin
         .from('bookings')
         .select('*')
         .eq('bookable_id', tripId)
@@ -35,6 +37,12 @@ export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats) {
     }
 
     if (data) {
+
+        // If edit is true, we need to exclude the current booking from the count
+        if (edit && editingBookingId) {
+            data = data.filter(booking => booking.id !== editingBookingId);
+        }
+
         console.log("maxSeats", maxSeats);
 
         let bookedSeats = 0;

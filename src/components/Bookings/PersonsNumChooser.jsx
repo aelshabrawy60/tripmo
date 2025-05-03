@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-function PersonsNumChooser({ onChange }) {
-  const [count, setCount] = useState(1);
+function PersonsNumChooser({ onChange, initialValue = 1 }) {
+  const [count, setCount] = useState(initialValue);
   
   const handleDecrement = (e) => {
     // Prevent default form submission

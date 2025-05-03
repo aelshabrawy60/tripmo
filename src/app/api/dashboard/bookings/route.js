@@ -1,9 +1,6 @@
-import { fetchAllBookings, fetchTripBookings, addBooking } from "@/utils/booking_engine/booking_engine";
+import { fetchAllBookings, fetchTripBookings, addBooking , cancelBooking, editBooking} from "@/utils/booking_engine/booking_engine";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-
-
-
 
 
 
@@ -24,7 +21,41 @@ export async function POST(request) {
     }
 }
 
+export async function PUT(request) {
+    const { bookingId, tripId, date, numberOfSeats } = await request.json();
 
+    try {
+        const result = await editBooking(bookingId, tripId, date, numberOfSeats, "admin");
+
+        if (!result.success) {
+            return NextResponse.json({ success: false, message: result.message }, { status: 400 });
+        }
+
+        return NextResponse.json({ success: true, data: result.data });
+    } catch (error) {
+        console.error("Error in editing booking:", error);
+        return NextResponse.json({ success: false, message: "Unexpected error occurred while editing booking." }, { status: 500 });
+    }
+}
+
+
+export async function DELETE(request) {
+    const { searchParams } = new URL(request.url);
+    const bookingId = searchParams.get("bookingId");
+
+    try {
+        const result = await cancelBooking(bookingId, "admin");
+
+        if (!result.success) {
+            return NextResponse.json({ success: false, message: result.message }, { status: 400 });
+        }
+
+        return NextResponse.json({ success: true, data: result.data });
+    } catch (error) {
+        console.error("Error in deleting booking:", error);
+        return NextResponse.json({ success: false, message: "Unexpected error occurred while deleting booking." }, { status: 500 });
+    }
+}
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);

@@ -42,3 +42,8 @@ body {
   font-family: var(--font-tajawal);
   direction: rtl;
 }
+
+body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}

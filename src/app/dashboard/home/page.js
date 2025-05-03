@@ -82,7 +82,7 @@ function BookingPage() {
 
             <AddBooking 
               groupId={groupId} 
-              initialData={{"tripData": selectedTrip, "date": selectedDate}} 
+              initialData={{"tripData": selectedTrip, "date": selectedTrip.availability_type == "fixed" ? tripsData.available_day : selectedDate}} 
               onSuccess={handleBookingSuccess}
             />
 
