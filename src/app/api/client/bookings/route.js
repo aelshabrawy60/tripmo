@@ -1,17 +1,38 @@
 import { addBooking, checkBookingAvailability } from "@/utils/booking_engine/booking_engine";
+import { fetchPaymentsOptions } from "@/utils/group/group";
+import { redirect } from "next/dist/server/api-utils";
+import { initDepositPayment } from "@/utils/payments/payments";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
-    const { name, group_id, tripId, date, phone, numberOfSeats } = await request.json();
+    const { name, groupId, tripId, date, phone, numberOfSeats } = await request.json();
 
+    console.log("group_id", groupId)
     try {
-        const result = await addBooking(name, group_id, tripId, date, phone, numberOfSeats, "user");
+        const result = await addBooking(name, groupId, tripId, date, phone, numberOfSeats, "user");
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
         }
 
+
+        // if the booking need deposits
+        if(result.data.deposite_price > 0){
+            const paymentOptions = await fetchPaymentsOptions(groupId)
+
+            if(paymentOptions.type == "auto"){
+
+                const payment = await initDepositPayment(result.data, paymentOptions.name, paymentOptions)
+                return NextResponse.json({ success: true, data: result.data, redirectUrl: payment.redirectUrl });
+
+            }else{
+
+                return NextResponse.json({ success: true, data: result.data, paymentMessage: paymentOptions.deposit_message });
+            }
+        }
+
         return NextResponse.json({ success: true, data: result.data });
+
     } catch (error) {
         console.error("Error in booking:", error);
         return NextResponse.json({ success: false, message: "Unexpected error occurred while booking." }, { status: 500 });

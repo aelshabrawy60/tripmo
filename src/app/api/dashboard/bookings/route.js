@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
 
-
 export async function POST(request) {
     const { name, groupId, tripId, date, phone, numberOfSeats } = await request.json();
 

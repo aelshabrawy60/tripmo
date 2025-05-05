@@ -7,6 +7,7 @@ import TripBookingsList from '@/components/Bookings/TripBookingsList'
 import { useSharedContext } from '@/context/ShareAut'
 import { Loader } from 'lucide-react'
 import AddBooking from '@/components/Bookings/AddBooking'
+import AddBookingClient from '@/components/Bookings/AddBookClient'
 
 function BookingPage() {
   const { groupId, role } = useSharedContext()
@@ -82,6 +83,12 @@ function BookingPage() {
 
             <AddBooking 
               groupId={groupId} 
+              initialData={{"tripData": selectedTrip, "date": selectedTrip.availability_type == "fixed" ? tripsData.available_day : selectedDate}} 
+              onSuccess={handleBookingSuccess}
+            />
+
+            <AddBookingClient
+              groupId={groupId}
               initialData={{"tripData": selectedTrip, "date": selectedTrip.availability_type == "fixed" ? tripsData.available_day : selectedDate}} 
               onSuccess={handleBookingSuccess}
             />

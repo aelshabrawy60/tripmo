@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
+import TripPricingEditor from "./TripPricingEditor";
 
 export default function TripCreationForm({ groupId }) {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function TripCreationForm({ groupId }) {
     start_date: "", // For daily/weekly availability
     end_date: "", // For daily/weekly availability
     weekly_days: [], // For weekly availability - sun, mon, tue, wed, thu, fri, sat
+    pricing: {},
     group_id: groupId || "",
   });
   
@@ -64,6 +66,14 @@ export default function TripCreationForm({ groupId }) {
     }
   };
 
+  function handlePricingChange(price){
+    setTripData((prev) => ({ ...prev, pricing: { ...prev.pricing, ...price } }));
+    
+    // Clear pricing error if it exists
+    if (errors.pricing) {
+      setErrors((prev) => ({ ...prev, pricing: "" }));
+    }
+  }
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -187,6 +197,7 @@ export default function TripCreationForm({ groupId }) {
         max_clients: parseInt(tripData.max_clients),
         availability_type: tripData.availability_type,
         group_id: tripData.group_id,
+        pricing: tripData.pricing,
       };
       
       // Add specific fields based on availability type
@@ -239,7 +250,7 @@ export default function TripCreationForm({ groupId }) {
   };
 
   return (
-    <div className="mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="mx-auto p-6 max-w-xl bg-white rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">انشاء رحلة جديدة</h1>
       
       {submitStatus.message && (
@@ -434,6 +445,7 @@ export default function TripCreationForm({ groupId }) {
           </div>
         )}
         
+        <TripPricingEditor fixedDate={tripData.availability_type == "fixed"} onChange={handlePricingChange}/>
         {/* Image Upload */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">

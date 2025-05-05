@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import { 
+  DollarSign, 
+  Calendar, 
+  Users, 
+  Plus, 
+  X, 
+  ChevronDown, 
+  ChevronUp, 
+  Info,
+  CreditCard
+} from 'lucide-react';
 
-function TripPricingEditor({ onChange, initialValue = null }) {
-  const [personPrice, setPersonPrice] = useState(initialValue?.PersonPrice || 300);
+function TripPricingEditor({ onChange, initialValue = null, fixedDate = false }) {
+  const [personPrice, setPersonPrice] = useState(initialValue?.PersonPrice?.toString() || '300');
   const [customDayPricing, setCustomDayPricing] = useState(false);
   const [customPersonPricing, setCustomPersonPricing] = useState(false);
+  const [advancePaymentPercentage, setAdvancePaymentPercentage] = useState(initialValue?.AdvancePaymentPercentage || 0);
+  const [showSummary, setShowSummary] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
   
-  // Days of week in Arabic
+  // Days of week in Arabic - indexed 0-6 (Sunday is 0)
   const daysOfWeek = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
   
   // Initialize day pricing
@@ -17,7 +31,7 @@ function TripPricingEditor({ onChange, initialValue = null }) {
   useEffect(() => {
     // Initialize from initialValue if provided
     if (initialValue) {
-      setPersonPrice(initialValue.PersonPrice || 300);
+      setPersonPrice(initialValue.PersonPrice?.toString() || '300');
       
       // Check if we have day pricing
       if (initialValue.PricePerWeeklyDays && initialValue.PricePerWeeklyDays.length > 0) {
@@ -25,33 +39,31 @@ function TripPricingEditor({ onChange, initialValue = null }) {
         
         // Extract day pricing from array format
         const dayPricingData = [];
-        for (let i = 0; i < initialValue.PricePerWeeklyDays.length; i += 2) {
-          if (initialValue.PricePerWeeklyDays[i] !== "PricePerPersons") {
+        initialValue.PricePerWeeklyDays.forEach(item => {
+          if (item.weekly_day !== undefined && item.price !== undefined) {
             dayPricingData.push({
-              day: initialValue.PricePerWeeklyDays[i],
-              percentage: parseInt(initialValue.PricePerWeeklyDays[i+1])
+              day: item.weekly_day.toString(),
+              percentage: item.price.toString()
             });
           }
-        }
+        });
         setDayPricing(dayPricingData);
       }
       
       // Check if we have person pricing
-      const personPricingIndex = initialValue.PricePerWeeklyDays?.indexOf("PricePerPersons");
-      if (personPricingIndex !== undefined && personPricingIndex !== -1 && 
-          initialValue.PricePerWeeklyDays[personPricingIndex + 1] &&
-          initialValue.PricePerWeeklyDays[personPricingIndex + 1].length > 0) {
+      if (initialValue.PricePerPersons && initialValue.PricePerPersons.length > 0) {
         setCustomPersonPricing(true);
         
         // Extract person pricing from array format
-        const personArr = initialValue.PricePerWeeklyDays[personPricingIndex + 1];
         const personPricingData = [];
-        for (let i = 0; i < personArr.length; i += 2) {
-          personPricingData.push({
-            count: personArr[i],
-            percentage: parseInt(personArr[i+1])
-          });
-        }
+        initialValue.PricePerPersons.forEach(item => {
+          if (item.personsCount !== undefined && item.price !== undefined) {
+            personPricingData.push({
+              count: item.personsCount.toString(),
+              percentage: item.price.toString()
+            });
+          }
+        });
         setPersonPricing(personPricingData);
       }
     }
@@ -60,16 +72,16 @@ function TripPricingEditor({ onChange, initialValue = null }) {
   // Update output JSON whenever values change
   useEffect(() => {
     updateOutput();
-  }, [personPrice, customDayPricing, dayPricing, customPersonPricing, personPricing]);
+  }, [personPrice, customDayPricing, dayPricing, customPersonPricing, personPricing, advancePaymentPercentage]);
   
   // Function to add a new day pricing rule
   const addDayPricing = () => {
-    setDayPricing([...dayPricing, { day: "1", percentage: 120 }]);
+    setDayPricing([...dayPricing, { day: "0", percentage: "120" }]); // Start with Sunday (0)
   };
   
   // Function to add a new person pricing rule
   const addPersonPricing = () => {
-    setPersonPricing([...personPricing, { count: "2", percentage: 90 }]);
+    setPersonPricing([...personPricing, { count: "2", percentage: "90" }]);
   };
   
   // Function to remove a day pricing rule
@@ -100,39 +112,40 @@ function TripPricingEditor({ onChange, initialValue = null }) {
     setPersonPricing(newPersonPricing);
   };
   
+  // Function to safely parse number values
+  const parseNumberValue = (value) => {
+    // If value is empty string, return null
+    if (value === '') return null;
+    // Otherwise parse as integer
+    const parsed = parseInt(value);
+    return isNaN(parsed) ? null : parsed;
+  };
+  
   // Function to update output JSON
   const updateOutput = () => {
     const output = {
-      PersonPrice: personPrice
+      PersonPrice: parseNumberValue(personPrice) || 0,
+      AdvancePaymentPercentage: advancePaymentPercentage,
+      PricePerWeeklyDays: [],
+      PricePerPersons: []
     };
-    
-    // Build PricePerWeeklyDays array
-    const pricePerWeeklyDays = [];
     
     // Add day pricing if enabled
     if (customDayPricing && dayPricing.length > 0) {
-      dayPricing.forEach(item => {
-        pricePerWeeklyDays.push(item.day);
-        pricePerWeeklyDays.push(`${item.percentage}%`);
-      });
+      const pricePerWeeklyDays = dayPricing.map(item => ({
+        weekly_day: parseInt(item.day),
+        price: parseNumberValue(item.percentage) || 0
+      }));
+      output.PricePerWeeklyDays = pricePerWeeklyDays;
     }
     
     // Add person pricing if enabled
     if (customPersonPricing && personPricing.length > 0) {
-      pricePerWeeklyDays.push("PricePerPersons");
-      
-      const personPricingArray = [];
-      personPricing.forEach(item => {
-        personPricingArray.push(item.count);
-        personPricingArray.push(`${item.percentage}%`);
-      });
-      
-      pricePerWeeklyDays.push(personPricingArray);
-    }
-    
-    // Only add PricePerWeeklyDays if we have values
-    if (pricePerWeeklyDays.length > 0) {
-      output.PricePerWeeklyDays = pricePerWeeklyDays;
+      const personPricingArray = personPricing.map(item => ({
+        personsCount: parseInt(item.count),
+        price: parseNumberValue(item.percentage) || 0
+      }));
+      output.PricePerPersons = personPricingArray;
     }
     
     // Call onChange callback
@@ -141,204 +154,300 @@ function TripPricingEditor({ onChange, initialValue = null }) {
     }
   };
 
+  // Calculate price for summary based on percentage and base price
+  const calculatePrice = (percentage) => {
+    const basePrice = parseNumberValue(personPrice) || 0;
+    if (percentage === '' || basePrice === 0) return '';
+    const parsedPercentage = parseNumberValue(percentage);
+    if (parsedPercentage === null) return '';
+    return Math.round(basePrice * parsedPercentage / 100);
+  };
+
   return (
-    <div dir="rtl" className="bg-gray-50 p-6 rounded-lg shadow border border-gray-200">
-      <h2 className="text-xl font-bold mb-6 text-right">محرر أسعار الرحلة</h2>
-      
+    <div className="max-w-xl">      
       {/* Default person price */}
-      <div className="mb-6">
-        <label className="block text-gray-700 text-sm font-bold mb-2 text-right">
-          السعر الأساسي للشخص
-        </label>
-        <input
-          type="number"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-right"
-          value={personPrice}
-          onChange={(e) => setPersonPrice(parseInt(e.target.value) || 0)}
-        />
-      </div>
-      
-      {/* Custom day pricing toggle */}
-      <div className="mb-6">
+      <div className="mb-4">
+        <div className="flex items-center mb-1">
+          <DollarSign size={16} className="ml-1 text-blue-600" />
+          <label className="text-gray-700 text-xs font-medium">
+            السعر للفرد
+          </label>
+        </div>
         <div className="flex items-center">
           <input
-            type="checkbox"
-            className="form-checkbox h-5 w-5 text-blue-600"
-            checked={customDayPricing}
-            onChange={(e) => setCustomDayPricing(e.target.checked)}
+            type="text"
+            className="border border-gray-200 rounded py-1 px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-right"
+            value={personPrice}
+            onChange={(e) => setPersonPrice(e.target.value)}
           />
-          <label className="mr-2 text-gray-700 text-sm font-bold">
-            تخصيص أسعار الأيام
+        </div>
+      </div>
+      
+      {/* Advance Payment Percentage Slider */}
+      <div className="my-6">
+        <div className="flex items-center mb-1">
+          <CreditCard size={16} className="ml-1 text-blue-600" />
+          <label className="text-gray-700 text-xs font-medium">
+            نسبة الدفع المسبق
+          </label>
+          <span className="mr-1 text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded">
+            {advancePaymentPercentage}%
+          </span>
+          <div className="mr-2 text-xs text-gray-500">
+            {personPrice && advancePaymentPercentage ? Math.round((parseNumberValue(personPrice) || 0) * advancePaymentPercentage / 100) : ''}
+          </div>
+        </div>
+        <div className="flex items-center">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            value={advancePaymentPercentage}
+            onChange={(e) => setAdvancePaymentPercentage(parseInt(e.target.value))}
+          />
+
+        </div>
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <span>0%</span>
+          <span>50%</span>
+          <span>100%</span>
+        </div>
+      </div>
+      
+      {/* Custom pricing options as compact toggles */}
+      <div className="flex flex-wrap justify-between gap-2 mb-3">
+        {/* Custom day pricing toggle */}
+        {!fixedDate && (
+          <div className="flex items-center bg-white rounded-md border border-gray-200 p-2 flex-1">
+            <input
+              type="checkbox"
+              id="dayPricingToggle"
+              className="form-checkbox h-3 w-3 text-blue-600"
+              checked={customDayPricing}
+              onChange={(e) => setCustomDayPricing(e.target.checked)}
+            />
+            <label htmlFor="dayPricingToggle" className="mr-1 text-gray-700 text-xs flex items-center cursor-pointer">
+              <Calendar size={14} className="ml-1 text-blue-600" />
+              <span>أسعار الأيام</span>
+            </label>
+          </div>
+        )}
+        
+        {/* Custom person pricing toggle */}
+        <div className="flex items-center bg-white rounded-md border border-gray-200 p-2 flex-1">
+          <input
+            type="checkbox"
+            id="personPricingToggle"
+            className="form-checkbox h-3 w-3 text-blue-600"
+            checked={customPersonPricing}
+            onChange={(e) => setCustomPersonPricing(e.target.checked)}
+          />
+          <label htmlFor="personPricingToggle" className="mr-1 text-gray-700 text-xs flex items-center cursor-pointer">
+            <Users size={14} className="ml-1 text-blue-600" />
+            <span>أسعار الأشخاص</span>
           </label>
         </div>
       </div>
       
-      {/* Day pricing section */}
+      {/* Day pricing section - with compact design */}
       {customDayPricing && (
-        <div className="mb-6 p-4 bg-white rounded border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4 text-right">أسعار الأيام</h3>
+        <div className="mb-4 p-3 bg-white rounded border border-gray-200">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-xs font-medium flex items-center">
+              <Calendar size={14} className="ml-1 text-blue-600" />
+              <span>أسعار الأيام</span>
+            </h4>
+            <button
+              type='button'
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-1"
+              onClick={addDayPricing}
+              title="إضافة يوم"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
           
           {dayPricing.map((item, index) => (
-            <div key={`day-${index}`} className="flex flex-wrap items-center mb-4">
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2"
-                onClick={() => removeDayPricing(index)}
-              >
-                ✕
-              </button>
-              
-              <div className="flex items-center ml-2">
-                <input
-                  type="number"
-                  className="shadow appearance-none border rounded w-16 py-1 px-2 text-gray-700 text-right"
-                  value={item.percentage}
-                  onChange={(e) => updateDayPricing(index, "percentage", parseInt(e.target.value) || 0)}
-                />
-                <span className="mx-1">%</span>
-                <span className="text-sm text-gray-600 mr-1">({Math.round(personPrice * item.percentage / 100)} ريال)</span>
-              </div>
-              
+            <div key={`day-${index}`} className="flex items-center mb-2 bg-gray-50 p-2 rounded">
               <select
-                className="shadow border rounded py-1 px-2 text-gray-700 ml-2"
+                className="border rounded py-1 px-1 text-gray-700 text-xs ml-1 w-20"
                 value={item.day}
                 onChange={(e) => updateDayPricing(index, "day", e.target.value)}
+                aria-label="اختر اليوم"
               >
-                {[1, 2, 3, 4, 5, 6, 7].map((day) => (
+                {[0, 1, 2, 3, 4, 5, 6].map((day) => (
                   <option key={day} value={day}>
-                    {daysOfWeek[day - 1]}
+                    {daysOfWeek[day]}
                   </option>
                 ))}
               </select>
               
-              <span className="ml-2">اليوم:</span>
-            </div>
-          ))}
-          
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-            onClick={addDayPricing}
-          >
-            إضافة سعر يوم جديد
-          </button>
-        </div>
-      )}
-      
-      {/* Custom person pricing toggle */}
-      <div className="mb-6">
-        <div className="flex items-center">
-          
-          <input
-            type="checkbox"
-            className="form-checkbox h-5 w-5 text-blue-600"
-            checked={customPersonPricing}
-            onChange={(e) => setCustomPersonPricing(e.target.checked)}
-          />
-          <label className="mr-2 text-gray-700 text-sm font-bold">
-            تخصيص أسعار حسب عدد الأشخاص
-          </label>
-        </div>
-      </div>
-      
-      {/* Person pricing section */}
-      {customPersonPricing && (
-        <div className="mb-6 p-4 bg-white rounded border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4 text-right">أسعار حسب عدد الأشخاص</h3>
-          
-          {personPricing.map((item, index) => (
-            <div key={`person-${index}`} className="flex flex-wrap items-center mb-4">
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2"
-                onClick={() => removePersonPricing(index)}
-              >
-                ✕
-              </button>
-              
-              <div className="flex items-center ml-2">
+              <div className="flex items-center flex-1">
                 <input
-                  type="number"
-                  className="shadow appearance-none border rounded w-16 py-1 px-2 text-gray-700 text-right"
+                  type="text"
+                  className="border rounded w-14 py-1 px-1 text-gray-700 text-xs text-center"
                   value={item.percentage}
-                  onChange={(e) => updatePersonPricing(index, "percentage", parseInt(e.target.value) || 0)}
+                  onChange={(e) => updateDayPricing(index, "percentage", e.target.value)}
+                  aria-label="النسبة المئوية"
                 />
-                <span className="mx-1">%</span>
-                <span className="text-sm text-gray-600 mr-1">({Math.round(personPrice * item.percentage / 100)} ريال)</span>
+                <span className="mx-1 text-xs">%</span>
+                <span className="text-xs text-gray-500">
+                  {item.percentage ? `(${calculatePrice(item.percentage)})` : ''}
+                </span>
               </div>
               
-              <input
-                type="number"
-                className="shadow appearance-none border rounded w-16 py-1 px-2 text-gray-700 ml-2 text-right"
-                value={item.count}
-                onChange={(e) => updatePersonPricing(index, "count", e.target.value)}
-                min="2"
-              />
-              
-              <span className="ml-2">عدد الأشخاص:</span>
+              <button
+                type='button'
+                className="text-red-500 hover:text-red-700 ml-1"
+                onClick={() => removeDayPricing(index)}
+                title="حذف"
+              >
+                <X size={14} />
+              </button>
             </div>
           ))}
           
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-            onClick={addPersonPricing}
-          >
-            إضافة سعر جديد حسب عدد الأشخاص
-          </button>
+          {dayPricing.length === 0 && (
+            <div className="text-center text-xs text-gray-500 py-2">
+              لا يوجد أسعار مخصصة للأيام
+            </div>
+          )}
         </div>
       )}
       
-      {/* Price Summary Section */}
-      <div className="mb-6 p-4 bg-white rounded border border-gray-200">
-        <h3 className="text-lg font-semibold mb-4 text-right">ملخص الأسعار</h3>
-        
-        <div className="mb-2 text-right">
-          <span className="font-bold">السعر الأساسي للشخص: </span>
-          <span>{personPrice} ريال</span>
+      {/* Person pricing section - with compact design */}
+      {customPersonPricing && (
+        <div className="mb-4 p-3 bg-white rounded border border-gray-200">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-xs font-medium flex items-center">
+              <Users size={14} className="ml-1 text-blue-600" />
+              <span>أسعار الأشخاص</span>
+            </h4>
+            <button
+              type='button'
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-1"
+              onClick={addPersonPricing}
+              title="إضافة عدد أشخاص"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+          
+          {personPricing.map((item, index) => (
+            <div key={`person-${index}`} className="flex items-center mb-2 bg-gray-50 p-2 rounded">
+              <div className="flex items-center mr-1">
+                <input
+                  type="text"
+                  className="border rounded w-12 py-1 px-1 text-gray-700 text-xs text-center"
+                  value={item.count}
+                  onChange={(e) => updatePersonPricing(index, "count", e.target.value)}
+                  aria-label="عدد الأشخاص"
+                />
+                <Users size={12} className="mr-1 text-gray-500" />
+              </div>
+              
+              <div className="flex items-center flex-1">
+                <input
+                  type="text"
+                  className="border rounded w-14 py-1 px-1 text-gray-700 text-xs text-center"
+                  value={item.percentage}
+                  onChange={(e) => updatePersonPricing(index, "percentage", e.target.value)}
+                  aria-label="النسبة المئوية"
+                />
+                <span className="mx-1 text-xs">%</span>
+                <span className="text-xs text-gray-500">
+                  {item.percentage ? `(${calculatePrice(item.percentage)})` : ''}
+                </span>
+              </div>
+              
+              <button
+                type='button'
+                className="text-red-500 hover:text-red-700 ml-1"
+                onClick={() => removePersonPricing(index)}
+                title="حذف"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+          
+          {personPricing.length === 0 && (
+            <div className="text-center text-xs text-gray-500 py-2">
+              لا يوجد أسعار مخصصة للأشخاص
+            </div>
+          )}
         </div>
-        
-        {customDayPricing && dayPricing.length > 0 && (
-          <div className="mb-2">
-            <h4 className="font-semibold text-right mb-2">أسعار الأيام الخاصة:</h4>
-            <ul className="list-disc list-inside text-right">
-              {dayPricing.map((item, index) => (
-                <li key={`day-summary-${index}`}>
-                  {daysOfWeek[parseInt(item.day) - 1]}: {Math.round(personPrice * item.percentage / 100)} ريال ({item.percentage}%)
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        
-        {customPersonPricing && personPricing.length > 0 && (
-          <div className="mb-2">
-            <h4 className="font-semibold text-right mb-2">أسعار حسب عدد الأشخاص:</h4>
-            <ul className="list-disc list-inside text-right">
-              {personPricing.map((item, index) => (
-                <li key={`person-summary-${index}`}>
-                  عدد {item.count} أشخاص: {Math.round(personPrice * item.percentage / 100)} ريال للشخص ({item.percentage}%)
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      )}
       
-      {/* Preview section */}
-      <div className="mt-8 p-4 bg-gray-100 rounded">
-        <h3 className="text-lg font-semibold mb-2 text-right">معاينة البيانات</h3>
-        <pre dir="ltr" className="bg-white p-3 rounded text-xs overflow-auto max-h-40">
-          {JSON.stringify({
-            PersonPrice: personPrice,
-            ...(customDayPricing || customPersonPricing) && {
-              PricePerWeeklyDays: [
-                ...(customDayPricing ? dayPricing.flatMap(item => [item.day, `${item.percentage}%`]) : []),
-                ...(customPersonPricing ? [
-                  "PricePerPersons",
-                  personPricing.flatMap(item => [item.count, `${item.percentage}%`])
-                ] : [])
-              ]
-            }
-          }, null, 2)}
-        </pre>
-      </div>
+      {/* Price Summary Section - collapsible */}
+      <div className="mb-3">
+        <button 
+          type='button'
+          className="flex items-center justify-between w-full p-2 bg-white rounded border border-gray-200 text-sm" 
+          onClick={() => setShowSummary(!showSummary)}
+        >
+          <div className="flex items-center">
+            <Info size={16} className="ml-1 text-blue-600" />
+            <span className="text-xs font-medium">ملخص الأسعار</span>
+          </div>
+          {showSummary ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
+        
+        {showSummary && (
+          <div className="mt-2 p-3 bg-white rounded border border-gray-200">
+            <div className="mb-2 text-right flex items-center">
+              <DollarSign size={14} className="ml-1 text-gray-500" />
+              <span className="text-xs font-medium">السعر الأساسي: </span>
+              <span className="text-xs mr-1">{personPrice || ''}</span>
+            </div>
+            
+            <div className="mb-2 text-right flex items-center">
+              <CreditCard size={14} className="ml-1 text-gray-500" />
+              <span className="text-xs font-medium">نسبة الدفع المسبق: </span>
+              <span className="text-xs mr-1">{advancePaymentPercentage}%</span>
+              {advancePaymentPercentage > 0 && personPrice && (
+                <span className="text-xs text-gray-500 mr-2">
+                  ({Math.round((parseNumberValue(personPrice) || 0) * advancePaymentPercentage / 100)} للشخص)
+                </span>
+              )}
+            </div>
+            
+            {customDayPricing && dayPricing.length > 0 && (
+              <div className="mb-2">
+                <div className="flex items-center mb-1">
+                  <Calendar size={14} className="ml-1 text-gray-500" />
+                  <span className="text-xs font-medium">أسعار الأيام:</span>
+                </div>
+                <ul className="list-inside text-right pr-4">
+                  {dayPricing.map((item, index) => (
+                    <li key={`day-summary-${index}`} className="text-xs text-gray-600 mb-1">
+                      {daysOfWeek[parseInt(item.day)]}: {calculatePrice(item.percentage) || ''} ({item.percentage || ''}%)
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            {customPersonPricing && personPricing.length > 0 && (
+              <div className="mb-2">
+                <div className="flex items-center mb-1">
+                  <Users size={14} className="ml-1 text-gray-500" />
+                  <span className="text-xs font-medium">أسعار الأشخاص:</span>
+                </div>
+                <ul className="list-inside text-right pr-4">
+                  {personPricing.map((item, index) => (
+                    <li key={`person-summary-${index}`} className="text-xs text-gray-600 mb-1">
+                      {item.count || ''} أشخاص: {calculatePrice(item.percentage) || ''} للشخص ({item.percentage || ''}%)
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </div>      
     </div>
   );
 }

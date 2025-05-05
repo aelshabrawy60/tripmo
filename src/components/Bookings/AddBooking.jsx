@@ -12,7 +12,6 @@ const AddBooking = ({
   isOpen = false,
   onClose,
   onSuccess,
-  isFullDay = false,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +44,7 @@ const AddBooking = ({
         groupId: groupId,
       }));
     }
-  }, [initialData, isFullDay]);
+  }, [initialData]);
   
     
   // Handle time select changes
@@ -255,7 +254,7 @@ const AddBooking = ({
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md" dir="rtl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">
-                {isFullDay ? 'حجز يوم' : 'إضافة حجز جديد'}
+                'إضافة حجز جديد'
               </h2>
               <button 
                 onClick={handleCloseModal}
@@ -295,7 +294,7 @@ const AddBooking = ({
                   className={`w-full bg-tripmo-500 text-white py-2 px-4 rounded-md font-medium text-base transition-all duration-300 hover:bg-tripmo-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'جاري الإضافة...' : isFullDay ? 'حجز اليوم' : 'إضافة موعد'}
+                  {isLoading ? 'جاري الإضافة...' :  'إضافة موعد'}
                 </button>
               </div>
             </form>

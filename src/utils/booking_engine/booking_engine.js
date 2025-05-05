@@ -6,12 +6,50 @@ import { createClient } from "../supabase/server";
 import { supabaseAdmin } from "../supabase/service";
 import { isDayBetween, isSeatsAvaliable, isDayinWeeklyDays, isDayInPast } from "./helpers";
 
-export async function getBookingPrice(tripId, numberOfSeats, TripData = null){
+function getDay(dateString) {
+    // Force the date to be interpreted exactly as provided
+    // By adding 'T00:00:00Z' we explicitly say this is UTC time
+    const date = new Date(`${dateString}T00:00:00Z`);
+    
+    // Get the day of week (0 = Sunday, 1 = Monday, etc.)
+    return date.getUTCDay();
+}
+
+export async function getBookingPrice(tripId, date, numberOfSeats, TripData = null){
     if(!TripData){
         TripData = await fetchTripData(tripId);
     }
-}
 
+    let DeafultTripPrice = TripData.pricing.PersonPrice;
+
+    console.log("TripData.pricing", TripData.pricing);
+
+    if(TripData.pricing.PricePerWeeklyDays?.length > 0){
+        console.log("date", date);
+        const currentDay = getDay(date);
+        const weeklyPrice = TripData.pricing.PricePerWeeklyDays.find((price) => price.weekly_day === currentDay);
+        console.log("currentDay", currentDay);
+        console.log("TripData.pricing.PricePerWeeklyDays", TripData.pricing.PricePerWeeklyDays);
+        console.log("weeklyPrice", weeklyPrice);
+        if(weeklyPrice){
+            DeafultTripPrice *= weeklyPrice.price / 100;
+        }
+    }
+
+    if(TripData.pricing.PricePerPersons?.length > 0){
+        const personPrice = TripData.pricing.PricePerPersons.find((price) => price.personsCount === numberOfSeats);
+        if(personPrice){
+            DeafultTripPrice *= personPrice.price / 100;
+        }
+    }
+
+    DeafultTripPrice *= numberOfSeats;
+    let depositPrice = DeafultTripPrice * (TripData.pricing.AdvancePaymentPercentage / 100);
+    return {
+        price: DeafultTripPrice,
+        deposit: depositPrice,
+    };
+}
 
 export async function checkBookingAvailability(tripId, date, numberOfSeats, TripData = null, edit = false, editingBookingId = null) {
     if (!TripData) {
@@ -63,6 +101,10 @@ export async function addBooking(name, group_id, tripId, date, phone, numberOfSe
         return { success: false, message: availability.message };
     }
 
+    const {price, deposit} = await getBookingPrice(tripId, date, numberOfSeats, TripData);
+
+    console.log("price", price);
+    console.log("deposit", deposit);
     const { data, error } = await supabaseAdmin
         .from('bookings')
         .insert([{
@@ -72,6 +114,8 @@ export async function addBooking(name, group_id, tripId, date, phone, numberOfSe
             day: date,
             client_phone: phone,
             persons: numberOfSeats,
+            total_price: price,
+            deposite_price: deposit,
             status: "active",
         }])
         .select('*')
