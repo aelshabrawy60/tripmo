@@ -51,7 +51,7 @@ class PaymentRedirectFlow {
       throw new Error(`Gateway ${gatewayName} not configured`);
     }
 
-    return await this.gateways[gatewayName].getPaymentStatus(paymentId)
+    return await this.gateways[gatewayName].getStatusPayment(paymentId)
   }
 }
 

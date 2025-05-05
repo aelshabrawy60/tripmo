@@ -23,11 +23,23 @@ export async function createDeposit(groupId, tripId, bookId, amount, url, paymen
 }
 
 export async function confirmDeposit(bookId) {
-    const {data, error} = await supabaseAdmin.from("deposits").update({"status": "confirmed"}).eq("book_id", bookId)
+    const [depositResult, bookingResult] = await Promise.all([
+        supabaseAdmin
+            .from("deposits")
+            .update({ status: "confirmed" })
+            .eq("book_id", bookId),
+        supabaseAdmin
+            .from("bookings")
+            .update({ status: "active" })
+            .eq("id", bookId),
+    ]);
 
-    if(error){
-        return null
+    const [depositData, depositError] = [depositResult.data, depositResult.error];
+    const [bookingData, bookingError] = [bookingResult.data, bookingResult.error];
+
+    if (depositError || bookingError) {
+        return null;
     }
 
-    return data
+    return { depositData, bookingData };
 }

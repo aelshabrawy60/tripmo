@@ -111,7 +111,7 @@ class KashierRedirect {
     };
   }
 
-  async getPaymentStatus(paymentId){
+  async getStatusPayment(paymentId){
     const response = await fetch(`${this.kashierGetApi}/payment/sessions/${paymentId}/payment`, {
       method: "GET",
       headers: {

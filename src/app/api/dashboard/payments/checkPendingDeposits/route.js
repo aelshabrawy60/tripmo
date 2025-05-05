@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import {PaymentRedirectFlow} from '../../../../../utils/payments/payments'
 import { fetchPaymentsOptions } from "@/utils/group/group";
 import { supabaseAdmin } from '@/utils/supabase/service';
+import { confirmDeposit } from '@/utils/payments/helpers';
 
 export async function GET(request) {
     try {
@@ -15,7 +16,6 @@ export async function GET(request) {
         if (fetchError) throw fetchError;
         // Process results and track operations
 
-        console.log(downPayments)
         const results = {
             processed: 0,
             deleted: 0,
@@ -31,23 +31,22 @@ export async function GET(request) {
 
                 if(checkLinkExpiration(payment)){
                     const result = await checkPaymentStatus(payment.payment_id, payment.group_id)
+                    console.log(payment)
 
 
                     console.log("result", result)
                     if(!result){
                         // Delete the corresponding slot if status is pending
-                        const { error: deleteError } = await supabase.from('bookings').delete().eq('id', payment.slot_id);
+                        const { error: deleteError } = await supabase.from('bookings').delete().eq('id', payment.book_id);
                         console.log("delete error",deleteError)
                         if (deleteError) throw deleteError;
+                    }else{
+                        await confirmDeposit(payment.book_id)
                     }
                 }
             
             } else if (payment.status === 'confirmed') {
-                // Update the slot status to confirmed
-                const { error: updateError } = await supabase.from('bookings').update({
-                status: 'confirmed'
-                }).eq('id', payment.slot_id);
-                if (updateError) throw updateError;
+                await confirmDeposit(payment.book_id)
             }
             } catch (rowError) {}
         }
@@ -80,8 +79,9 @@ async function checkPaymentStatus(paymentId, groupId) {
     const paymentConfig = await fetchPaymentsOptions(groupId);
     const paymentService = new PaymentRedirectFlow(paymentConfig);
 
-    const status = await paymentService.getPaymentStatus(paymentId)
+    const status = await paymentService.getPaymentStatus(paymentConfig.name,paymentId)
 
+    console.log("status", status)
     return status
 }
 
