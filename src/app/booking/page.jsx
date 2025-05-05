@@ -166,7 +166,7 @@ export default async function Page({ searchParams }) {
     const paymentConfig = await fetchPaymentsOptions(groupId);
     const paymentService = new PaymentRedirectFlow(paymentConfig);
 
-    const verf = await paymentService.verifyPaymentReturn("kashier", searchParams);
+    const verf = await paymentService.verifyPaymentReturn(paymentConfig.name, searchParams);
 
     // If successful, confirm the deposit
     if (verf.success) {

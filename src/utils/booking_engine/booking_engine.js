@@ -103,8 +103,6 @@ export async function addBooking(name, group_id, tripId, date, phone, numberOfSe
 
     const {price, deposit} = await getBookingPrice(tripId, date, numberOfSeats, TripData);
 
-    console.log("price", price);
-    console.log("deposit", deposit);
     const { data, error } = await supabaseAdmin
         .from('bookings')
         .insert([{
@@ -116,7 +114,7 @@ export async function addBooking(name, group_id, tripId, date, phone, numberOfSe
             persons: numberOfSeats,
             total_price: price,
             deposite_price: deposit,
-            status: "active",
+            status: deposit > 0 ? "pending" : "active",
         }])
         .select('*')
         .single();

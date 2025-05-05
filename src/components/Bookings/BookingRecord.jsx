@@ -19,8 +19,8 @@ function BookingRecord({ bookData , type = 0}) {
         return { text: 'نشط', color: 'text-green-600', bgColor: 'bg-green-100' };
       case 'canceled':
         return { text: 'ملغي', color: 'text-red-600', bgColor: 'bg-red-100' };
-      case 'completed':
-        return { text: 'مكتمل', color: 'text-blue-600', bgColor: 'bg-blue-100' };
+      case 'pending':
+        return { text: 'بانتظار الدفع', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
       default:
         return { text: status, color: 'text-gray-600', bgColor: 'bg-gray-100' };
     }
