@@ -37,7 +37,7 @@ export async function GET(request) {
                     console.log("result", result)
                     if(!result){
                         // Delete the corresponding slot if status is pending
-                        const { error: deleteError } = await supabase.from('bookings').delete().eq('id', payment.book_id);
+                        const { error: deleteError } = await supabaseAdmin.from('bookings').delete().eq('id', payment.book_id);
                         console.log("delete error",deleteError)
                         if (deleteError) throw deleteError;
                     }else{
