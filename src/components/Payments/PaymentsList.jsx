@@ -66,9 +66,9 @@ function PaymentsList({ groupId }) {
   };
 
   return (
-    <div className="bg-gray-50 p-4 rounded-lg">
+    <div className=" p-4 rounded-lg">
       {/* Header with search and refresh */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 space-y-2 md:space-y-0">
+      <div className="flex flex-row justify-between items-center mb-4 space-y-2 md:space-y-0">
         <h2 className="text-xl font-bold text-gray-800">سجل المدفوعات</h2>
         
         <div className="flex space-x-2 items-center">

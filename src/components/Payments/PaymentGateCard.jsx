@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Check, X, Edit, RefreshCw, Power, AlertTriangle, CreditCard, ChevronDown, ChevronUp } from 'lucide-react';
 import { gates } from './gates';
+import EditPaymentGateModal from './EditPaymentGateModal';
 
 function PaymentGateCard({ GateData, onRefresh }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState(null);
   const [updateSuccess, setUpdateSuccess] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
 
   // Find gate icon from gates array
   const gateInfo = gates.find((gate) => gate.name === GateData?.name);
@@ -47,6 +50,15 @@ function PaymentGateCard({ GateData, onRefresh }) {
     } finally {
       setIsUpdating(false);
     }
+  };
+
+  const handleUpdateSuccess = () => {
+    // Refresh your gates list or perform other actions
+    onRefresh();
+  };
+
+  const handleEditClick = () => {
+    setIsEditModalOpen(true);
   };
 
   return (
@@ -126,12 +138,19 @@ function PaymentGateCard({ GateData, onRefresh }) {
           
           <button
             className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-all text-sm font-medium flex items-center gap-1.5"
+            onClick={handleEditClick}
           >
             <Edit size={14} />
             تعديل
           </button>
         </div>
       </div>
+      <EditPaymentGateModal
+        gate={GateData}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onUpdate={handleUpdateSuccess}
+      />
     </div>
   );
 }

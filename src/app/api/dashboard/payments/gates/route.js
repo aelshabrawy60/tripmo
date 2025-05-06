@@ -13,6 +13,17 @@ async function addPaymentGate(name, groupId, type, key_1, key_2, key_3, status, 
     return data
 }
 
+async function editPaymentGate(key_1, key_2, key_3, mode, deposit_methodes, gateId) {
+    const {data, error} = await supabaseAdmin.from("payment_gates").update({"key_1": key_1, "key_2": key_2, "key_3": key_3, "mode": mode, "deposit_methodes": deposit_methodes}).eq("id", gateId)
+
+    if(error){
+        console.log("error", error)
+        return null
+    }
+
+    return data
+}
+
 async function fetchAllPaymentGates(groupId) {
     const {data, error} = await supabaseAdmin.from("payment_gates").select("*").eq("group_id", groupId)
 
@@ -30,6 +41,21 @@ export async function POST(request) {
     
     try {
         const result = await addPaymentGate(name, groupId, type, key_1, key_2, key_3, status, mode, deposit_methodes);
+
+        
+
+        return NextResponse.json({ success: true, data: result });
+    } catch (error) {
+        console.error("Error in booking:", error);
+        return NextResponse.json({ success: false, message: "Unexpected error occurred while booking." }, { status: 500 });
+    }
+}
+
+export async function PUT(request) {
+    const { key_1, key_2, key_3, mode, deposit_methodes, gateId  } = await request.json();
+
+    try {
+        const result = await editPaymentGate(key_1, key_2, key_3, mode, deposit_methodes, gateId);
 
         
 
