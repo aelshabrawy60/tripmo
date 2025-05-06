@@ -119,9 +119,7 @@ class KashierRedirect {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`Kashier API error: ${response.statusText}`);
-    }
+    
 
     const result = await response.json();
 

@@ -77,6 +77,10 @@ export async function GET(request) {
 
 async function checkPaymentStatus(paymentId, groupId) {
     const paymentConfig = await fetchPaymentsOptions(groupId);
+    if(paymentConfig.type == 'دفع يدوي'){
+        return false
+    }
+    console.log("paymentConfig", paymentConfig)
     const paymentService = new PaymentRedirectFlow(paymentConfig);
 
     const status = await paymentService.getPaymentStatus(paymentConfig.name,paymentId)

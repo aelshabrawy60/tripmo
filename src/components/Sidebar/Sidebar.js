@@ -6,8 +6,9 @@ import { X, Menu, ChevronRight, ChevronLeft, Table } from 'react-feather';
 import { Home, Users, Settings, Calendar, FileText, HelpCircle } from 'react-feather';
 import { usePathname } from 'next/navigation';
 import { GrMoney, GrSchedule } from 'react-icons/gr';
-import { CarIcon, HomeIcon, Share, Table2Icon } from 'lucide-react';
+import { CarIcon, HomeIcon, icons, Share, Table2Icon } from 'lucide-react';
 import { Trispace } from 'next/font/google';
+import { FaMoneyBill, FaMoneyBillAlt, FaMoneyCheck } from 'react-icons/fa';
 
 
 
@@ -35,6 +36,11 @@ const getSidebarItems = (isAdmin) => {
       path: '/dashboard/clients',
       icon: <Users size={20} />,
       
+    },
+    {
+      title: "المدفوعات الواردة",
+      path: '/dashboard/payments',
+      icon: <FaMoneyCheck/>
     },
     // Show these items only if user is not an admin
     ...(isAdmin ? [] : [

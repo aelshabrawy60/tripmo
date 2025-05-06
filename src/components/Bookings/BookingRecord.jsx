@@ -21,6 +21,8 @@ function BookingRecord({ bookData , type = 0}) {
         return { text: 'ملغي', color: 'text-red-600', bgColor: 'bg-red-100' };
       case 'pending':
         return { text: 'بانتظار الدفع', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
+      case 'client_confirmed':
+        return { text: 'بانتظار تاكيد الدفع', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
       default:
         return { text: status, color: 'text-gray-600', bgColor: 'bg-gray-100' };
     }

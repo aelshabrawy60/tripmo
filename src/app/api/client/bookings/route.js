@@ -1,7 +1,7 @@
 import { addBooking, checkBookingAvailability } from "@/utils/booking_engine/booking_engine";
 import { fetchPaymentsOptions } from "@/utils/group/group";
 import { redirect } from "next/dist/server/api-utils";
-import { initDepositPayment } from "@/utils/payments/payments";
+import { initDepositPayment, initManualDepositPayment } from "@/utils/payments/payments";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -26,12 +26,14 @@ export async function POST(request) {
                 return NextResponse.json({ success: true, data: result.data, redirectUrl: payment.redirectUrl });
 
             }else{
-
-                return NextResponse.json({ success: true, data: result.data, paymentMessage: paymentOptions.deposit_message });
+                const payment = await initManualDepositPayment(result.data)
+                return NextResponse.json({ success: true, data: result.data, redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/manual_payment/${payment}` });
             }
         }
 
-        return NextResponse.json({ success: true, data: result.data });
+        const payment = await initManualDepositPayment(result.data)
+        
+        return NextResponse.json({ success: true, data: result.data, redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${payment}` });
 
     } catch (error) {
         console.error("Error in booking:", error);

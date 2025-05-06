@@ -15,8 +15,5 @@ export const gates = [
         "type": "manual",
         "name": "دفع يدوي",
         "icon" : "",
-        "config": [
-            {"رسالة الدفع للعميل": "deposit_message"},
-        ]
     },
 ]

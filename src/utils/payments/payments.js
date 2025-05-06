@@ -99,7 +99,24 @@ async function initDepositPayment(bookData, type, gatewayConfig) {
   }
 }
 
+
+async function initManualDepositPayment(bookData) {
+  const paymentId = generatePaymentId(bookData.client_phone, bookData.id)
+  const deposit = await createDeposit(bookData.group_id, bookData.bookable_id, bookData.id, bookData.deposite_price, paymentId, paymentId, "manual")
+
+  return paymentId
+}
+
+function generatePaymentId(phone, bookId) {
+  const timestamp = Date.now(); // Current timestamp
+  const uniqueString = `${phone}-${bookId.toString()}-${timestamp}`;
+  
+  // Generate a hash for uniqueness
+  return btoa(uniqueString).replace(/[^a-zA-Z0-9]/g, '');
+}
+
 module.exports = {
   PaymentRedirectFlow,
-  initDepositPayment
+  initDepositPayment,
+  initManualDepositPayment
 };

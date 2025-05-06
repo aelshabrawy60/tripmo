@@ -11,6 +11,11 @@ async function fetchBookingData(id) {
   return data;
 }
 
+async function fetchBookId(paymentId) {
+  const { data, error } = await supabaseAdmin.from("deposits").select("book_id").eq("payment_id", paymentId).single();
+  return data.book_id;
+}
+
 // Fetch trip data from Supabase
 async function fetchTripData(id) {
   const { data, error } = await supabaseAdmin.from("trips").select("*").eq("id", id).single();
@@ -148,6 +153,18 @@ const ErrorDisplay = ({ message }) => (
 export default async function Page({ searchParams }) {
   // Make sure searchParams exists and has the expected structure
   if (!searchParams || !searchParams.merchantOrderId) {
+
+    if(searchParams.paymentId){
+      // Fetch booking and trip data
+      // Parse the merchantOrderId if it's a string
+      const paymentId = searchParams.paymentId;
+
+      const bookId = await fetchBookId(paymentId)
+      const bookingData = await fetchBookingData(bookId);
+      const tripData = await fetchTripData(bookingData.bookable_id);
+      
+      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} />;
+    }
     return <ErrorDisplay message="المعلمات المطلوبة مفقودة" />;
   }
 

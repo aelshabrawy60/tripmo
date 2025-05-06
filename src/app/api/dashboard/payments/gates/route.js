@@ -2,8 +2,8 @@ import { supabaseAdmin } from "@/utils/supabase/service";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
-async function addPaymentGate(name, groupId, type, key_1, key_2, key_3, status, mode, deposit_message){
-    const {data, error} = await supabaseAdmin.from("payment_gates").insert([{name, group_id: groupId, type, key_1, key_2, key_3, status, mode, deposit_message}])
+async function addPaymentGate(name, groupId, type, key_1, key_2, key_3, status, mode, deposit_methodes){
+    const {data, error} = await supabaseAdmin.from("payment_gates").insert([{name, group_id: groupId, type, key_1, key_2, key_3, status, mode, deposit_methodes}])
 
     if(error){
         console.log("error", error)
@@ -25,10 +25,11 @@ async function fetchAllPaymentGates(groupId) {
 
 
 export async function POST(request) {
-    const { name, groupId, type, key_1, key_2, key_3, status, mode, deposit_message  } = await request.json();
+    const { name, groupId, type, key_1, key_2, key_3, status, mode, deposit_methodes  } = await request.json();
 
+    
     try {
-        const result = await addPaymentGate(name, groupId, type, key_1, key_2, key_3, status, mode, deposit_message);
+        const result = await addPaymentGate(name, groupId, type, key_1, key_2, key_3, status, mode, deposit_methodes);
 
         
 

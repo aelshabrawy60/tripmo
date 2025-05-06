@@ -3,12 +3,14 @@ import { supabaseAdmin } from "../supabase/service";
 
 export async function createDeposit(groupId, tripId, bookId, amount, url, paymentId , type) {
 
+    const status = amount > 0 ? "pending": "confirmed"
+
     const {data, error} = await supabaseAdmin.from("deposits").insert([{
         group_id: groupId,
         trip_id: tripId,
         book_id: bookId,
         amount: amount,
-        status: "pending",
+        status: status,
         url: url,
         payment_id: paymentId,
         type: type
