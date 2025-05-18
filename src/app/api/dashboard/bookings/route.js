@@ -7,7 +7,7 @@ export async function POST(request) {
     const { name, groupId, tripId, date, phone, numberOfSeats } = await request.json();
 
     try {
-        const result = await addBooking(name, groupId, tripId, date, phone, numberOfSeats, "admin");
+        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "admin");
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });

@@ -5,7 +5,7 @@ import { confirmDeposit } from "@/utils/payments/helpers";
 async function fetchPayments(groupId) {
     const { data, error } = await supabaseAdmin
         .from("deposits")
-        .select("*")
+        .select("* , trips(id, name), bookings (id, client_name, client_phone)")
         .eq("group_id", groupId)
         .in("status", ["confirmed", "client_confirmed"])
         .gt("amount", 0)
@@ -16,6 +16,7 @@ async function fetchPayments(groupId) {
         return null;
     }
 
+    console.log("payments", data)
     return data;
 }
 

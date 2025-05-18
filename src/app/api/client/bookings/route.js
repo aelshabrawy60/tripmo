@@ -1,15 +1,14 @@
-import { addBooking, checkBookingAvailability } from "@/utils/booking_engine/booking_engine";
+import { addBooking, checkBookingAvailability, getBookingPrice } from "@/utils/booking_engine/booking_engine";
 import { fetchPaymentsOptions } from "@/utils/group/group";
 import { redirect } from "next/dist/server/api-utils";
 import { initDepositPayment, initManualDepositPayment } from "@/utils/payments/payments";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
-    const { name, groupId, tripId, date, phone, numberOfSeats } = await request.json();
+    const { name, tripId, date, phone, numberOfSeats } = await request.json();
 
-    console.log("group_id", groupId)
     try {
-        const result = await addBooking(name, groupId, tripId, date, phone, numberOfSeats, "user");
+        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user");
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
@@ -18,7 +17,7 @@ export async function POST(request) {
 
         // if the booking need deposits
         if(result.data.deposite_price > 0){
-            const paymentOptions = await fetchPaymentsOptions(groupId)
+            const paymentOptions = await fetchPaymentsOptions(result.groupId)
 
             if(paymentOptions.type == "auto"){
 
@@ -47,12 +46,16 @@ export async function GET(request) {
     const date = searchParams.get("date");
     const numberOfSeats = searchParams.get("numberOfSeats");
 
+    console.log()
     try {
         const result = await checkBookingAvailability(tripId, date, numberOfSeats);
 
+        // calc trip price
+
+        const price = await getBookingPrice(tripId, date, numberOfSeats)
         return NextResponse.json(result.success
-            ? { success: true }
-            : { success: false, message: result.message }, 
+            ? { success: true , pricing: price}
+            : { success: false, message: result.message, pricing: price }, 
             { status: result.success ? 200 : 400 }
         );
     } catch (error) {

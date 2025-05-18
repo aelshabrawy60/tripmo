@@ -155,7 +155,7 @@ const AddUser = ({ onPlayerAdded , groupId}) => {
     <>
       <button 
         onClick={openModal}
-        className="w-full max-w-md mx-auto mb-6 px-6 py-3 bg-tripmo-500 text-white rounded-md hover:bg-tripmo-400 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center"
+        className="w-full max-w-md mx-auto px-6 py-3 bg-tripmo-500 text-white rounded-md hover:bg-tripmo-400 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />

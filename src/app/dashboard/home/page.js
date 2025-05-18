@@ -1,13 +1,15 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import DateChooser from '@/components/Bookings/DateChooser'
 import TripChooser from '@/components/Bookings/TripChooser'
 import TripBookingsList from '@/components/Bookings/TripBookingsList'
 import { useSharedContext } from '@/context/ShareAut'
-import { Loader } from 'lucide-react'
+import { Loader, Calendar, AlertCircle } from 'lucide-react'
 import AddBooking from '@/components/Bookings/AddBooking'
 import AddBookingClient from '@/components/Bookings/AddBookClient'
+import Loading from '@/components/Loading'
+import LoadingCirc from '@/components/Loading/LoadingCirc'
 
 function BookingPage() {
   const { groupId, role } = useSharedContext()
@@ -31,7 +33,14 @@ function BookingPage() {
         
         const data = await response.json()
         setTripsData(data)
-        setSelectedTrip(data[0] || null) // Set the first trip as selected by default
+        
+        // Only set selected trip if there are trips available
+        if (data && data.length > 0) {
+          setSelectedTrip(data[0])
+        } else {
+          setSelectedTrip(null)
+        }
+        
         setIsLoading(false)
       } catch (err) {
         console.error('Error fetching trips:', err)
@@ -41,7 +50,7 @@ function BookingPage() {
     }
 
     fetchTrips()
-  }, [])
+  }, [groupId])
   
   const handleTripSelect = (trip) => {
     setSelectedTrip(trip)
@@ -53,13 +62,21 @@ function BookingPage() {
     setRefreshBookings(prev => prev + 1)
   }
 
+  // Determine if there are any available trips
+  const hasTrips = tripsData && tripsData.length > 0;
+
+  // Get the initial date for booking forms
+  const getInitialDate = () => {
+    if (!selectedTrip) return selectedDate;
+    return selectedTrip.availability_type === "fixed" 
+      ? selectedTrip.available_day 
+      : selectedDate;
+  };
+
   return (
     <div className="mx-auto p-4 md:p-6">      
       {isLoading && (
-        <div className="flex justify-center items-center p-12">
-          <Loader className="w-8 h-8 text-blue-500 animate-spin" />
-          <span className="mr-3 text-lg text-gray-700">جاري التحميل...</span>
-        </div>
+        <LoadingCirc/>
       )}
       
       {error && (
@@ -71,39 +88,48 @@ function BookingPage() {
       
       {!isLoading && !error && (
         <div className="space-y-4">
-          <div className="bg-white items-center p-6 gap-4 flex flex-wrap rounded-md shadow-sm border border-gray-200">
-            <TripChooser 
-              tripsData={tripsData} 
-              onSelect={handleTripSelect} 
-            />
+          {!hasTrips ? (
+            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-6 rounded-md flex flex-col items-center space-y-3">
+              <AlertCircle className="w-10 h-10 text-yellow-500" />
+              <h3 className="text-xl font-medium">لا توجد رحلات متاحة</h3>
+              <p className="text-center">
+                لم يتم إضافة أي رحلات بعد. يرجى إضافة رحلات جديدة أولاً.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="bg-white items-center p-6 gap-4 flex flex-wrap rounded-md shadow-sm border border-gray-200">
+                <TripChooser 
+                  tripsData={tripsData} 
+                  onSelect={handleTripSelect} 
+                />
 
-            {selectedTrip && (
-              <DateChooser tripData={selectedTrip} onDateChange={setSelectedDate}/>
-            )}
+                {selectedTrip && (
+                  <DateChooser tripData={selectedTrip} onDateChange={setSelectedDate}/>
+                )}
 
-            <AddBooking 
-              groupId={groupId} 
-              initialData={{"tripData": selectedTrip, "date": selectedTrip.availability_type == "fixed" ? tripsData.available_day : selectedDate}} 
-              onSuccess={handleBookingSuccess}
-            />
+                {selectedTrip && (
+                  <>
+                    <AddBooking 
+                      groupId={groupId} 
+                      initialData={{"tripData": selectedTrip, "date": getInitialDate()}} 
+                      onSuccess={handleBookingSuccess}
+                    />
+                  </>
+                )}
+              </div>
 
-            <AddBookingClient
-              groupId={groupId}
-              initialData={{"tripData": selectedTrip, "date": selectedTrip.availability_type == "fixed" ? tripsData.available_day : selectedDate}} 
-              onSuccess={handleBookingSuccess}
-            />
-
-          </div>
-
-          {selectedTrip && (
-          <div>
-            <TripBookingsList 
-              tripData={selectedTrip} 
-              date={selectedDate} 
-              groupId={groupId}
-              refreshTrigger={refreshBookings}
-            />
-          </div>
+              {selectedTrip && (
+                <div>
+                  <TripBookingsList 
+                    tripData={selectedTrip} 
+                    date={selectedDate} 
+                    groupId={groupId}
+                    refreshTrigger={refreshBookings}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       )}

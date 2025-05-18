@@ -8,11 +8,11 @@ export default function BookingRecordsList({groupId}) {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [timeFilter, setTimeFilter] = useState('all');
+  const [timeFilter, setTimeFilter] = useState('24hours');
   const [refreshing, setRefreshing] = useState(false);
 
   // Function to fetch bookings data
-  const fetchBookings = async () => {
+  const fetchBookings = async (selectedTimeFilter = timeFilter) => {
     setLoading(true);
     setError(null);
     
@@ -21,12 +21,12 @@ export default function BookingRecordsList({groupId}) {
       let url = `/api/dashboard/bookings?groupId=${groupId}`;
       
       // Add time filter parameters based on selection
-      if (timeFilter !== 'all') {
+      if (selectedTimeFilter !== 'all') {
         let filterStart, filterEnd;
         const now = new Date();
         filterEnd = now.toISOString();
         
-        switch (timeFilter) {
+        switch (selectedTimeFilter) {
           case '24hours':
             // Last 24 hours
             filterStart = new Date(now.getTime() - (24 * 60 * 60 * 1000)).toISOString();
@@ -68,10 +68,10 @@ export default function BookingRecordsList({groupId}) {
     });
   };
 
-  // Fetch bookings when component mounts
+  // Fetch bookings when component mounts or when timeFilter changes
   useEffect(() => {
     fetchBookings();
-  }, []);
+  }, [timeFilter]);
 
   // Filter bookings based on search term and status
   // Note: Date filtering is now handled server-side through API parameters
@@ -86,7 +86,7 @@ export default function BookingRecordsList({groupId}) {
   });
 
   return (
-    <div className=" mx-auto px-4 py-6" dir="rtl">
+    <div className="mx-auto px-4 py-6" dir="rtl">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">قائمة الحجوزات</h1>
         <button 
@@ -130,7 +130,6 @@ export default function BookingRecordsList({groupId}) {
                 <option value="all">جميع الحالات</option>
                 <option value="active">نشط</option>
                 <option value="cancelled">ملغي</option>
-                <option value="completed">مكتمل</option>
               </select>
             </div>
           </div>
@@ -144,11 +143,7 @@ export default function BookingRecordsList({groupId}) {
               <select
                 className="bg-transparent border-0 text-gray-900 text-sm rounded-r-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 appearance-none"
                 value={timeFilter}
-                onChange={(e) => {
-                  setTimeFilter(e.target.value);
-                  // Trigger refetch when time period changes
-                  setTimeout(() => fetchBookings(), 100);
-                }}
+                onChange={(e) => setTimeFilter(e.target.value)}
               >
                 <option value="all">كل الفترات</option>
                 <option value="24hours">آخر 24 ساعة</option>

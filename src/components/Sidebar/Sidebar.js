@@ -2,15 +2,12 @@
 // components/Sidebar.tsx
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { X, Menu, ChevronRight, ChevronLeft, Table } from 'react-feather';
-import { Home, Users, Settings, Calendar, FileText, HelpCircle } from 'react-feather';
+import { Menu, ChevronRight, ChevronLeft} from 'react-feather';
+import { Users} from 'react-feather';
 import { usePathname } from 'next/navigation';
-import { GrMoney, GrSchedule } from 'react-icons/gr';
-import { CarIcon, HomeIcon, icons, Share, Table2Icon } from 'lucide-react';
-import { Trispace } from 'next/font/google';
-import { FaMoneyBill, FaMoneyBillAlt, FaMoneyCheck } from 'react-icons/fa';
-
-
+import { FileText, HomeIcon } from 'lucide-react';
+import { FaMoneyCheck } from 'react-icons/fa';
+import { PiMountainsBold } from "react-icons/pi";
 
 
 // Define your sidebar items function that filters based on role
@@ -24,18 +21,12 @@ const getSidebarItems = (isAdmin) => {
     { 
       title: 'الرحلات',
       path: '/dashboard/trips',
-      icon: <CarIcon size={20} />,
+      icon: <PiMountainsBold size={20} />,
     },
     {
       title : 'سجل الحجز',
       path: '/dashboard/bookings',
       icon: <FileText size={20}/>
-    },
-    { 
-      title: 'العملاء',
-      path: '/dashboard/clients',
-      icon: <Users size={20} />,
-      
     },
     {
       title: "المدفوعات الواردة",

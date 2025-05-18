@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 function TripCard({ tripData }) {
@@ -12,17 +13,6 @@ function TripCard({ tripData }) {
 
   // Get only the first image
   const firstImage = images && images.length > 0 ? images[0] : null;
-
-  // Format date for better readability
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ar-EG', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-  };
 
   // Get a shortened version of the about text
   const shortAbout = about ? about.substring(0, 80) + (about.length > 80 ? '...' : '') : '';
@@ -55,10 +45,10 @@ function TripCard({ tripData }) {
         
         {/* Footer */}
         <div className="mt-auto flex text-center">
-          <button className="bg-tripmo-500 justify-center w-full hover:bg-tripmo-400 text-white py-2 px-4 rounded-lg font-semibold flex items-center gap-2 transition-colors duration-300 text-sm group">
+          <Link href={`/dashboard/trips/${tripData.id}`} className="bg-tripmo-500 justify-center w-full hover:bg-tripmo-400 text-white py-2 px-4 rounded-lg font-semibold flex items-center gap-2 transition-colors duration-300 text-sm group">
             عرض التفاصيل
             <span className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

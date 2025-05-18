@@ -28,46 +28,36 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
   // Initialize person pricing
   const [personPricing, setPersonPricing] = useState([]);
   
+  const initialized = React.useRef(false);
+
   useEffect(() => {
-    // Initialize from initialValue if provided
-    if (initialValue) {
+    if (initialValue && !initialized.current) {
+      initialized.current = true;
+
       setPersonPrice(initialValue.PersonPrice?.toString() || '300');
-      
-      // Check if we have day pricing
-      if (initialValue.PricePerWeeklyDays && initialValue.PricePerWeeklyDays.length > 0) {
+
+      if (initialValue.PricePerWeeklyDays?.length > 0) {
         setCustomDayPricing(true);
-        
-        // Extract day pricing from array format
-        const dayPricingData = [];
-        initialValue.PricePerWeeklyDays.forEach(item => {
-          if (item.weekly_day !== undefined && item.price !== undefined) {
-            dayPricingData.push({
-              day: item.weekly_day.toString(),
-              percentage: item.price.toString()
-            });
-          }
-        });
+        const dayPricingData = initialValue.PricePerWeeklyDays.map(item => ({
+          day: item.weekly_day.toString(),
+          percentage: item.price.toString(),
+        }));
         setDayPricing(dayPricingData);
       }
-      
-      // Check if we have person pricing
-      if (initialValue.PricePerPersons && initialValue.PricePerPersons.length > 0) {
+
+      if (initialValue.PricePerPersons?.length > 0) {
         setCustomPersonPricing(true);
-        
-        // Extract person pricing from array format
-        const personPricingData = [];
-        initialValue.PricePerPersons.forEach(item => {
-          if (item.personsCount !== undefined && item.price !== undefined) {
-            personPricingData.push({
-              count: item.personsCount.toString(),
-              percentage: item.price.toString()
-            });
-          }
-        });
+        const personPricingData = initialValue.PricePerPersons.map(item => ({
+          count: item.personsCount.toString(),
+          percentage: item.price.toString(),
+        }));
         setPersonPricing(personPricingData);
       }
+
+      setAdvancePaymentPercentage(initialValue.AdvancePaymentPercentage || 0);
     }
   }, [initialValue]);
+
   
   // Update output JSON whenever values change
   useEffect(() => {

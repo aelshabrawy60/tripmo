@@ -48,7 +48,7 @@ export async function updateTrip(tripId, updatedTrip) {
 export async function getTrip(tripId) {
   const { data, error } = await supabaseAdmin
     .from("trips")
-    .select("*")
+    .select("*, ratings (*)")
     .eq("id", tripId)
     .single();
 
@@ -56,18 +56,38 @@ export async function getTrip(tripId) {
     throw new Error(`Error fetching trip: ${error.message}`);
   }
 
-  return data;
+  // Calculate average rating
+  const ratings = data.ratings || [];
+  const total = ratings.reduce((sum, rating) => sum + (rating.value || 0), 0);
+  const rate = ratings.length > 0 ? total / ratings.length : 0;
+
+  return {
+    ...data,
+    rate
+  };
 }
 
 export async function getAllTrips(groupId) {
   const { data, error } = await supabaseAdmin
     .from("trips")
-    .select("*")
+    .select("*, categories (id, name), ratings (*)")
     .eq("group_id", groupId);
 
   if (error) {
     throw new Error(`Error fetching trips: ${error.message}`);
   }
 
-  return data;
+  // Add averageRating to each trip
+  const tripsWithRatings = data.map((trip) => {
+    const ratings = trip.ratings || [];
+    const total = ratings.reduce((sum, r) => sum + (r.value || 0), 0);
+    const rate = ratings.length > 0 ? total / ratings.length : 0;
+
+    return {
+      ...trip,
+      rate,
+    };
+  });
+
+  return tripsWithRatings;
 }

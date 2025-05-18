@@ -20,7 +20,6 @@ function Page() {
 
   return (
     <div className='p-4'>
-      <AddUser groupId={groupId} onPlayerAdded={handleUserAdded} />
       <UsersList groupId={groupId} refreshUsers={handleRegisterRefresh} />
     </div>
   );

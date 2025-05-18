@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Clock, AlertCircle, CreditCard, ArrowRight, Receipt } from 'lucide-react';
+import { Check, Clock, AlertCircle, CreditCard, ArrowRight, Receipt, MapPin, User, Phone } from 'lucide-react';
 
 function PaymentCard({ paymentData }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -174,15 +174,37 @@ function PaymentCard({ paymentData }) {
       {expanded && (
         <div className="px-3 md:px-4 pb-4 pt-0 border-t border-gray-100">
           <div className="flex flex-col space-y-3">
+            {/* Payment Info Section */}
             <div className="bg-gray-50 p-3 rounded-md text-right">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+              <div className="flex flex-col md:flex-row md:items-center mb-2 md:gap-2">
                 <span className="text-sm text-gray-500 mb-1 md:mb-0">رقم الحجز:</span>
                 <span className="text-sm font-semibold">{paymentData.book_id}</span>
               </div>
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+              <div className="flex flex-col md:flex-row md:items-center mb-2 md:gap-2">
                 <span className="text-sm text-gray-500 mb-1 md:mb-0">طريقة الدفع:</span>
                 <span className="text-sm font-semibold">{paymentData.type}</span>
               </div>
+              <div className="flex flex-col md:flex-row md:items-center md:gap-2 mb-2">
+                  <span className="text-sm text-gray-500 mb-1 md:mb-0">اسم الرحلة:</span>
+                  <span className="text-sm font-semibold">{paymentData.trips.name}</span>
+                </div>
+                <div className="flex flex-col md:flex-row md:items-center md:gap-2 mb-2">
+                  <span className="text-sm text-gray-500 mb-1 md:mb-0">اسم العميل:</span>
+                  <span className="text-sm font-semibold">{paymentData.bookings.client_name}</span>
+                </div>
+                <div className="flex flex-col md:flex-row md:items-center md:gap-2 mb-2">
+                  <span className="text-sm text-gray-500 mb-1 md:mb-0">رقم الهاتف:</span>
+                  <div className="flex items-center">
+                    <span className="text-sm font-semibold">{paymentData.bookings.client_phone}</span>
+                    <a 
+                      href={`tel:${paymentData.bookings.client_phone}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="mr-2 text-indigo-600 hover:text-indigo-800"
+                    >
+                      <Phone size={14} />
+                    </a>
+                  </div>
+                </div>
             </div>
             
             {/* Error and Success Messages */}
@@ -199,6 +221,7 @@ function PaymentCard({ paymentData }) {
                 <span className="text-xs md:text-sm">تم تأكيد الدفع بنجاح</span>
               </div>
             )}
+
             
             {/* Confirm Payment Button */}
             {paymentData.status === "client_confirmed" && !success && (

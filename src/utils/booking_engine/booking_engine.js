@@ -86,7 +86,7 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, Trip
 }
 
 
-export async function addBooking(name, group_id, tripId, date, phone, numberOfSeats, user_role) {   
+export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role) {   
     const TripData = await fetchTripData(tripId);
     
     const availability = await checkBookingAvailability(tripId, date, numberOfSeats, TripData);
@@ -107,14 +107,14 @@ export async function addBooking(name, group_id, tripId, date, phone, numberOfSe
         .from('bookings')
         .insert([{
             client_name: name,
-            group_id: group_id,
+            group_id: TripData.group_id,
             bookable_id: tripId,
             day: date,
             client_phone: phone,
             persons: numberOfSeats,
             total_price: price,
             deposite_price: deposit,
-            status: deposit > 0 ? "pending" : "active",
+            status: deposit > 0 && user_role != "admin" ? "pending" : "active",
         }])
         .select('*')
         .single();
@@ -124,7 +124,7 @@ export async function addBooking(name, group_id, tripId, date, phone, numberOfSe
         return { success: false, message: "Database error occurred while adding booking." };
     }
 
-    return { success: true, data };
+    return { success: true, data, groupId: TripData.group_id };
 }
 
 
@@ -175,7 +175,7 @@ export async function cancelBooking(booking_id, user_role){
 export async function fetchAllBookings(groupId, startFilter = null, endFilter = null) {
     let query = supabaseAdmin
         .from('bookings')
-        .select('*')
+        .select('* , trips (id, name)')
         .eq('group_id', groupId)
         .order('created_at', { ascending: false });
 

@@ -9,6 +9,20 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
   // Set language to Arabic with Gregorian calendar
   const [language, setLanguage] = useState('ar');
 
+  useEffect(()=>{
+    if(tripData.availability_type == "fixed"){
+      onDateChange(tripData.available_day)
+    }else{
+      const date = new Date()
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+      const day = String(date.getDate()).padStart(2, '0');
+
+      const localDateString = `${year}-${month}-${day}`;
+      onDateChange(localDateString)
+    }
+    
+  }, [])
   // If trip data changes, update our state
   useEffect(() => {
     if (tripData.weekly_days) {

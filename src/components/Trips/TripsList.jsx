@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {Loader} from 'lucide-react';
 import TripCard from './TripCard';
 import Link from 'next/link';
+import AddCategorie from './AddCategorie';
+import Loading from '../Loading';
+import LoadingCirc from '../Loading/LoadingCirc';
 
 function TripsList({groupId}) {
   const [trips, setTrips] = useState([]);
@@ -34,10 +37,7 @@ function TripsList({groupId}) {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center p-12">
-          <Loader className="w-8 h-8 text-blue-500 animate-spin" />
-          <span className="mr-3 text-lg text-gray-700">جاري التحميل...</span>
-        </div>
+      <LoadingCirc/>
     );
   }
 
@@ -57,20 +57,27 @@ function TripsList({groupId}) {
 
   if (trips.length === 0) {
     return (
-      <div className="text-center p-8 bg-gray-50 rounded-lg my-4">
-        <p className="text-gray-600">No trips found</p>
+      <div className="text-center flex justify-center flex-col p-8 rounded-lg my-4">
+        <p className="text-gray-600">لم يتم العثور علي رحلات</p>
+        <div className='mt-6'>
+          <Link href="/dashboard/trips/create" className="bg-tripmo-500 w-full md:w-auto text-center text-white py-3 px-4 rounded-lg mb-2 inline-block hover:bg-tripmo-400 transition-colors duration-300">
+            إضافة رحلة جديدة
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto px-2 md:px-4">
-      <div className='flex p-4'>
-        <Link href="/dashboard/trips/create" className="bg-tripmo-500 w-full md:w-auto text-center text-white py-3 px-4 rounded-lg mb-2 inline-block hover:bg-tripmo-400 transition-colors duration-300">
-          إضافة رحلة جديدة
-        </Link>
-      </div>
       
+      <div className='flex px-4'>
+          <Link href="/dashboard/trips/create" className="bg-tripmo-500 w-full md:w-auto text-center text-white py-3 px-4 rounded-lg mb-2 inline-block hover:bg-tripmo-400 transition-colors duration-300">
+            إضافة رحلة جديدة
+          </Link>
+          {/*<AddCategorie groupId={groupId}/> */}
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
         {trips.map((trip) => (
           <TripCard key={trip.id} tripData={trip} />
