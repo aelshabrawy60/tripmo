@@ -1,4 +1,6 @@
-import { Suspense } from 'react';
+
+
+// Import all possible components statically
 import MainTripPage from "@/components/Templates/Main/MainTripPage";
 
 async function fetchTripData(tripId) {
@@ -13,17 +15,8 @@ async function fetchTripData(tripId) {
   return res.json();
 }
 
-// Loading component for the suspense boundary
-function TripPageLoading() {
-  return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-    </div>
-  );
-}
-
 export default async function Page({ params }) {
-  const { tripId } = params;
+  const {tripId} = params;
 
   let tripData;
   try {
@@ -46,9 +39,7 @@ export default async function Page({ params }) {
 
   return (
     <div>
-      <Suspense fallback={<TripPageLoading />}>
-        <MainTripPage tripData={tripData} />
-      </Suspense>
+      <MainTripPage tripData={tripData} />
     </div>
   );
 }
