@@ -9,9 +9,6 @@ function MainRatingsSection({ratings, tripId}) {
         <div className='flex flex-2 flex-col gap-2 min-w-[300px]'>
             {ratings?.map((rate) => <CommentCard key={rate.id} commentData={rate}/>)}
         </div>
-        <div className='flex-1 min-w-[300px]'>
-        <AddComment tripId={tripId}/>
-        </div>
     </div>
   )
 }

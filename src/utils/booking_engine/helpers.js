@@ -60,3 +60,13 @@ export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, ed
         return true; // No bookings found, so it's available
     }
 }
+
+export function calculateCancelDeadline(bookDay, canCancelUntil, timeZone) {
+    const amount = canCancelUntil + timeZone;
+    const [year, month, day] = bookDay.split('-').map(Number);
+    const utcBookDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+    
+    utcBookDate.setUTCHours(utcBookDate.getUTCHours() - amount);
+    
+    return utcBookDate;
+}

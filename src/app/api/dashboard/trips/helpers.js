@@ -35,7 +35,12 @@ export async function updateTrip(tripId, updatedTrip) {
     .from("trips")
     .update(updatedTrip)
     .eq("id", tripId)
-    .select("*")
+    .select(`
+      *,
+      ratings (*),
+      depature_city:depature_city (*),
+      dest_city:dest_city (*)
+    `)
     .single();
 
   if (error) {
@@ -48,9 +53,15 @@ export async function updateTrip(tripId, updatedTrip) {
 export async function getTrip(tripId) {
   const { data, error } = await supabaseAdmin
     .from("trips")
-    .select("*, ratings (*)")
+    .select(`
+      *,
+      ratings (*),
+      depature_city:depature_city (*),
+      dest_city:dest_city (*)
+    `)
     .eq("id", tripId)
     .single();
+
 
   if (error) {
     throw new Error(`Error fetching trip: ${error.message}`);
@@ -66,6 +77,7 @@ export async function getTrip(tripId) {
     rate
   };
 }
+
 
 export async function getAllTrips(groupId) {
   const { data, error } = await supabaseAdmin

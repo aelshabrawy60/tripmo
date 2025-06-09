@@ -45,8 +45,6 @@ export async function GET(request) {
                     }
                 }
             
-            } else if (payment.status === 'confirmed') {
-                await confirmDeposit(payment.book_id)
             }
             } catch (rowError) {}
         }

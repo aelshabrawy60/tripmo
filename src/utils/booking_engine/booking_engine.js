@@ -4,7 +4,7 @@
 // cancel booking
 import { createClient } from "../supabase/server";
 import { supabaseAdmin } from "../supabase/service";
-import { isDayBetween, isSeatsAvaliable, isDayinWeeklyDays, isDayInPast } from "./helpers";
+import { isDayBetween, isSeatsAvaliable, isDayinWeeklyDays, isDayInPast, calculateCancelDeadline } from "./helpers";
 
 function getDay(dateString) {
     // Force the date to be interpreted exactly as provided
@@ -86,7 +86,7 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, Trip
 }
 
 
-export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role) {   
+export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, timeZone = 0) {   
     const TripData = await fetchTripData(tripId);
     
     const availability = await checkBookingAvailability(tripId, date, numberOfSeats, TripData);
@@ -103,6 +103,8 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
 
     const {price, deposit} = await getBookingPrice(tripId, date, numberOfSeats, TripData);
 
+    const cancel_deadline = calculateCancelDeadline(date, TripData.cancellation_policy.until, timeZone);
+    
     const { data, error } = await supabaseAdmin
         .from('bookings')
         .insert([{
@@ -114,6 +116,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
             persons: numberOfSeats,
             total_price: price,
             deposite_price: deposit,
+            can_canceled_until: cancel_deadline,
             status: deposit > 0 && user_role != "admin" ? "pending" : "active",
         }])
         .select('*')
@@ -251,4 +254,9 @@ async function fetchTripData(tripId){
     }
 
     return data;
+}
+
+
+async function canBookRefunded(bookId){
+
 }

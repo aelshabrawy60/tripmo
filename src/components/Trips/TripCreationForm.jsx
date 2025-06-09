@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import TripPricingEditor from "./TripPricingEditor";
+import CityChooser from "./CityChooser";
+import TripCancellationPolicyEditor from "./TripCancellationPolicyEditor";
 
 export default function TripCreationForm({ groupId }) {
   const router = useRouter();
@@ -22,7 +24,10 @@ export default function TripCreationForm({ groupId }) {
     end_date: "", // For daily/weekly availability
     weekly_days: [], // For weekly availability - sun, mon, tue, wed, thu, fri, sat
     pricing: {},
+    cancellation_policy: {},
     group_id: groupId || "",
+    depature_city: null,
+    dest_city: null
   });
   
   const [images, setImages] = useState([]);
@@ -51,6 +56,14 @@ export default function TripCreationForm({ groupId }) {
     }
   };
 
+  function handleDepCityChange(city){
+    setTripData((prev) => ({ ...prev, depature_city: city.id }));
+  }
+
+  function handleDestCityChange(city){
+    setTripData((prev) => ({ ...prev, dest_city: city.id }));
+  }
+
   const handleWeekDayToggle = (day) => {
     setTripData((prev) => {
       const updatedDays = prev.weekly_days.includes(day)
@@ -74,6 +87,16 @@ export default function TripCreationForm({ groupId }) {
       setErrors((prev) => ({ ...prev, pricing: "" }));
     }
   }
+
+  function handleCancellationPolicyChange(policy){
+    setTripData((prev) => ({ ...prev, cancellation_policy: policy }));
+    
+    // Clear cancellation policy error if it exists
+    if (errors.cancellation_policy) {
+      setErrors((prev) => ({ ...prev, cancellation_policy: "" }));
+    }
+  }
+
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -198,6 +221,9 @@ export default function TripCreationForm({ groupId }) {
         availability_type: tripData.availability_type,
         group_id: tripData.group_id,
         pricing: tripData.pricing,
+        cancellation_policy: tripData.cancellation_policy,
+        depature_city: tripData.depature_city,
+        dest_city: tripData.dest_city,
       };
       
       // Add specific fields based on availability type
@@ -236,7 +262,7 @@ export default function TripCreationForm({ groupId }) {
       // Optional: Redirect to the trip page or list after a short delay
       setTimeout(() => {
         router.push(`/dashboard/trips`);
-      }, 1500);
+      }, 1000);
       
     } catch (error) {
       console.error("Error creating trip:", error);
@@ -305,6 +331,22 @@ export default function TripCreationForm({ groupId }) {
           )}
         </div>
         
+        {/*depature location*/}
+        <div>
+          <label htmlFor="max_clients" className="block text-sm font-medium text-gray-700 mb-1">
+            مكان الانطلاق*
+          </label>
+          <CityChooser onChange={handleDepCityChange}/>
+        </div>
+
+        {/* Destination location */}
+        <div>
+          <label htmlFor="max_clients" className="block text-sm font-medium text-gray-700 mb-1">
+            وجهة الرحلة*
+          </label>
+          <CityChooser onChange={handleDestCityChange}/>
+        </div>
+
         {/* Max Clients */}
         <div>
           <label htmlFor="max_clients" className="block text-sm font-medium text-gray-700 mb-1">
@@ -446,6 +488,7 @@ export default function TripCreationForm({ groupId }) {
         )}
         
         <TripPricingEditor fixedDate={tripData.availability_type == "fixed"} onChange={handlePricingChange}/>
+        <TripCancellationPolicyEditor onChange={handleCancellationPolicyChange}/>
         {/* Image Upload */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">

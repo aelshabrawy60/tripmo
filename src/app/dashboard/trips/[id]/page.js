@@ -7,6 +7,8 @@ import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { Trash2, Pencil, Save, X, Plus } from "lucide-react";
 import TripPricingEditor from "@/components/Trips/TripPricingEditor";
+import CityChooser from "@/components/Trips/CityChooser";
+import TripCancellationPolicyEditor from "@/components/Trips/TripCancellationPolicyEditor";
 
 export default function TripDetailPage({ params }) {
     const { id: tripId } = React.use(params);
@@ -110,6 +112,14 @@ export default function TripDetailPage({ params }) {
     }
   };
 
+  function handleDepCityChange(city){
+    setEditData((prev) => ({ ...prev, depature_city: city.id }));
+  }
+
+  function handleDestCityChange(city){
+    setEditData((prev) => ({ ...prev, dest_city: city.id }));
+  }
+
   const handleWeekDayToggle = (day) => {
     setEditData(prev => {
       const weekly_days = prev.weekly_days || [];
@@ -137,6 +147,15 @@ export default function TripDetailPage({ params }) {
       setErrors(prev => ({ ...prev, pricing: "" }));
     }
   };
+
+  function handleCancellationPolicyChange(policy){
+    setEditData((prev) => ({ ...prev, cancellation_policy: policy }));
+    
+    // Clear cancellation policy error if it exists
+    if (errors.cancellation_policy) {
+      setErrors((prev) => ({ ...prev, cancellation_policy: "" }));
+    }
+  }
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -290,6 +309,9 @@ export default function TripDetailPage({ params }) {
         availability_type: editData.availability_type,
         group_id: editData.group_id,
         pricing: editData.pricing || {},
+        cancellation_policy: editData.cancellation_policy || "",
+        depature_city: editData.depature_city.id,
+        dest_city: editData.dest_city.id,
       };
       
       // Add specific fields based on availability type
@@ -528,6 +550,22 @@ export default function TripDetailPage({ params }) {
             )}
           </div>
           
+          {/*depature location*/}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              مكان الانطلاق*
+            </label>
+            <CityChooser defaultCity={editData.depature_city} onChange={handleDepCityChange}/>
+          </div>
+
+          {/* Destination location */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              وجهة الرحلة*
+            </label>
+            <CityChooser  defaultCity={editData.dest_city} onChange={handleDestCityChange}/>
+          </div>
+
           {/* Max Clients */}
           <div>
             <label htmlFor="max_clients" className="block text-sm font-medium text-gray-700 mb-1">
@@ -673,6 +711,8 @@ export default function TripDetailPage({ params }) {
             onChange={handlePricingChange}
             initialValue={editData?.pricing || {}}
           />
+
+          <TripCancellationPolicyEditor onChange={handleCancellationPolicyChange} intialPolicy={editData.cancellation_policy}/>
           
           {/* Image Upload */}
           <div>
@@ -749,6 +789,7 @@ export default function TripDetailPage({ params }) {
             <h2 className="text-2xl font-bold text-gray-800 mb-4">{tripData.name}</h2>
             <p className="text-gray-700 mb-6 whitespace-pre-wrap">{tripData.about}</p>
             
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               {/* Left Column */}
               <div className="space-y-4">
@@ -756,7 +797,12 @@ export default function TripDetailPage({ params }) {
                   <h3 className="text-lg font-semibold text-gray-700 mb-1">اقصي عدد للافراد</h3>
                   <p className="text-gray-600">{tripData.max_clients}</p>
                 </div>
-                
+
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700 mb-1">مكان الانطلاق</h3>
+                  <p className="text-gray-600">{tripData.depature_city.name}</p>
+                </div>
+
                 <div>
                   <h3 className="text-lg font-semibold text-gray-700 mb-1">نوع التوافر</h3>
                   <p className="text-gray-600 capitalize">
@@ -779,6 +825,11 @@ export default function TripDetailPage({ params }) {
                     </p>
                   </div>
                 )}
+                
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700 mb-1">وجهة الرحلة</h3>
+                  <p className="text-gray-600">{tripData.dest_city.name}</p>
+                </div>
                 
                 {["daily", "weekly"].includes(tripData.availability_type) && (
                   <div>

@@ -1,19 +1,20 @@
-import GalleryViewer from "@/components/Templates/Main/GalleryViewer";
-import MainBookingCard from "@/components/Templates/Main/MainBookingCard";
-import MainFooter from "@/components/Templates/Main/MainFooter";
-import MainHero from "@/components/Templates/Main/MainHero";
+"use client"
+
 import MainLayout from "@/components/Templates/Main/MainLayout";
 import MainNavbar from "@/components/Templates/Main/MainNavbar";
-import MainTrip from "@/components/Templates/Main/MainTrip";
-import MainTripCard from "@/components/Templates/Main/MainTripCard";
-import MainTripDetails from "@/components/Templates/Main/MainTripDetails";
-import { Images } from "lucide-react";
-import Image from "next/image";
+import CityChooser from "@/components/Trips/CityChooser";
+import ProfileAbout from "@/components/website/ProfileAbout";
+import ProfileCard from "@/components/website/ProfileCard";
+import RateShow from "@/components/website/RateShow";
+import StarsRates from "@/components/website/StarsRates";
+
+
 
 export default function Home() {
   return (
-    <div className="">
+    <MainLayout>
+        <MainNavbar/>
         
-    </div>
+    </MainLayout>
   );
 }

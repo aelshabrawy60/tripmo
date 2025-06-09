@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star } from 'lucide-react';
+import StarsRates from '@/components/website/StarsRates';
 
 function CommentCard({ commentData }) {
   // Function to render the rating stars
@@ -27,7 +28,7 @@ function CommentCard({ commentData }) {
       <div className="flex justify-between items-start mb-3">
         <div>
           <h3 className="font-bold text-gray-800 text-lg mb-2">{commentData.sender_name}</h3>
-          {renderRating(commentData.value)}
+          <StarsRates rate={commentData.value} />
         </div>
       </div>
       
