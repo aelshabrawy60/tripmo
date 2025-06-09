@@ -209,9 +209,12 @@ const AddBookingClient = ({
     
     try {
       // Create a copy of form data to modify
+      const offset = -new Date().getTimezoneOffset() / 60
+
       const submitData = {
         ...formData,
         tripId: formData.tripData.id,
+        offset: offset,
       };
       
       // Check if we need to register a new player first

@@ -1,13 +1,7 @@
-// app/trip/[tripId]/page.js (or wherever your route lives)
-import { Templates } from "@/components/Templates/Templates";
-import { fetchSiteData } from "@/utils/sites/sites";
+
 
 // Import all possible components statically
 import MainTripPage from "@/components/Templates/Main/MainTripPage";
-
-const componentMap = {
-  MainTripPage,
-};
 
 async function fetchTripData(tripId) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/client/trips?id=${tripId}`, {
@@ -22,7 +16,7 @@ async function fetchTripData(tripId) {
 }
 
 export default async function Page({ params }) {
-  const { id ,tripId } = params;
+  const {tripId} = params;
 
   let tripData;
   try {
