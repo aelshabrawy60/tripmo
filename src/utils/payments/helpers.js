@@ -13,7 +13,8 @@ export async function createDeposit(groupId, tripId, bookId, amount, url, paymen
         status: status,
         url: url,
         payment_id: paymentId,
-        type: type
+        type: type,
+        host_status: "pending"
     }])
 
     if(error){
@@ -44,4 +45,50 @@ export async function confirmDeposit(bookId) {
     }
 
     return { depositData, bookingData };
+}
+
+
+
+export async function AddRefund(bookId, status, amount){
+    const { data, error } = await supabaseAdmin.from("refunds").insert([{
+        book_id: bookId,
+        amount: amount,
+        status: status
+    }]);
+
+    if(status == "SUCCESS"){
+        const {data, error} = await supabaseAdmin
+            .from("deposits")
+            .update({host_status: "refunded"})
+            .eq("book_id", bookId)
+
+        if(error){
+            console.error("Error adding refund:", error);
+            console.log("error", error)
+            return null;
+        }
+    }
+
+    if (error) {
+        console.error("Error adding refund:", error);
+        console.log("error", error)
+        return null;
+    }
+
+    return true;
+}
+
+
+export async function fetchPaymentId(bookId){
+    const {data,error} = await supabaseAdmin
+        .from("deposits")
+        .select("payment_id")
+        .eq("book_id", bookId)
+        .single()
+
+    
+    if(error){
+        console.log("error")
+    }
+    return data
 }

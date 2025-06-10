@@ -4,13 +4,17 @@ import { Phone, User, Calendar, Users, ArrowRight, X } from 'lucide-react';
 
 function BookingFormWithModal({ tripId, date, numberOfSeats, onSuccess }) {
   // Form state
+  const offset = -new Date().getTimezoneOffset() / 60
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     numberOfSeats: numberOfSeats,
     // Fix: Check if date is a Date object before calling toISOString
     date: date instanceof Date ? date.toISOString().split('T')[0] : date,
-    tripId: tripId
+    tripId: tripId,
+    offset: offset
+
   });
   
   // UI states
@@ -21,11 +25,14 @@ function BookingFormWithModal({ tripId, date, numberOfSeats, onSuccess }) {
   
   // Update formData when props change
   useEffect(() => {
+    const offset = -new Date().getTimezoneOffset() / 60
+
     setFormData(prevData => ({
       ...prevData,
       numberOfSeats: numberOfSeats,
       date: date instanceof Date ? date.toISOString().split('T')[0] : date,
-      tripId: tripId
+      tripId: tripId,
+      offset: offset
     }));
   }, [date, numberOfSeats, tripId]);
 

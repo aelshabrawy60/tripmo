@@ -1,9 +1,12 @@
 import React from 'react';
 import { PaymentRedirectFlow } from '../../utils/payments/payments';
 import { confirmDeposit } from '@/utils/payments/helpers';
-import { fetchPaymentsOptions } from "@/utils/group/group";
 import { supabaseAdmin } from '@/utils/supabase/service';
 import { Check, Calendar, Users, Phone, CreditCard, Info, MapPin } from 'lucide-react';
+import { paymentGateawayConfig } from '../../utils/payments/payments';
+import CancelBookClient from '@/components/Bookings/CancelBookClient';
+import CanceldOrder from '@/components/Bookings/CanceldOrder';
+import AddComment from '@/components/Templates/Main/AddComment';
 
 // Fetch booking data from Supabase
 async function fetchBookingData(id) {
@@ -23,9 +26,26 @@ async function fetchTripData(id) {
 }
 
 
+async function isBookRated(bookId) {
+  const {data, error} = await supabaseAdmin.from("ratings").select('*').eq("book_id", bookId)
+
+  if(error){
+    console.log(error)
+    return true
+  }
+
+  if(data.length > 0){
+    return true
+  }
+
+  return false
+} 
+
 // Receipt component for confirmed bookings
-const ConfirmationReceipt = ({ bookingData, tripData }) => {
+const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
   // Format date nicely
+
+
   const formatDate = (dateString) => {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('ar-EG', options);
@@ -46,6 +66,20 @@ const ConfirmationReceipt = ({ bookingData, tripData }) => {
             تمت عملية الدفع بنجاح وتم تأكيد حجزك
           </p>
         </div>
+
+        {
+          /*rateing */
+        }
+
+        {
+          !isBookRated ? 
+          <div className="p-6 text-center">
+            <AddComment tripId={bookingData.bookable_id} senderName={bookingData.client_name} groupId={bookingData.group_id} bookId={bookingData.id} bookData={bookingData}/>
+          </div>
+          :
+          null
+        }
+        
 
         {/* Trip details */}
         <div className="p-6 border-b border-gray-200">
@@ -109,6 +143,11 @@ const ConfirmationReceipt = ({ bookingData, tripData }) => {
             </div>
           </div>
         </div>
+
+        {/* cancel booking */}
+        <div className="p-6 text-center">
+          <CancelBookClient bookId={bookingData.id} bookData={bookingData}/>
+        </div>
       </div>
     </div>
   );
@@ -145,7 +184,6 @@ export default async function Page({ searchParams }) {
       const bookId = await fetchBookId(paymentId)
       const bookingData = await fetchBookingData(bookId);
       const tripData = await fetchTripData(bookingData.bookable_id);
-      
       return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} />;
     }
     return <ErrorDisplay message="المعلمات المطلوبة مفقودة" />;
@@ -160,18 +198,23 @@ export default async function Page({ searchParams }) {
     // Fetch booking and trip data
     const bookingData = await fetchBookingData(merchantOrderId);
     const tripData = await fetchTripData(bookingData.bookable_id);
-    
+    const isBookRated_ = await isBookRated(bookingData.id);
+
     const groupId = bookingData.group_id;
+    const paymentConfig = paymentGateawayConfig; // Use the default payment gateway config
+    //const paymentConfig = await fetchPaymentsOptions(groupId);
     
-    const paymentConfig = await fetchPaymentsOptions(groupId);
     const paymentService = new PaymentRedirectFlow(paymentConfig);
 
     const verf = await paymentService.verifyPaymentReturn(paymentConfig.name, searchParams);
 
+    if(bookingData.status == "canceled"){
+      return <CanceldOrder bookingData={bookingData} tripData={tripData}/>
+    }
     // If successful, confirm the deposit
     if (verf.success) {
       await confirmDeposit(merchantOrderId);
-      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} />;
+      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_} />;
     } else {
       // Payment verification failed
       return <ErrorDisplay message="فشل التحقق من الدفع. يرجى الاتصال بخدمة العملاء." />;

@@ -1,6 +1,17 @@
-import {createDeposit} from './helpers'
+import {createDeposit, AddRefund, fetchPaymentId} from './helpers'
 
 const KashierRedirect = require('./kashier');
+
+const paymentGateawayConfig = {
+  name: "kashier",
+  type: "auto",
+  key_1: "MID-34194-211",
+  key_2: "31978aa5-1378-464a-b34f-6bb4653ba2ec",
+  key_3: "be73f1e6187aee67e47f5aa2eab6f6c6$a88c240bebf4b5802b26759dcb552125cea354a93c52ccf1f91e02106587cb3537ce8f60738d50d6bb9248e996423a94",
+  status: "active",
+  mode: "test"
+}
+
 
 class PaymentRedirectFlow {
   constructor(config) {
@@ -53,6 +64,16 @@ class PaymentRedirectFlow {
 
     return await this.gateways[gatewayName].getStatusPayment(paymentId)
   }
+
+  async createRefund(gatewayName, paymentId, amount = null) {
+    // Check if the requested gateway exists
+    if (!this.gateways[gatewayName]) {
+      throw new Error(`Gateway ${gatewayName} not configured`);
+    }
+
+    return await this.gateways[gatewayName].createRefund(paymentId, amount);
+  }
+
 }
 
 
@@ -69,7 +90,7 @@ class PaymentRedirectFlow {
  * @param {String} type - The type of payment (unused currently)
  * @returns {Object} - The redirect information
  */
-async function initDepositPayment(bookData, type, gatewayConfig) {
+async function initDepositPayment(bookData, gatewayConfig = paymentGateawayConfig) {
   // Ensure bookData has all required fields
   if (!bookData || !bookData.id || !bookData.deposite_price) {
     throw new Error("Invalid booking data. Missing required fields.");
@@ -89,8 +110,8 @@ async function initDepositPayment(bookData, type, gatewayConfig) {
     
   try {
     const paymentService = new PaymentRedirectFlow(gatewayConfig);
-    const redirectData = await paymentService.createRedirect(type, paymentData);
-    const deposit = await createDeposit(bookData.group_id, bookData.bookable_id, bookData.id, bookData.deposite_price, redirectData.redirectUrl, redirectData.paymentId, type)
+    const redirectData = await paymentService.createRedirect(gatewayConfig.name, paymentData);
+    const deposit = await createDeposit(bookData.group_id, bookData.bookable_id, bookData.id, bookData.deposite_price, redirectData.redirectUrl, redirectData.paymentId, gatewayConfig.name)
 
     return redirectData;
   } catch (error) {
@@ -107,6 +128,18 @@ async function initManualDepositPayment(bookData) {
   return paymentId
 }
 
+async function initRefund(bookId, amount = null, gatewayConfig = paymentGateawayConfig) {
+  const paymentService = new PaymentRedirectFlow(gatewayConfig);
+  const refundData = await paymentService.createRefund(gatewayConfig.name, bookId, amount);
+
+  const refund = await AddRefund(bookId, refundData.status, amount);
+  
+  if (!refund) {
+    throw new Error("Failed to create refund record");
+  }
+  return refundData;
+}
+
 function generatePaymentId(phone, bookId) {
   const timestamp = Date.now(); // Current timestamp
   const uniqueString = `${phone}-${bookId.toString()}-${timestamp}`;
@@ -118,5 +151,7 @@ function generatePaymentId(phone, bookId) {
 module.exports = {
   PaymentRedirectFlow,
   initDepositPayment,
-  initManualDepositPayment
+  initManualDepositPayment,
+  initRefund,
+  paymentGateawayConfig,
 };

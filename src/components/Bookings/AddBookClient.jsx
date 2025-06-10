@@ -169,7 +169,6 @@ const AddBookingClient = ({
         window.location.href = response.data.redirectUrl
       }
 
-      const offset = -new Date().getTimezoneOffset() / 60
       console.log("offset", offset)
       if (response.status === 200) {
         setIsModalOpen(false);
@@ -180,7 +179,6 @@ const AddBookingClient = ({
           numberOfSeats: 1,
           date: initialData?.date? initialData.date : initialData?.tripData?.availability_type == "fixed" ? initialData?.tripData?.available_day : '',
           tripData: initialData?.tripData || {},
-          offset: offset
         });
         
         // Call success callback if provided

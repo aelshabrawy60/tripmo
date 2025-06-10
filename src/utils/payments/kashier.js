@@ -3,13 +3,14 @@ const crypto = require('crypto');
 class KashierRedirect {
   constructor(config) {
     this.successUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/booking`;
-    this.cancelUrl = "https://www.syncsystem.site/platform/tabels";
+    this.cancelUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentStatus=cancelled`;
     this.merchantId = config.key_1;
     this.apiKey = config.key_2;
     this.secretKey = config.key_3;
     this.mode = config.mode || "test";
     this.kashierCreateApi = this.mode == "test" ? "https://test-api.kashier.io/v3/payment/sessions" : "https://api.kashier.io/v3/payment/sessions"
     this.kashierGetApi = this.mode == "test" ? "https://test-api.kashier.io/v3" : "https://api.kashier.io/v3"
+    this.kashierCreateRefund = this.mode == "test" ? "https://test-fep.kashier.io/v3" : "https://fep.kashier.io/v3"
   }
 
   generateKashierOrderHash(order) {
@@ -128,6 +129,71 @@ class KashierRedirect {
     }
 
     return false
+  }
+
+  async createRefund(paymentId, amount = null) {
+    const orderId = paymentId;
+    let reason = "Refund requested by customer";
+
+    try {
+      // Validate required parameters
+      if (!orderId) {
+        throw new Error('Order ID is required');
+      }
+
+      if (!this.secretKey) {
+        throw new Error('Secret key is required');
+      }
+
+      // Prepare request body
+      const requestBody = {
+        apiOperation: 'REFUND',
+        reason: reason
+      };
+
+      // Add amount for partial refunds
+      if (amount !== null) {
+        if (amount <= 0) {
+          throw new Error('Refund amount must be greater than 0');
+        }
+        requestBody.transaction = { amount: amount };
+      }
+
+      // Prepare request options
+      const requestOptions = {
+        method: 'PUT',
+        headers: {
+          'Authorization': this.secretKey,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      };
+
+      // Make API request
+      const response = await fetch(`${this.kashierCreateRefund}/orders/${orderId}`, requestOptions);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      
+      return {
+        success: true,
+        data: data,
+        status: data.status,
+        message: data.messages
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        data: null
+      };
+    }
   }
 }
 
