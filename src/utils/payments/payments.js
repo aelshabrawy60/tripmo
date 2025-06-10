@@ -111,7 +111,7 @@ async function initDepositPayment(bookData, gatewayConfig = paymentGateawayConfi
   try {
     const paymentService = new PaymentRedirectFlow(gatewayConfig);
     const redirectData = await paymentService.createRedirect(gatewayConfig.name, paymentData);
-    const deposit = await createDeposit(bookData.group_id, bookData.bookable_id, bookData.id, bookData.deposite_price, redirectData.redirectUrl, redirectData.paymentId, gatewayConfig.name)
+    const deposit = await createDeposit(bookData.group_id, bookData.bookable_id, bookData.id, bookData.deposite_price, redirectData.redirectUrl, redirectData.paymentId, gatewayConfig.name, bookData.total_price)
 
     return redirectData;
   } catch (error) {

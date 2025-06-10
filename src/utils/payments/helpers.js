@@ -1,7 +1,12 @@
 import { supabaseAdmin } from "../supabase/service";
 
 
-export async function createDeposit(groupId, tripId, bookId, amount, url, paymentId , type) {
+export function calculateNetAmount(amount, total_price){
+    return amount - (total_price * 0.2)
+}
+
+
+export async function createDeposit(groupId, tripId, bookId, amount, url, paymentId , type, total_price= null) {
 
     const status = amount > 0 ? "pending": "confirmed"
 
@@ -14,7 +19,8 @@ export async function createDeposit(groupId, tripId, bookId, amount, url, paymen
         url: url,
         payment_id: paymentId,
         type: type,
-        host_status: "pending"
+        host_status: "pending",
+        net_amount: calculateNetAmount(amount, total_price)
     }])
 
     if(error){

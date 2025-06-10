@@ -1,6 +1,7 @@
 import { addBooking, checkBookingAvailability, getBookingPrice, cancelBooking, canBookRefunded } from "@/utils/booking_engine/booking_engine";
 import { initDepositPayment, initManualDepositPayment, initRefund } from "@/utils/payments/payments";
 import { NextResponse } from "next/server";
+import { supabaseAdmin } from "@/utils/supabase/service";
 
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset } = await request.json();
@@ -77,6 +78,8 @@ export async function DELETE(request){
         if (canRefund) {
             // If the booking can be refunded, initiate the refund process
             await initRefund(bookingId);
+        }else{
+            await removeFees(bookingId);
         }
         // If the booking cancellation was successful
         if (result.success) {
@@ -88,4 +91,37 @@ export async function DELETE(request){
         console.error("Error in cancelling booking:", error);
         return NextResponse.json({ success: false, message: "Unexpected error occurred while cancelling booking." }, { status: 500 });
     }
+}
+
+
+async function removeFees(bookId) {
+    // First, get the current amount values
+    const {data: deposits, error: fetchError} = await supabaseAdmin
+        .from("deposits")
+        .select("id, amount")
+        .eq("book_id", bookId)
+    
+    if (fetchError) {
+        console.error('Error fetching deposits:', fetchError)
+        throw fetchError
+    }
+    
+    // Update each deposit to set net_amount = amount
+    const updates = deposits.map(deposit => 
+        supabaseAdmin
+            .from("deposits")
+            .update({net_amount: deposit.amount})
+            .eq("id", deposit.id)
+    )
+    
+    const results = await Promise.all(updates)
+    
+    // Check for errors in any of the updates
+    const errors = results.filter(result => result.error)
+    if (errors.length > 0) {
+        console.error('Error updating deposits:', errors)
+        throw new Error('Failed to update some deposits')
+    }
+    
+    return results.map(result => result.data).flat()
 }
