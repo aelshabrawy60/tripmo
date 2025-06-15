@@ -74,6 +74,15 @@ class PaymentRedirectFlow {
     return await this.gateways[gatewayName].createRefund(paymentId, amount);
   }
 
+  async payout(gatewayName, payoutData){
+    // Check if the requested gateway exists
+    if (!this.gateways[gatewayName]) {
+      throw new Error(`Gateway ${gatewayName} not configured`);
+    }
+
+    return await this.gateways[gatewayName].payout(payoutData);
+  }
+
 }
 
 
@@ -140,6 +149,13 @@ async function initRefund(bookId, amount = null, gatewayConfig = paymentGateaway
   return refundData;
 }
 
+async function initPayout(payoutData, gatewayConfig = paymentGateawayConfig) {
+  const paymentService = new PaymentRedirectFlow(gatewayConfig);
+  const payoutData_ = paymentService.payout(gatewayConfig.name, payoutData)
+
+  return payoutData_
+}
+
 function generatePaymentId(phone, bookId) {
   const timestamp = Date.now(); // Current timestamp
   const uniqueString = `${phone}-${bookId.toString()}-${timestamp}`;
@@ -153,5 +169,6 @@ module.exports = {
   initDepositPayment,
   initManualDepositPayment,
   initRefund,
+  initPayout,
   paymentGateawayConfig,
 };

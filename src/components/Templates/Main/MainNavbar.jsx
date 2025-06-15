@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 
-function MainNavbar({ pages, logo, theme = "#3B82F6" }) {
+function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6" }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -15,7 +15,7 @@ function MainNavbar({ pages, logo, theme = "#3B82F6" }) {
           <Link href={'/'} className="flex items-center">
             <div className="flex-shrink-0">
               {logo ? (
-                <img className="h-10 w-auto" src={logo} alt="شعار الموقع" />
+                <img className="h-14 w-auto" src={logo} alt="شعار الموقع" />
               ) : (
                 <div className="text-xl font-bold" style={{ color: theme }}>شعاري</div>
               )}

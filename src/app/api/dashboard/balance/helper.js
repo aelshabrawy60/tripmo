@@ -35,3 +35,19 @@ export async function calculateAvalBalance(groupId) {
     const total = data.reduce((sum, deposit) => sum + (deposit.net_amount || 0), 0);
     return total;
 }
+
+export async function resetBalance(groupId) {
+    const {data, error} = await supabaseAdmin
+        .from("deposits")
+        .update({host_status: "processing"})
+        .eq("group_id", groupId)
+        .eq("host_status", "aval")
+        .eq("status", "confirmed")
+        .select("*");
+
+    if(error){
+        console.log(error)
+    }
+
+    return data
+}

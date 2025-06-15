@@ -11,6 +11,7 @@ class KashierRedirect {
     this.kashierCreateApi = this.mode == "test" ? "https://test-api.kashier.io/v3/payment/sessions" : "https://api.kashier.io/v3/payment/sessions"
     this.kashierGetApi = this.mode == "test" ? "https://test-api.kashier.io/v3" : "https://api.kashier.io/v3"
     this.kashierCreateRefund = this.mode == "test" ? "https://test-fep.kashier.io/v3" : "https://fep.kashier.io/v3"
+    this.kashierPayout = this.mode == "test" ? "https://test-fep.kashier.io/v3/transfers/single" : "https://fep.kashier.io/v3/transfers/single"
   }
 
   generateKashierOrderHash(order) {
@@ -195,6 +196,45 @@ class KashierRedirect {
       };
     }
   }
+
+  async payout(payoutData) {
+
+    const merchant_id = payoutData.merchantTransferId + "_merchant"
+
+    console.log("merchant_id", merchant_id)
+
+    try {
+      const response = await fetch(this.kashierPayout, {
+        method: 'POST',
+        headers: {
+          'Authorization': this.secretKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: payoutData.amount,
+          method: payoutData.method, // "wallet", "bank", "card", or "instant wallet"
+          recipientName: payoutData.recipientName,
+          merchantTransferId: merchant_id,
+          recipientBank: payoutData.recipientBank,
+          recipientNumber: payoutData.recipientNumber
+        })
+      });
+
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Transfer failed: ${errorData.messages?.en || 'Unknown error'}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('Error during payout:', error.message);
+      throw error;
+    }
+  }
+
 }
 
 module.exports = KashierRedirect;

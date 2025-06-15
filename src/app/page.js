@@ -7,13 +7,14 @@ import ProfileAbout from "@/components/website/ProfileAbout";
 import ProfileCard from "@/components/website/ProfileCard";
 import RateShow from "@/components/website/RateShow";
 import StarsRates from "@/components/website/StarsRates";
+import WithdrawMethodsManager from "@/components/Withdraw/WithdrawManager";
 
 
 
 export default function Home() {
   return (
     <MainLayout>
-        <MainNavbar/>
+        <WithdrawMethodsManager groupId={1}/>
         
     </MainLayout>
   );
