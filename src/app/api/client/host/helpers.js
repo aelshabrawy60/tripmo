@@ -12,8 +12,10 @@ export async function getHostData(id) {
     if (error) {
       throw new Error(`Error fetching host data: ${error.message}`);
     }
+
+    console.log("Data", data)
     
-    data.group.rating_avg = Number(data.group.rating_avg.toFixed(1))
+    data.group.rating_avg = Number(data.group.rating_avg?.toFixed(1))
     return data;
   } catch (error) {
     console.error('Error in getHostDataOptimized:', error);

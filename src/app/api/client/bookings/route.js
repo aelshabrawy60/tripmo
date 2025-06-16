@@ -2,12 +2,14 @@ import { addBooking, checkBookingAvailability, getBookingPrice, cancelBooking, c
 import { initDepositPayment, initManualDepositPayment, initRefund } from "@/utils/payments/payments";
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
+import { getTrip } from "../../dashboard/trips/helpers";
 
 export async function POST(request) {
-    const { name, tripId, date, phone, numberOfSeats, offset } = await request.json();
+    const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();
 
+    //
     try {
-        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user", offset);
+        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user", offset, client_id);
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
@@ -46,15 +48,24 @@ export async function GET(request) {
     const tripId = searchParams.get("tripId");
     const date = searchParams.get("date");
     const numberOfSeats = searchParams.get("numberOfSeats");
+    const fetchTrip = searchParams.get("getTrip");
 
     try {
+
+        let tripData = null
+
+        if(fetchTrip == 'true'){
+            tripData = await getTrip(tripId)
+            console.log("data", tripData)
+        }
+
         const result = await checkBookingAvailability(tripId, date, numberOfSeats);
 
         // calc trip price
 
         const price = await getBookingPrice(tripId, date, numberOfSeats)
         return NextResponse.json(result.success
-            ? { success: true , pricing: price}
+            ? { success: true , pricing: price, tripData: tripData}
             : { success: false, message: result.message, pricing: price }, 
             { status: result.success ? 200 : 400 }
         );

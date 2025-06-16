@@ -6,7 +6,7 @@ function StarsRates({rate}) {
   const partialStarPercentage = (rate % 1) * 100;
 
   return (
-    <div dir='ltr'>
+    <div dir='ltr' className='w-fit'>
       <div className="flex items-center">
         <span className="text-tripmo-500 flex gap-1">
           {Array.from({ length: 5 }, (_, index) => {

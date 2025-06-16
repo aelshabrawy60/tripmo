@@ -86,7 +86,7 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, Trip
 }
 
 
-export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, timeZone = 0) {   
+export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, timeZone = 0, client_id = null) {   
     const TripData = await fetchTripData(tripId);
     
     const availability = await checkBookingAvailability(tripId, date, numberOfSeats, TripData);
@@ -118,6 +118,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
             deposite_price: deposit,
             can_canceled_until: cancel_deadline,
             status: deposit > 0 && user_role != "admin" ? "pending" : "active",
+            client_id: client_id
         }])
         .select('*')
         .single();

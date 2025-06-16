@@ -3,7 +3,7 @@ import DateChooser from '@/components/Bookings/DateChooser'
 import PersonsNumChooser from '@/components/Bookings/PersonsNumChooser'
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Calendar, Users, Check, X, Loader } from 'lucide-react'
+import { Calendar, Users, Check, X, Loader, ArrowRight } from 'lucide-react'
 import BookingFormWithModal from './MainBookForm'
 import Loading from '@/components/Loading'
 
@@ -121,7 +121,14 @@ function MainBookingCard({ tripData }) {
         )}
         
         {/* Booking Button */}
-        <BookingFormWithModal tripId={tripData.id} date={selectedDate} numberOfSeats={selectedSeatsNum}/>
+        <a
+          href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum}`}
+          className="bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2"
+        >
+          حجز الآن
+          <ArrowRight size={18} />
+        </a>
+        
       </div>
     </div>
   )

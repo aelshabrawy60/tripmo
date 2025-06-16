@@ -120,6 +120,7 @@ function BookingFormWithModal({ tripId, date, numberOfSeats, onSuccess }) {
     }
   };
 
+  //
   // Format date for display
   const formatDateForDisplay = () => {
     if (!formData.date) return '';
@@ -222,6 +223,7 @@ function BookingFormWithModal({ tripId, date, numberOfSeats, onSuccess }) {
                     </div>
                   </div>
                 </div>
+                
                 
                 <button
                   onClick={addBooking}
