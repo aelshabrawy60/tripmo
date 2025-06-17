@@ -52,7 +52,8 @@ export async function withdraw(groupId, withdraw_method_id){
         recipientName: 'John Doe',
         merchantTransferId: record.id,
         recipientBank: withdrawMethod.bank,
-        recipientNumber: withdrawMethod.number
+        recipientNumber: withdrawMethod.number,
+        webhookUrl: 'https://tripmo.vercel.app/api/webhook/withdraws'
     }
     const payout = await initPayout(payoutData)
 
