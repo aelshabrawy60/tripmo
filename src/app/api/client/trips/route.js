@@ -9,11 +9,17 @@ export async function GET(request) {
   try {
     const url = new URL(request.url);
     const tripId = url.searchParams.get("id");
+    const tripSlug = url.searchParams.get("slug")
     const groupId = url.searchParams.get("groupId");
     const departureCity = url.searchParams.get("depature_city");
     const destCity = url.searchParams.get("dest_city");
     const query = url.searchParams.get("q");
 
+
+    if(tripSlug){
+      const trip = await getTrip(tripSlug, true);
+      return NextResponse.json(trip);
+    }
     // If tripId is provided, get the specific trip
     if (tripId) {
       const trip = await getTrip(tripId);

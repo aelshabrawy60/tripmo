@@ -28,3 +28,72 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
         throw error;
     }
 }
+
+
+export async function TrendingDestinations() {
+    const {data, error} = await supabaseAdmin
+        .from("cities")
+        .select("*")
+        .limit(5)
+
+    if(error){
+        console.log(error)
+        return null
+    }
+
+    return data
+}
+
+
+export async function popularTrips() {
+  // Fetch top 100 trips by score
+  const { data, error } = await supabaseAdmin
+    .from("trips")
+    .select(`
+      *,
+      dest:dest_city (name),
+      depature:depature_city (name)
+    `)
+    .order("score", { ascending: false })
+    .limit(100);
+
+  if (error) {
+    console.error("Error fetching top trips:", error);
+    return {};
+  }
+
+  if (!data || data.length === 0) {
+    return { top: [], categories: [] };
+  }
+
+  // Get top 20 trips
+  const top20 = data.slice(0, 20);
+  
+  // Get remaining 80 trips for categorization
+  const remaining80 = data.slice(20);
+  
+  // Group remaining trips by destination city
+  const cityGroups = {};
+  
+  remaining80.forEach(trip => {
+    const cityName = trip.dest?.name || `Unknown City`;
+    
+    if (!cityGroups[cityName]) {
+      cityGroups[cityName] = [];
+    }
+    cityGroups[cityName].push(trip);
+  });
+  
+  // Filter out categories with less than 5 elements and format the result
+  const categories = Object.entries(cityGroups)
+    .filter(([city, trips]) => trips.length >= 5)
+    .map(([city, trips]) => ({
+      city: city,
+      trips: trips
+    }));
+  
+  return {
+    top: top20,
+    categories: categories
+  };
+}

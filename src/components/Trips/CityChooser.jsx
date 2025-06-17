@@ -5,6 +5,7 @@ import React, {
   forwardRef,
   useImperativeHandle
 } from 'react'
+import { createPortal } from 'react-dom'
 
 const citiesApi = '/api/cities'
 
@@ -15,6 +16,7 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
   const [filteredCities, setFilteredCities] = useState([])
   const [showDropdown, setShowDropdown] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
   const inputRef = useRef(null)
   const dropdownRef = useRef(null)
 
@@ -33,6 +35,18 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
       .catch(error => {
         console.error('Error fetching cities:', error)
       })
+  }
+
+  // Calculate dropdown position
+  const updateDropdownPosition = () => {
+    if (inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect()
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY + 4, // 4px margin
+        left: rect.left + window.scrollX,
+        width: rect.width
+      })
+    }
   }
 
   useEffect(() => {
@@ -59,9 +73,37 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
     ).slice(0, 10)
 
     setFilteredCities(filtered)
-    setShowDropdown(filtered.length > 0)
+    if (filtered.length > 0) {
+      updateDropdownPosition()
+      setShowDropdown(true)
+    } else {
+      setShowDropdown(false)
+    }
     setHighlightedIndex(-1)
   }, [inputValue, cities])
+
+  // Update position on window resize/scroll
+  useEffect(() => {
+    const handleResize = () => {
+      if (showDropdown) {
+        updateDropdownPosition()
+      }
+    }
+
+    const handleScroll = () => {
+      if (showDropdown) {
+        updateDropdownPosition()
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('scroll', handleScroll, true)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('scroll', handleScroll, true)
+    }
+  }, [showDropdown])
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
@@ -108,6 +150,7 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
 
   const handleInputFocus = () => {
     if (filteredCities.length > 0) {
+      updateDropdownPosition()
       setShowDropdown(true)
     }
   }
@@ -121,6 +164,64 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
     }, 200)
   }
 
+  // Handle clicks outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target)
+      ) {
+        setShowDropdown(false)
+        setHighlightedIndex(-1)
+      }
+    }
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showDropdown])
+
+  const dropdownContent = showDropdown && (
+    <div
+      ref={dropdownRef}
+      style={{
+        position: 'absolute',
+        top: dropdownPosition.top,
+        left: dropdownPosition.left,
+        width: dropdownPosition.width,
+        zIndex: 99999
+      }}
+      className="bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+    >
+      {filteredCities.length > 0 ? (
+        filteredCities.map((city, index) => (
+          <div
+            key={city.id}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => handleCitySelect(city)}
+            className={`px-4 py-3 cursor-pointer transition-colors duration-150 ${
+              index === highlightedIndex
+                ? 'bg-blue-100 text-blue-900'
+                : 'hover:bg-gray-100'
+            } ${index === 0 ? 'rounded-t-lg' : ''} ${
+              index === filteredCities.length - 1 ? 'rounded-b-lg' : 'border-b border-gray-100'
+            }`}
+          >
+            <div className="font-medium text-gray-900">{city.name}</div>
+            <div className="text-sm text-gray-500">{city.country}</div>
+          </div>
+        ))
+      ) : (
+        <div className="px-4 py-3 text-gray-500 text-center">
+          No cities found
+        </div>
+      )}
+    </div>
+  )
+
   return (
     <div className="relative w-full">
       <div className="relative">
@@ -133,7 +234,7 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           placeholder={placeholder}
-          className="w-full rounded-lg focus:outline-none  focus:border-transparent"
+          className="w-full rounded-lg focus:outline-none focus:border-transparent"
         />
         {selectedCity && (
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -144,35 +245,10 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
         )}
       </div>
 
-      {showDropdown && (
-        <div
-          ref={dropdownRef}
-          className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
-        >
-          {filteredCities.length > 0 ? (
-            filteredCities.map((city, index) => (
-              <div
-                key={city.id}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => handleCitySelect(city)}
-                className={`px-4 py-3 cursor-pointer transition-colors duration-150 ${
-                  index === highlightedIndex
-                    ? 'bg-blue-100 text-blue-900'
-                    : 'hover:bg-gray-100'
-                } ${index === 0 ? 'rounded-t-lg' : ''} ${
-                  index === filteredCities.length - 1 ? 'rounded-b-lg' : 'border-b border-gray-100'
-                }`}
-              >
-                <div className="font-medium text-gray-900">{city.name}</div>
-                <div className="text-sm text-gray-500">{city.country}</div>
-              </div>
-            ))
-          ) : (
-            <div className="px-4 py-3 text-gray-500 text-center">
-              No cities found
-            </div>
-          )}
-        </div>
+      {/* Render dropdown using portal to document.body */}
+      {typeof window !== 'undefined' && dropdownContent && createPortal(
+        dropdownContent,
+        document.body
       )}
     </div>
   )

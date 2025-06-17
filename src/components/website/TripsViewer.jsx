@@ -1,14 +1,12 @@
 import React from 'react'
 import MainTripCard from '../Templates/Main/MainTripCard'
+import NoTripsFound from './NoTripsFound'
 
 function TripsViewer({ trips }) {
   // Handle empty or loading state
   if (!trips || trips.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 px-4">
-        <div className="text-gray-500 text-lg mb-2">No trips found</div>
-        <div className="text-gray-400 text-sm">Start planning your next adventure!</div>
-      </div>
+      <NoTripsFound/>
     )
   }
 

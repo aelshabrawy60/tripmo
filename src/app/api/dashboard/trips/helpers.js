@@ -1,18 +1,66 @@
 import { supabaseAdmin } from "@/utils/supabase/service";
 
+function fallbackArabicSlug(text) {
+  if (!text) return '';
+  
+  return text.toString()
+    .trim()
+    .replace(/[\u064B-\u0652\u0670\u0640]/g, '') // Remove Arabic diacritics
+    .replace(/\s+/g, '-')                         // Replace spaces with hyphens
+    .replace(/[^\w\u0600-\u06FF-]/g, '-')        // Replace special chars, keep Arabic
+    .replace(/-+/g, '-')                          // Remove duplicate hyphens
+    .replace(/^-+|-+$/g, '');                    // Trim hyphens from start/end
+}
+
+async function generateSlug(title) {
+  console.log("Input title:", title);
+  
+  if (!title) {
+    console.log("No title provided");
+    return '';
+  }
+  
+  
+  let slug;
+  slug = fallbackArabicSlug(title);
+  
+  return slug;
+}
 
 export async function createTrip(trip) {
-  const { data, error } = await supabaseAdmin
+  console.log("Creating trip with data:", trip);
+  
+  // Step 1: Insert the trip (without slug)
+  const { data: createdTrip, error: insertError } = await supabaseAdmin
     .from("trips")
-    .insert([trip])
+    .insert([{ ...trip }])
     .select("*")
     .single();
 
-  if (error) {
-    throw new Error(`Error creating trip: ${error.message}`);
+  if (insertError) {
+    throw new Error(`Error creating trip: ${insertError.message}`);
   }
 
-  return data;
+  console.log("Created trip:", createdTrip);
+
+  // Step 2: Create slug using title + ID
+  const titleSlug = await generateSlug(createdTrip.name);
+  const slug = `${titleSlug}-${createdTrip.id}`;
+
+  console.log("Final slug:", slug);
+
+  // Step 3: Update the trip with the generated slug
+  const { error: updateError } = await supabaseAdmin
+    .from("trips")
+    .update({ slug })
+    .eq("id", createdTrip.id);
+
+  if (updateError) {
+    throw new Error(`Error updating slug: ${updateError.message}`);
+  }
+
+  // Return the updated trip with slug
+  return createdTrip;
 }
 
 export async function deleteTrip(tripId) {
@@ -50,7 +98,7 @@ export async function updateTrip(tripId, updatedTrip) {
   return data;
 }
 
-export async function getTrip(tripId) {
+export async function getTrip(tripId, bySlogan = false) {
   const { data, error } = await supabaseAdmin
     .from("trips")
     .select(`
@@ -59,7 +107,7 @@ export async function getTrip(tripId) {
       depature_city:depature_city (*),
       dest_city:dest_city (*)
     `)
-    .eq("id", tripId)
+    .eq(`${bySlogan? 'slug' : 'id'}`, tripId)
     .single();
 
 

@@ -3,6 +3,7 @@ import { initDepositPayment, initManualDepositPayment, initRefund } from "@/util
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
 import { getTrip } from "../../dashboard/trips/helpers";
+import { updateTripScore } from "@/utils/trips_engine/trips_scoring";
 
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();
@@ -32,6 +33,9 @@ export async function POST(request) {
 
         // deposit with 0$
         const payment = await initManualDepositPayment(result.data)
+        
+
+        const updated = await updateTripScore(tripId)
         
         return NextResponse.json({ success: true, data: result.data, redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${payment}` });
 

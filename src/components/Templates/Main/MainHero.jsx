@@ -4,7 +4,7 @@ import React from 'react'
 
 function MainHero({img, title, subtitle = null}) {
   return (
-    <div className='w-full h-screen relative bg-black max-h-[520px] rounded-2xl lg:rounded-3xl mb-16 sm:mb-20 md:mb-10'>
+    <div className='w-full h-screen relative bg-black max-h-[520px] md:max-h-[320px] rounded-2xl lg:rounded-3xl mb-16 sm:mb-20 md:mb-10'>
         <img src={img} className='w-full h-full object-cover opacity-40 rounded-2xl lg:rounded-3xl'></img>
         
         {/* Hero Content - Adjusted positioning on mobile */}

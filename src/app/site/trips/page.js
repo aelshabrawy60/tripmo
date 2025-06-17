@@ -1,67 +1,62 @@
-"use client"
+'use client'
+
 import TripsViewer from '@/components/website/TripsViewer'
 import React, { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Loading from '@/components/Loading'
 
 function TripsContent() {
-  const [trips, setTrips] = useState()
+  const [trips, setTrips] = useState(null)
+  const [loading, setLoading] = useState(true)
   const searchParams = useSearchParams()
 
-  const departureCity = searchParams.get('departure_city') // Fixed typo
+  const departureCity = searchParams.get('departure_city')
   const destCity = searchParams.get('dest_city')
   const query = searchParams.get('q')
 
-  // Function to fetch trips based on search parameters
   const fetchTrips = async () => {
-    console.log('Fetching trips with:', {
-      departureCity,
-      destCity,
-      query
-    });
+    setLoading(true)
     try {
-      // Build query parameters more cleanly
-      const params = new URLSearchParams();
-      if (departureCity) params.append('departure_city', departureCity);
-      if (destCity) params.append('dest_city', destCity);
-      if (query) params.append('q', query);
-      
-      const response = await fetch(`/api/client/trips?${params.toString()}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setTrips(data);
+      const params = new URLSearchParams()
+      if (departureCity) params.append('departure_city', departureCity)
+      if (destCity) params.append('dest_city', destCity)
+      if (query) params.append('q', query)
 
-      console.log('Fetched trips:', data);
+      const response = await fetch(`/api/client/trips?${params.toString()}`)
+      if (!response.ok) throw new Error('Network response was not ok')
+
+      const data = await response.json()
+      setTrips(data)
     } catch (error) {
-      console.error('Error fetching trips:', error);
-      setTrips(null); // Set to null to indicate error state
+      console.error('Error fetching trips:', error)
+      setTrips(null)
+    } finally {
+      setLoading(false)
     }
   }
 
-  // Fetch trips when the component mounts or when search parameters change
   useEffect(() => {
-    fetchTrips();
-  }, [departureCity, destCity, query]);
+    fetchTrips()
+  }, [departureCity, destCity, query])
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loading />
+      </div>
+    )
+  }
 
   return (
     <div>
-      <TripsViewer trips={trips}/>
-    </div>
-  )
-}
-
-function LoadingFallback() {
-  return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      <TripsViewer trips={trips} />
     </div>
   )
 }
 
 function page() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
+    <Suspense fallback={<Loading />}>
       <TripsContent />
     </Suspense>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function StarsRates({rate}) {
+function StarsRates({rate, size = 5}) {
   const fullStars = Math.floor(rate);
   const hasPartialStar = rate % 1 !== 0;
   const partialStarPercentage = (rate % 1) * 100;
@@ -15,7 +15,7 @@ function StarsRates({rate}) {
               return (
                 <svg
                   key={index}
-                  className="w-5 h-5 fill-current"
+                  className={`w-${size} h-${size} fill-current`}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                 >
@@ -25,10 +25,10 @@ function StarsRates({rate}) {
             } else if (index === fullStars && hasPartialStar) {
               // Partial star
               return (
-                <div key={index} className="relative w-5 h-5">
+                <div key={index} className={`relative w-${size} h-${size}`}>
                   {/* Empty star background */}
                   <svg
-                    className="absolute w-5 h-5 text-gray-200 fill-current"
+                    className={`absolute w-${size} h-${size} text-gray-200 fill-current`}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                   >
@@ -40,7 +40,7 @@ function StarsRates({rate}) {
                     style={{ width: `${partialStarPercentage}%` }}
                   >
                     <svg
-                      className="w-5 h-5 text-tripmo-500 fill-current"
+                      className={`w-${size} h-${size} text-tripmo-500 fill-current`}
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                     >
@@ -54,7 +54,7 @@ function StarsRates({rate}) {
               return (
                 <svg
                   key={index}
-                  className="w-5 h-5 text-gray-200 fill-current"
+                  className={`w-${size} h-${size} text-gray-200 fill-current`}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                 >

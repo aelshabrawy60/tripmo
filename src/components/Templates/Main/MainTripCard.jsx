@@ -1,23 +1,23 @@
+import StarsRates from '@/components/website/StarsRates';
 import Link from 'next/link';
 import React from 'react';
 
 function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
   const { 
     name, 
-    about, 
     images, 
     availability_type,
     pricing,
-    rate, // ex 4.3
-    id // For trip ID linking
+    id ,// For trip ID linking
+    slug,
+    rates_sum,
+    rates_count
   } = tripData;
 
   // Get only the first image
   const firstImage = images && images.length > 0 ? images[0] : null;
 
-  // Get a shortened version of the about text (making it shorter for a more compact card)
-  const shortAbout = about ? about.substring(0, 70) + (about.length > 70 ? '...' : '') : '';
-
+  const ratingAverage = rates_sum/ rates_count
   // Format price with commas
   const formattedPrice = pricing ? pricing.PersonPrice.toLocaleString() : '';
 
@@ -47,10 +47,10 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
   };
 
   return (
-    <Link href={`/trips/${id}`} className="block">
+    <Link href={`/site/trips/${slug}`} className="block">
       <div className="max-w-lg rounded-md overflow-hidden transition-all duration-300 m-2 flex flex-col h-full">
         {/* Image container with rounded bottom corners */}
-        <div className="relative h-60 overflow-hidden rounded-b-lg">
+        <div className="relative h-52 overflow-hidden rounded-b-lg">
           {firstImage ? (
             <img 
               src={firstImage} 
@@ -78,14 +78,16 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
         
         {/* Content - more compact padding */}
         <div className="p-3 flex-1 flex flex-col">
-          <div className="flex justify-between items-start">
-            <h2 className="text-lg font-bold text-gray-800 mb-2">{name}</h2>
-            {rate && renderStars(rate)}
+          <div className="flex flex-col justify-between items-start">
+            <h2 className="text-md font-bold text-gray-800 mb-2">{name}</h2>
+            {ratingAverage?  (
+              <div className='flex gap-1 items-center text-gray-600'>
+                <div>{ratingAverage}</div>
+                <StarsRates rate={ratingAverage} size={4}/>
+                <div>{`(${rates_count})`}</div>
+              </div>
+            ): null}
           </div>
-          
-          {shortAbout && (
-            <p className="text-gray-600 text-xs mt-1">{shortAbout}</p>
-          )}
         </div>
       </div>
     </Link>

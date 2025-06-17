@@ -89,9 +89,11 @@ function BookingPage() {
       if (response.ok) {
         setSuccess('تم الحجز بنجاح');
       } else {
+        setRedirecting(false);
         throw new Error(data.message || `خطأ في الحجز: ${response.status}`);
       }
     } catch (err) {
+      setRedirecting(false);
       console.error("Error adding booking:", err);
       setError(err.message || 'فشل في إضافة الحجز. يرجى المحاولة مرة أخرى.');
     } finally {

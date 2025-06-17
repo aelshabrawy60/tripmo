@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
-
+import { updateTripScore } from "@/utils/trips_engine/trips_scoring";
 
 async function isBookRated(bookId) {
   const {data, error} = await supabaseAdmin.from("ratings").select('*').eq("book_id", bookId)
@@ -34,12 +34,16 @@ export async function POST(request) {
 
     try {
         
-        const isBookRated_ = isBookRated(bookId) 
+        const isBookRated_ = await isBookRated(bookId) 
 
+        console.log("isBookRated_", isBookRated_)
         if(isBookRated_){
             return NextResponse.json({success: false, message: "تم تقييم هذه الرحلة من قبل"}, {status: 400})
         }
         const rate = await addRate(tripId, sender_name, value, comment, groupId, bookId)
+
+        const updated = await updateTripScore(tripId, value)
+        
         return NextResponse.json({ success: true });
 
     } catch (error) {

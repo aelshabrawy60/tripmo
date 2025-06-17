@@ -1,3 +1,4 @@
+"use client"
 import React, { useRef, useState } from 'react'
 import { Search, MapPin, ArrowRightLeft } from 'lucide-react';
 import CityChooser from '../Trips/CityChooser';
