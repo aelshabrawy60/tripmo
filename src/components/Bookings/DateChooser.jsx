@@ -9,20 +9,52 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
   // Set language to Arabic with Gregorian calendar
   const [language, setLanguage] = useState('ar');
 
-  useEffect(()=>{
-    if(tripData.availability_type == "fixed"){
-      onDateChange(tripData.available_day)
-    }else{
-      const date = new Date()
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-      const day = String(date.getDate()).padStart(2, '0');
-
-      const localDateString = `${year}-${month}-${day}`;
-      onDateChange(localDateString)
-    }
+  // Helper function to find the nearest available day for weekly type
+  const findNearestWeeklyDay = (availableDays) => {
+    const today = new Date();
+    const todayDayOfWeek = today.getDay();
     
-  }, [])
+    // Sort available days to prioritize closer days
+    const sortedDays = [...availableDays].sort((a, b) => {
+      const diffA = (a - todayDayOfWeek + 7) % 7;
+      const diffB = (b - todayDayOfWeek + 7) % 7;
+      return diffA - diffB;
+    });
+    
+    // Find the nearest day (could be today if it's available)
+    const nearestDayOfWeek = sortedDays[0];
+    const daysToAdd = (nearestDayOfWeek - todayDayOfWeek + 7) % 7;
+    
+    const nearestDate = new Date(today);
+    nearestDate.setDate(today.getDate() + daysToAdd);
+    
+    return nearestDate;
+  };
+
+  useEffect(() => {
+    if (tripData.availability_type == "fixed") {
+      onDateChange(tripData.available_day);
+    } else if (tripData.availability_type == "weekly" && selectedDays.length > 0) {
+      // For weekly type, find the nearest available day
+      const nearestDate = findNearestWeeklyDay(selectedDays);
+      setSelectedDate(nearestDate);
+      
+      const year = nearestDate.getFullYear();
+      const month = String(nearestDate.getMonth() + 1).padStart(2, '0');
+      const day = String(nearestDate.getDate()).padStart(2, '0');
+      const localDateString = `${year}-${month}-${day}`;
+      onDateChange(localDateString);
+    } else {
+      // For daily type or when no weekly days are selected
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const localDateString = `${year}-${month}-${day}`;
+      onDateChange(localDateString);
+    }
+  }, [tripData.availability_type, selectedDays]);
+
   // If trip data changes, update our state
   useEffect(() => {
     if (tripData.weekly_days) {
@@ -33,14 +65,14 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
   // Arabic day names
   const daysOfWeekArabic = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
   const daysOfWeekArabicShort = ["أحد", "اثن", "ثلا", "أرب", "خمي", "جمع", "سبت"];
-  
+
   const formatDate = (date) => {
     if (!date) return "اختر تاريخًا" // "Select a date" in Arabic
     // Use Intl.DateTimeFormat to ensure Gregorian calendar with Arabic locale
-    return new Intl.DateTimeFormat(language, { 
+    return new Intl.DateTimeFormat(language, {
       weekday: 'short',
-      month: 'short', 
-      day: 'numeric', 
+      month: 'short',
+      day: 'numeric',
       year: 'numeric',
       calendar: 'gregory' // Explicitly use Gregorian calendar
     }).format(date);
@@ -105,14 +137,14 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
     const month = currentMonth.getMonth();
     const daysInMonth = getDaysInMonth(year, month);
     const firstDay = getFirstDayOfMonth(year, month);
-    
+
     const days = [];
-    
+
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDay; i++) {
       days.push(<div key={`empty-${i}`} className="h-8 w-8"></div>);
     }
-    
+
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
@@ -136,14 +168,14 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
         </div>
       );
     }
-    
+
     return days;
   };
 
   // For fixed type, show calendar but in disabled mode
   if (tripData.availability_type === "fixed") {
     return (
-      <div className="w-full max-w-md min-w-[200px] flex-1 opacity-75"> 
+      <div className="w-full max-w-md min-w-[200px] flex-1 opacity-75">
         <div className="">
           <div className="relative">
             <div className="w-full flex items-center gap-2 px-3 py-3 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-sm cursor-not-allowed">
