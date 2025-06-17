@@ -217,18 +217,23 @@ class KashierRedirect {
           recipientName: payoutData.recipientName,
           merchantTransferId: merchant_id,
           recipientBank: payoutData.recipientBank,
-          recipientNumber: payoutData.recipientNumber
+          recipientNumber: payoutData.recipientNumber,
+          webhookUrl: payoutData.webhookUrl
         })
       });
 
       
       if (!response.ok) {
         const errorData = await response.json();
+        console.log("error data", errorData)
         throw new Error(`Transfer failed: ${errorData.messages?.en || 'Unknown error'}`);
       }
 
       const result = await response.json();
+
+      console.log("result", result)
       return result;
+
     } catch (error) {
       console.error('Error during payout:', error.message);
       throw error;

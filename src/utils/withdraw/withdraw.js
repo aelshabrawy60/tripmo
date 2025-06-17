@@ -57,7 +57,5 @@ export async function withdraw(groupId, withdraw_method_id){
     }
     const payout = await initPayout(payoutData)
 
-    console.log("payout", payout)    
-
     return r
 }
