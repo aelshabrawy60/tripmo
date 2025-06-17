@@ -21,12 +21,6 @@ export default function NoTripsFound() {
           جرب البحث بفلاتر أخرى أو وجهات مختلفة
         </p>
       </div>
-      
-      <style jsx>{`
-        .font-arabic {
-          font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
-        }
-      `}</style>
     </div>
   );
 }
