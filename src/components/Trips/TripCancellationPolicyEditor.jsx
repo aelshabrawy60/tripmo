@@ -8,7 +8,7 @@ const policy_types = [
 
 function TripCancellationPolicyEditor({onChange, intialPolicy = { type: 'refund', until: undefined }}) {
 
-  const [selectedPolicyType, setSelectedPolicyType] = useState(policy_types.find(p => p.name === intialPolicy.type)?.id || 0)
+  const [selectedPolicyType, setSelectedPolicyType] = useState(policy_types.find(p => p.name === intialPolicy?.type)?.id || 0)
   const [untilHours, setUntilHours] = useState(24)
 
   // Call onChange whenever the policy changes

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Clock, AlertCircle, CreditCard, ArrowRight, Receipt, MapPin, User, Phone, TrendingDown } from 'lucide-react';
+import { Check, Clock, AlertCircle, CreditCard, ArrowRight, Receipt, MapPin, User, Phone, TrendingDown, RefreshCw } from 'lucide-react';
 
 function PaymentCard({ paymentData }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,8 +35,21 @@ function PaymentCard({ paymentData }) {
     return 0;
   };
 
+  // Check if payment is refunded
+  const isRefunded = paymentData.host_status === 'refunded';
+
   // Get status display info
   const getStatusInfo = (status) => {
+    // If refunded, override status display
+    if (isRefunded) {
+      return {
+        color: 'bg-red-100 text-red-800 border-red-200',
+        bgHover: 'hover:bg-red-50',
+        icon: <RefreshCw size={18} className="ml-2" />,
+        text: 'مستردة'
+      };
+    }
+
     switch (status) {
       case 'client_confirmed':
         return {
@@ -99,7 +112,7 @@ function PaymentCard({ paymentData }) {
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-md p-0 border border-gray-200 transition-all duration-300 ${statusInfo.bgHover} ${expanded ? 'shadow-lg' : ''}`}>
+    <div className={`bg-white rounded-lg shadow-md p-0 border border-gray-200 transition-all duration-300 ${statusInfo.bgHover} ${expanded ? 'shadow-lg' : ''} ${isRefunded ? 'border-red-200' : ''}`}>
       {/* Main Card Content - Always Visible */}
       <div 
         className="p-3 md:p-4 cursor-pointer flex flex-col"
@@ -116,18 +129,25 @@ function PaymentCard({ paymentData }) {
             <div className="flex flex-col">
               <div className="flex items-center">
                 {/* Original Amount */}
-                <span className="font-bold text-lg text-gray-900 ml-2 rtl:text-right">
+                <span className={`font-bold text-lg ml-2 rtl:text-right ${isRefunded ? 'text-red-600 line-through' : 'text-gray-900'}`}>
                   {formatAmount(paymentData.amount)}
                 </span>
                 
-                {/* Net Amount Display */}
-                {paymentData.net_amount && paymentData.net_amount !== paymentData.amount && (
+                {/* Refunded label for desktop */}
+                {isRefunded && (
+                  <span className="text-sm font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full border border-red-200 ml-2">
+                    مستردة
+                  </span>
+                )}
+                
+                {/* Net Amount Display - only if not refunded */}
+                {!isRefunded && paymentData.net_amount && paymentData.net_amount !== paymentData.amount && (
                   <div className="flex items-center bg-green-50 border border-green-200 rounded-full px-3 py-1 ml-2">
                     <TrendingDown size={14} className="text-green-600 ml-1" />
                     <span className="text-sm font-semibold text-green-700">
                       {formatAmount(paymentData.net_amount)}
                     </span>
-                    <span className="text-xs text-green-600 mr-1">صافي</span>
+                    <span className="text-xs text-green-600 mr-1">بعد الرسوم</span>
                   </div>
                 )}
               </div>
@@ -159,11 +179,19 @@ function PaymentCard({ paymentData }) {
                 <Receipt size={16} className="text-gray-700" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-base text-gray-900 rtl:text-right">
-                  {formatAmount(paymentData.amount)}
-                </span>
-                {/* Net Amount for Mobile */}
-                {paymentData.net_amount && paymentData.net_amount !== paymentData.amount && (
+                <div className="flex items-center">
+                  <span className={`font-bold text-base rtl:text-right ${isRefunded ? 'text-red-600 line-through' : 'text-gray-900'}`}>
+                    {formatAmount(paymentData.amount)}
+                  </span>
+                  {/* Refunded label for mobile */}
+                  {isRefunded && (
+                    <span className="text-xs font-semibold text-red-600 bg-red-50 px-1.5 py-0.5 rounded-full border border-red-200 mr-1">
+                      مستردة
+                    </span>
+                  )}
+                </div>
+                {/* Net Amount for Mobile - only if not refunded */}
+                {!isRefunded && paymentData.net_amount && paymentData.net_amount !== paymentData.amount && (
                   <div className="flex items-center mt-1">
                     <span className="text-xs text-green-700 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
                       صافي: {formatAmount(paymentData.net_amount)}
@@ -206,27 +234,44 @@ function PaymentCard({ paymentData }) {
                 <span className="text-sm font-semibold">{paymentData.book_id}</span>
               </div>
               
-              {/* Financial Breakdown */}
+              {/* Financial Breakdown - modified for refunded status */}
               {paymentData.net_amount && (
-                <div className="bg-white p-3 rounded-md border border-gray-200 mt-3 mb-3">
+                <div className={`bg-white p-3 rounded-md border mt-3 mb-3 ${isRefunded ? 'border-red-200 bg-red-50' : 'border-gray-200'}`}>
                   <h4 className="text-sm font-semibold text-gray-700 mb-2 flex items-center">
                     <Receipt size={14} className="ml-1" />
                     تفاصيل المبلغ
+                    {isRefunded && (
+                      <span className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full mr-2">
+                        مستردة
+                      </span>
+                    )}
                   </h4>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">المبلغ الإجمالي:</span>
-                      <span className="text-sm font-semibold text-gray-900">{formatAmount(paymentData.amount)}</span>
+                      <span className={`text-sm font-semibold ${isRefunded ? 'text-red-600 line-through' : 'text-gray-900'}`}>
+                        {formatAmount(paymentData.bookings.total_price)}
+                      </span>
                     </div>
-                    {commissionAmount > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">المبلغ المدفوع:</span>
+                      <span className={`text-sm font-semibold ${isRefunded ? 'text-red-600 line-through' : 'text-gray-900'}`}>
+                        {formatAmount(paymentData.amount)}
+                      </span>
+                    </div>
+                    {!isRefunded && commissionAmount > 0 && (
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-red-600">العمولة:</span>
                         <span className="text-sm font-semibold text-red-600">-{formatAmount(commissionAmount)}</span>
                       </div>
                     )}
                     <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-                      <span className="text-sm font-semibold text-green-700">صافي المبلغ:</span>
-                      <span className="text-base font-bold text-green-700">{formatAmount(paymentData.net_amount)}</span>
+                      <span className={`text-sm font-semibold ${isRefunded ? 'text-red-700' : 'text-green-700'}`}>
+                        {isRefunded ? 'المبلغ المسترد:' : 'صافي المبلغ:'}
+                      </span>
+                      <span className={`text-base font-bold ${isRefunded ? 'text-red-700 line-through' : 'text-green-700'}`}>
+                        {isRefunded ? formatAmount(paymentData.amount) : formatAmount(paymentData.net_amount)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -271,8 +316,8 @@ function PaymentCard({ paymentData }) {
             )}
 
             
-            {/* Confirm Payment Button */}
-            {paymentData.status === "client_confirmed" && !success && (
+            {/* Confirm Payment Button - hidden if refunded */}
+            {!isRefunded && paymentData.status === "client_confirmed" && !success && (
               <button 
                 onClick={(e) => {
                   e.stopPropagation();

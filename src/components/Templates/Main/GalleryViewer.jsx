@@ -81,9 +81,9 @@ function GalleryViewer({ images = [] }) {
                   sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 20vw"
                 />
                 {hasMoreImages && index === visibleImages.length - 2 && (
-                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-10">
+                  <div className="absolute inset-0 bg-black/40 bg-opacity-40 flex items-center justify-center z-10">
                     <span className="text-white font-medium text-lg">
-                      +{images.length - 4} more
+                      +{images.length - 4} صور
                     </span>
                   </div>
                 )}

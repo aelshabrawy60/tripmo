@@ -9,33 +9,31 @@ import { Trash2, Pencil, Save, X, Plus } from "lucide-react";
 import TripPricingEditor from "@/components/Trips/TripPricingEditor";
 import CityChooser from "@/components/Trips/CityChooser";
 import TripCancellationPolicyEditor from "@/components/Trips/TripCancellationPolicyEditor";
+import ImgUploader from "@/components/Trips/ImgUploader";
+import LoadingCirc from "@/components/Loading/LoadingCirc";
 
 export default function TripDetailPage({ params }) {
     const { id: tripId } = React.use(params);
     const router = useRouter();
-    const fileInputRef = React.useRef(null);
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
   const [tripData, setTripData] = useState(null);
   const [editData, setEditData] = useState(null);
-  
+  const [isUploading, setIsUploading] = useState(false)
   const [images, setImages] = useState([]);
-  const [imageFiles, setImageFiles] = useState([]);
-  const [deletedImages, setDeletedImages] = useState([]);
   const [errors, setErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState({ type: "", message: "" });
 
-  // Week days for selection
   const weekDays = [
-    { code: "sun", label: "الأحد" },
-    { code: "mon", label: "الأتنين" },
-    { code: "tue", label: "الثلاثاء" },
-    { code: "wed", label: "الاربعاء" },
-    { code: "thu", label: "الخميس" },
-    { code: "fri", label: "الجمعة" },
-    { code: "sat", label: "السبت" },
+    { code: 0, label: "الأحد" },
+    { code: 1, label: "الأتنين" },
+    { code: 2, label: "الثلاثاء" },
+    { code: 3, label: "الاربعاء" },
+    { code: 4, label: "الخميس" },
+    { code: 5, label: "الجمعة" },
+    { code: 6, label: "السبت" },
   ];
 
   // Fetch trip data
@@ -50,15 +48,9 @@ export default function TripDetailPage({ params }) {
         
         const data = await response.json();
         setTripData(data);
+                
         
-        // Convert existing images to the format expected by the UI
-        const existingImages = data.images?.map(url => ({
-          id: uuidv4(),
-          url,
-          existing: true
-        })) || [];
-        
-        setImages(existingImages);
+        setImages(data.images);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching trip:", error);
@@ -95,8 +87,6 @@ export default function TripDetailPage({ params }) {
     })) || [];
     
     setImages(existingImages);
-    setImageFiles([]);
-    setDeletedImages([]);
     setEditing(false);
     setErrors({});
     setStatusMessage({ type: "", message: "" });
@@ -157,50 +147,8 @@ export default function TripDetailPage({ params }) {
     }
   }
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (!files.length) return;
-
-    // Clear image errors
-    if (errors.images) {
-      setErrors(prev => ({ ...prev, images: "" }));
-    }
-
-    // Preview images
-    const newImagePreviews = files.map(file => ({
-      id: uuidv4(),
-      url: URL.createObjectURL(file),
-      file,
-      new: true
-    }));
-
-    setImages(prev => [...prev, ...newImagePreviews]);
-    setImageFiles(prev => [...prev, ...files]);
-  };
-
-  const removeImage = (idToRemove) => {
-    const imageToRemove = images.find(img => img.id === idToRemove);
-    
-    if (imageToRemove) {
-      // Revoke object URL to prevent memory leaks if it's a new image
-      if (imageToRemove.new) {
-        URL.revokeObjectURL(imageToRemove.url);
-      }
-      
-      // If it's an existing image, add to deletedImages array
-      if (imageToRemove.existing) {
-        setDeletedImages(prev => [...prev, imageToRemove.url]);
-      }
-    }
-    
-    setImages(prev => prev.filter(img => img.id !== idToRemove));
-    
-    // Remove from imageFiles as well if it's a new image
-    if (imageToRemove?.new) {
-      setImageFiles(prev => prev.filter(file => 
-        !images.find(img => img.id === idToRemove && img.file === file)
-      ));
-    }
+  const handleImageChange = (imgs) => {
+    setImages(imgs)
   };
 
   const validateForm = () => {
@@ -240,39 +188,6 @@ export default function TripDetailPage({ params }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const uploadImages = async () => {
-    const uploadedUrls = [];
-    
-    for (const file of imageFiles) {
-      // Create a unique file path for each image
-      const filePath = `trips/${tripData.group_id}/${uuidv4()}-${file.name}`;
-      
-      // Create FormData for the upload
-      const formData = new FormData();
-      formData.append("file", file);
-      
-      // Upload to Supabase Storage
-      try {
-        const response = await fetch(`/api/storage/upload?path=${filePath}`, {
-          method: "POST",
-          body: formData,
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Failed to upload image: ${file.name}`);
-        }
-        
-        const data = await response.json();
-        uploadedUrls.push(data.url);
-      } catch (error) {
-        console.error("Image upload error:", error);
-        throw new Error("Failed to upload one or more images");
-      }
-    }
-    
-    return uploadedUrls;
-  };
-
   const handleSave = async (e) => {
     e.preventDefault();
     
@@ -288,23 +203,13 @@ export default function TripDetailPage({ params }) {
     setStatusMessage({ type: "", message: "" });
     
     try {
-      // 1. Upload any new images to Supabase storage
-      const newImageUrls = await uploadImages();
-      
-      // 2. Get all existing images that weren't deleted
-      const existingImageUrls = images
-        .filter(img => img.existing && !deletedImages.includes(img.url))
-        .map(img => img.url);
-      
-      // 3. Combine existing and new image URLs
-      const allImageUrls = [...existingImageUrls, ...newImageUrls];
       
       // 4. Prepare trip data based on availability type
       const tripPayload = {
         id: tripId,
         name: editData.name,
         about: editData.about,
-        images: allImageUrls,
+        images: images,
         max_clients: parseInt(editData.max_clients),
         availability_type: editData.availability_type,
         group_id: editData.group_id,
@@ -352,16 +257,6 @@ export default function TripDetailPage({ params }) {
       setEditing(false);
       setEditData(null);
       
-      // Reset images to new state
-      const refreshedImages = updatedTrip.images?.map(url => ({
-        id: uuidv4(),
-        url,
-        existing: true
-      })) || [];
-      
-      setImages(refreshedImages);
-      setImageFiles([]);
-      setDeletedImages([]);
       
     } catch (error) {
       console.error("Error updating trip:", error);
@@ -415,7 +310,7 @@ export default function TripDetailPage({ params }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <LoadingCirc/>
       </div>
     );
   }
@@ -436,8 +331,8 @@ export default function TripDetailPage({ params }) {
   }
 
   return (
-    <div className="mx-auto mt-6 p-6 max-w-xl bg-white rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-6">
+    <div className="mx-auto mt-6 p-6 pt-0 max-w-xl bg-white rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
+      <div className="flex justify-between items-center mb-6 bg-white sticky top-0 z-10 py-4">
         <h1 className="text-xl font-bold text-gray-800">
           {editing ? "تعديل الرحلة" : "تفاصيل الرحلة"}
         </h1>
@@ -719,66 +614,7 @@ export default function TripDetailPage({ params }) {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               صور الرحلة*
             </label>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-              {images.map((image) => (
-                <div key={image.id} className="relative group">
-                  <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-100">
-                    <div className="relative w-full h-32">
-                      <img 
-                        src={image.url} 
-                        alt="Trip preview"  
-                        className="object-cover w-full h-full"
-
-                      />
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeImage(image.id)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
-              
-              {/* Add image button */}
-              <div 
-                onClick={() => fileInputRef.current?.click()}
-                className="aspect-w-1 aspect-h-1 w-full cursor-pointer"
-              >
-                <div className="flex items-center justify-center h-32 rounded-lg border-2 border-dashed border-gray-300 hover:border-blue-500 bg-gray-50 transition-colors">
-                  <div className="text-center">
-                    <Plus className="mx-auto h-8 w-8 text-gray-400" />
-                    <span className="mt-1 block text-sm text-gray-500">اضف صورة</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              accept="image/*"
-              multiple
-              className="hidden"
-            />
-            
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 text-sm text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors"
-            >
-              اختر صورة
-            </button>
-            
-            {errors.images && (
-              <p className="mt-1 text-sm text-red-600">{errors.images}</p>
-            )}
+            <ImgUploader onUploading={setIsUploading} intitImgs={images} groupId={tripData.group_id} onUpload={handleImageChange}/>
           </div>
         </form>
       ) : (

@@ -12,12 +12,23 @@ import {
 } from 'lucide-react';
 
 function TripPricingEditor({ onChange, initialValue = null, fixedDate = false }) {
+  const MIN_ADVANCE_PERCENTAGE = 20; // Define the minimum advance percentage
+
   const [personPrice, setPersonPrice] = useState(initialValue?.PersonPrice?.toString() || '300');
   const [customDayPricing, setCustomDayPricing] = useState(false);
   const [customPersonPricing, setCustomPersonPricing] = useState(false);
-  const [advancePaymentPercentage, setAdvancePaymentPercentage] = useState(initialValue?.AdvancePaymentPercentage || 0);
+  
+  // Initialize advancePaymentPercentage state, ensuring it's at least MIN_ADVANCE_PERCENTAGE
+  const [advancePaymentPercentage, setAdvancePaymentPercentage] = useState(() => {
+    const initialAdvance = initialValue?.AdvancePaymentPercentage;
+    if (initialAdvance !== undefined) {
+      return Math.max(initialAdvance, MIN_ADVANCE_PERCENTAGE);
+    }
+    return MIN_ADVANCE_PERCENTAGE; // Default to MIN_ADVANCE_PERCENTAGE if no initial value
+  });
+
   const [showSummary, setShowSummary] = useState(true);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(false); // This state is declared but not used in the provided code.
   
   // Days of week in Arabic - indexed 0-6 (Sunday is 0)
   const daysOfWeek = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
@@ -43,6 +54,9 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
           percentage: item.price.toString(),
         }));
         setDayPricing(dayPricingData);
+      } else {
+        setCustomDayPricing(false); // Ensure this is reset if initialValue doesn't have it
+        setDayPricing([]);
       }
 
       if (initialValue.PricePerPersons?.length > 0) {
@@ -52,11 +66,29 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
           percentage: item.price.toString(),
         }));
         setPersonPricing(personPricingData);
+      } else {
+        setCustomPersonPricing(false); // Ensure this is reset
+        setPersonPricing([]);
       }
-
-      setAdvancePaymentPercentage(initialValue.AdvancePaymentPercentage || 0);
+      
+      // Ensure advancePaymentPercentage from initialValue is also at least MIN_ADVANCE_PERCENTAGE
+      const initialAdvanceVal = initialValue.AdvancePaymentPercentage;
+      setAdvancePaymentPercentage(
+        initialAdvanceVal !== undefined
+          ? Math.max(initialAdvanceVal, MIN_ADVANCE_PERCENTAGE)
+          : MIN_ADVANCE_PERCENTAGE
+      );
+    } else if (!initialValue && !initialized.current) {
+        // If initialValue is null/undefined from the start and we haven't initialized
+        initialized.current = true; // Mark as "initialized" (to prevent re-running this if initialValue remains null)
+        setPersonPrice('300');
+        setCustomDayPricing(false);
+        setDayPricing([]);
+        setCustomPersonPricing(false);
+        setPersonPricing([]);
+        setAdvancePaymentPercentage(MIN_ADVANCE_PERCENTAGE); // Ensure default is MIN_ADVANCE_PERCENTAGE
     }
-  }, [initialValue]);
+  }, [initialValue, MIN_ADVANCE_PERCENTAGE]); // Added MIN_ADVANCE_PERCENTAGE to dependencies, though it's a constant.
 
   
   // Update output JSON whenever values change
@@ -115,7 +147,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
   const updateOutput = () => {
     const output = {
       PersonPrice: parseNumberValue(personPrice) || 0,
-      AdvancePaymentPercentage: advancePaymentPercentage,
+      AdvancePaymentPercentage: advancePaymentPercentage, // This will now be >= MIN_ADVANCE_PERCENTAGE
       PricePerWeeklyDays: [],
       PricePerPersons: []
     };
@@ -151,6 +183,15 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
     const parsedPercentage = parseNumberValue(percentage);
     if (parsedPercentage === null) return '';
     return Math.round(basePrice * parsedPercentage / 100);
+  };
+
+  const handleAdvancePaymentChange = (e) => {
+    let newValue = parseInt(e.target.value);
+    // The range input's min attribute should enforce this, but as a fallback:
+    if (newValue < MIN_ADVANCE_PERCENTAGE) {
+      newValue = MIN_ADVANCE_PERCENTAGE;
+    }
+    setAdvancePaymentPercentage(newValue);
   };
 
   return (
@@ -190,18 +231,18 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
         <div className="flex items-center">
           <input
             type="range"
-            min="0"
+            min={MIN_ADVANCE_PERCENTAGE.toString()} // Set min to 20
             max="100"
             step="5"
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             value={advancePaymentPercentage}
-            onChange={(e) => setAdvancePaymentPercentage(parseInt(e.target.value))}
+            onChange={handleAdvancePaymentChange} // Use handler to be absolutely sure
           />
 
         </div>
         <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>0%</span>
-          <span>50%</span>
+          <span>{MIN_ADVANCE_PERCENTAGE}%</span> {/* Update label to 20% */}
+          <span>50%</span> {/* Consider if this middle label needs adjustment, e.g., to 60% */}
           <span>100%</span>
         </div>
       </div>

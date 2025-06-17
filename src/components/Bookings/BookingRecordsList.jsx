@@ -159,7 +159,6 @@ export default function BookingRecordsList({groupId}) {
       {loading && (
         <div className="flex justify-center items-center p-12">
           <Loader className="w-8 h-8 text-blue-500 animate-spin" />
-          <span className="mr-3 text-lg text-gray-700">جاري التحميل...</span>
         </div>
       )}
 
