@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
 import { getTrip } from "../../dashboard/trips/helpers";
 import { updateTripScore } from "@/utils/trips_engine/trips_scoring";
+import NotificationService from "@/utils/notifications/NotificationService";
 
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();

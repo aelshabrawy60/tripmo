@@ -114,7 +114,7 @@ function WithdrawConfirmation({ groupId, withdrawMethod }) {
         <h3 className="text-xl font-bold text-gray-900 mb-2">تم السحب بنجاح!</h3>
         <p className="text-gray-600 mb-6">سيتم معالجة طلب السحب في أقرب وقت ممكن</p>
         <button
-          onClick={() => setSuccess(false)}
+          onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/payments/withdraws`}
           className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
         >
           موافق

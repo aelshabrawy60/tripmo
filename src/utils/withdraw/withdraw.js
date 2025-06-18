@@ -29,44 +29,50 @@ async function fetchWithdrawMethode(id) {
     return data
 }
 
-export async function withdraw(groupId, withdraw_method_id){
+export async function withdraw(groupId, withdraw_method_id) {
     // calculate balance 
-    const balance = await calculateAvalBalance(groupId)
+    const balance = await calculateAvalBalance(groupId);
 
-    if(balance < 50){
-        return {"result": false, "message": "الحد الادني للسحب 50 ج.م"}
+    if (balance < 50) {
+        return { result: false, message: "الحد الادني للسحب 50 ج.م" };
     }
 
     // fetch withdraw method
-    const withdrawMethod = await fetchWithdrawMethode(withdraw_method_id)
+    const withdrawMethod = await fetchWithdrawMethode(withdraw_method_id);
 
-    try{
-        // Generate a unique merchant transfer ID (you can use UUID or timestamp)
-        const merchantTransferId = `withdraw_${groupId}_${Date.now()}`
-        
+    try {
+        // Generate a unique merchant transfer ID
+        const merchantTransferId = `withdraw_${groupId}_${Date.now()}`;
+
+        // Build base payout data
         const payoutData = {
             amount: balance,
             method: withdrawMethod.methode,
             recipientName: 'John Doe',
             merchantTransferId: merchantTransferId,
-            recipientBank: withdrawMethod.bank,
             recipientNumber: withdrawMethod.number,
-            webhookUrl: 'https://tripmo.vercel.app/api/webhook/withdraws'
+        };
+
+        // Add recipientBank only if method is not "wallet" or "instant wallet"
+        const method = withdrawMethod.methode?.toLowerCase();
+        if (method !== "wallet" && method !== "instant wallet") {
+            payoutData.recipientBank = withdrawMethod.bank;
         }
-        
+
+        console.log("payload", payoutData);
+
         // Try payout first
-        const payout = await initPayout(payoutData)
-        
+        const payout = await initPayout(payoutData);
+
         // Only create record if payout succeeds
-        const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", payout.data[0]?.transferId)
-        
+        const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", payout.data[0]?.transferId);
+
         // Reset balance only after successful payout and record creation
-        const r = await resetBalance(groupId)
-        return r
-        
-    }catch(error){
+        const r = await resetBalance(groupId);
+        return r;
+
+    } catch (error) {
         console.error('Error during payout:', error.message);
-        // No record created, balance not reset
         throw error;
     }
 }

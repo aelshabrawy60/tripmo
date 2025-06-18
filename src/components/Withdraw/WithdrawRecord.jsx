@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 function WithdrawRecord({ data }) {
   const getStatusColor = (status) => {
     switch (status) {
-      case 'completed':
+      case 'TRANSFERRED':
       case 'مكتمل':
         return 'bg-green-100 text-green-800';
       case 'pending':
@@ -20,12 +20,16 @@ function WithdrawRecord({ data }) {
 
   const getStatusText = (status) => {
     switch (status) {
-      case 'completed':
+      case 'TRANSFERRED':
         return 'مكتمل';
       case 'pending':
         return 'قيد المعالجة';
-      case 'failed':
-        return 'فشل';
+      case 'IN_TRANSIT':
+        return 'قيد المعالجة'
+      case 'INITIATED':
+        return 'قيد المعالجة'
+      case 'FAILED':
+        return 'تحت المراجعة';
       default:
         return status;
     }

@@ -31,7 +31,7 @@ function WithdrawRecordsList({ groupId }) {
           throw new Error(result.error);
         }
 
-        setRecords(result.data || []);
+        setRecords((result.data || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -81,8 +81,8 @@ function WithdrawRecordsList({ groupId }) {
 
   return (
     <div>
-      <div className="bg-tripmo-500 rounded-t-lg p-4 mb-6">
-        <h2 className="text-white text-xl font-bold text-center">سجل عمليات السحب</h2>
+      <div className="bg-tripmo-500 rounded-lg p-4 mb-6">
+        <h2 className="text-white text-xl font-bold text-center">عمليات السحب</h2>
       </div>
       
       <div className="space-y-0">

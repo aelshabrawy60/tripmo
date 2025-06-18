@@ -51,6 +51,7 @@ class KashierRedirect {
       customer: {
         reference: orderDetails.customerReference || orderId
       },
+      serverWebhook: "https://tripmo.vercel.app/api/webhook/deposits"
     };
 
     try {

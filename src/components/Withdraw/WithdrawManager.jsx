@@ -1,11 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, CreditCard, Building2, Hash, AlertCircle, CheckCircle, X } from 'lucide-react';
 import WithdrawConfirmation from './WithdrawConfirmation';
+import LoadingCirc from '../Loading/LoadingCirc';
 
 export const banks = {
-    BOA: "Bank of Alexandria",
-    CIB: "CIB Bank"
-}
+  BOA: "Bank of Alexandria",
+  CIB: "Commercial International Bank (CIB)",
+  ADIB: "Abu Dhabi Islamic Bank",
+  AUB: "Ahli United Bank",
+  ABK: "Al Ahli Bank of Kuwait",
+  ABRK: "Arab Bank",
+  AAIB: "Arab African International Bank",
+  ARAB: "Arab Bank",
+  ABC: "Arab Banking Corporation",
+  ARIB: "Arab International Bank",
+  AIB: "Alexandria International Bank",
+  BBE: "Banque du Caire",
+  AUDI: "Bank Audi",
+  BDC: "Banque du Caire",
+  MISR: "Banque Misr",
+  BLOM: "Blom Bank Egypt",
+  CBE: "Central Bank of Egypt",
+  CITI: "Citibank",
+  CAE: "Credit Agricole Egypt",
+  POST: "Egypt Post",
+  EALB: "Egyptian Arab Land Bank",
+  EGB: "Egyptian Gulf Bank",
+  ENBD: "Emirates NBD",
+  EDBE: "Export Development Bank of Egypt",
+  FAIB: "First Abu Dhabi Bank",
+  FAB: "First Abu Dhabi Bank",
+  HDB: "Housing and Development Bank",
+  HSBC: "HSBC Bank Egypt",
+  IDB: "Industrial Development Bank",
+  MASH: "Mashreq Bank",
+  MIDB: "Misr Iran Development Bank",
+  NSB: "National Savings Bank",
+  NBE: "National Bank of Egypt",
+  NBG: "National Bank of Greece",
+  NBK: "National Bank of Kuwait",
+  QNB: "Qatar National Bank (QNB Al Ahli)",
+  SAIB: "Societe Arabe Internationale de Banque",
+  SCB: "Standard Chartered Bank",
+  PDAC: "Principal Bank for Development and Agricultural Credit",
+  UB: "United Bank of Egypt",
+  UNB: "Union National Bank"
+};
+
 
 // Alert Component
 const Alert = ({ type, message, onClose }) => (
@@ -57,7 +98,7 @@ const Header = ({onAddClick }) => (
 // Loading Spinner Component
 const LoadingSpinner = () => (
   <div className="col-span-full flex justify-center items-center py-12">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <LoadingCirc/>
   </div>
 );
 
@@ -77,6 +118,19 @@ const EmptyState = ({ onAddClick }) => (
     </div>
   </div>
 );
+
+const getMethodLabel = (method) => {
+    switch (method) {
+      case 'bank':
+        return 'تحويل بنكي';
+      case 'instant wallet':
+        return 'محفظة';
+      case 'card':
+        return 'بطاقة';
+      default:
+        return method;
+    }
+};
 
 // Method Icon Component
 const MethodIcon = ({ methode }) => {
@@ -111,7 +165,7 @@ const MethodCard = ({ method, onEdit, onDelete }) => {
           <div className="flex items-center gap-3">
             <MethodIcon methode={method.methode} />
             <div>
-              <h3 className="font-bold text-gray-900 text-lg">{method.methode}</h3>
+              <h3 className="font-bold text-gray-900 text-lg">{getMethodLabel(method.methode)}</h3>
               <p className="text-gray-500 text-sm">المعرف: {method.id}</p>
             </div>
           </div>

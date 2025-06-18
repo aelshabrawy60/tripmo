@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "../supabase/service";
-
+import NotificationService from "../notifications/NotificationService";
 
 export function calculateNetAmount(amount, total_price){
     return amount - (total_price * 0.2)
@@ -31,7 +31,26 @@ export async function createDeposit(groupId, tripId, bookId, amount, url, paymen
 
 }
 
+
 export async function confirmDeposit(bookId) {
+    // Single query to check status and get phone in one go
+    const { data: booking, error: fetchError } = await supabaseAdmin
+        .from("bookings")
+        .select("status, clients(phone)")
+        .eq("id", bookId)
+        .single();
+
+    if (fetchError) {
+        console.error("Error fetching booking:", fetchError);
+        return null;
+    }
+
+    // Check if already confirmed
+    if (booking?.status === "active") {
+        return { message: "Booking is already confirmed" };
+    }
+
+    // Update both tables in parallel
     const [depositResult, bookingResult] = await Promise.all([
         supabaseAdmin
             .from("deposits")
@@ -43,17 +62,27 @@ export async function confirmDeposit(bookId) {
             .eq("id", bookId),
     ]);
 
-    const [depositData, depositError] = [depositResult.data, depositResult.error];
-    const [bookingData, bookingError] = [bookingResult.data, bookingResult.error];
-
-    if (depositError || bookingError) {
+    if (depositResult.error || bookingResult.error) {
+        console.error("Update errors:", { 
+            deposit: depositResult.error, 
+            booking: bookingResult.error 
+        });
         return null;
     }
 
-    return { depositData, bookingData };
+    // Send notification asynchronously (don't await)
+    const phone = booking?.clients?.phone;
+    if (phone) {
+        const notifications = new NotificationService();
+        notifications.sendBookConfirmation("whatsapp", phone)
+            .catch(err => console.error("Notification error:", err));
+    }
+
+    return { 
+        depositData: depositResult.data, 
+        bookingData: bookingResult.data 
+    };
 }
-
-
 
 export async function AddRefund(bookId, status, amount){
     const { data, error } = await supabaseAdmin.from("refunds").insert([{
