@@ -6,6 +6,7 @@ import { getTrip } from "../../dashboard/trips/helpers";
 import { updateTripScore } from "@/utils/trips_engine/trips_scoring";
 import NotificationService from "@/utils/notifications/NotificationService";
 
+
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();
 
@@ -91,18 +92,26 @@ export async function DELETE(request){
     try {
         const result = await cancelBooking(bookingId);
         const canRefund = await canBookRefunded(bookingId);
+
         if (canRefund) {
             // If the booking can be refunded, initiate the refund process
             await initRefund(bookingId);
         }else{
             await removeFees(bookingId);
         }
+
         // If the booking cancellation was successful
         if (result.success) {
+
+            const notifications = new NotificationService();
+                notifications.sendBookCancellation("whatsapp", bookingId)
+                    .catch(err => console.error("Notification error:", err));
+
             return NextResponse.json({ success: true, message: "Booking cancelled successfully." }, { status: 200 });
         } else {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
         }
+
     } catch (error) {
         console.error("Error in cancelling booking:", error);
         return NextResponse.json({ success: false, message: "Unexpected error occurred while cancelling booking." }, { status: 500 });

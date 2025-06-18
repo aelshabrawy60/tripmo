@@ -122,26 +122,29 @@ function BookingCard({ bookData, type = 0, onDeleteBooking, onEditBooking, tripD
             </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="grid grid-cols-2 gap-2">
-            {/* Edit button */}
-            <button 
-              onClick={() => setShowEditModal(true)}
-              className="bg-blue-100 cursor-pointer p-2 rounded-sm text-blue-500 hover:text-blue-700 flex items-center justify-center"
-              aria-label="تعديل الحجز"
-            >
-              <Edit size={16} className="ml-1" /> تعديل
-            </button>
+          {/* Action buttons - show only if no deposit */}
+            {bookData.deposite_price <= 0 && (
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {/* Edit button */}
+                <button  
+                  onClick={() => setShowEditModal(true)}
+                  className="bg-blue-100 cursor-pointer p-2 rounded-sm text-blue-500 hover:text-blue-700 flex items-center justify-center"
+                  aria-label="تعديل الحجز"
+                >
+                  <Edit size={16} className="ml-1" /> تعديل
+                </button>
 
-            {/* Delete button */}
-            <button 
-              onClick={() => setShowDeleteModal(true)}
-              className="bg-red-100 cursor-pointer p-2 rounded-sm text-red-500 hover:text-red-700 flex items-center justify-center"
-              aria-label="حذف الحجز"
-            >
-              <Trash2 size={16} className="ml-1" /> الغاء
-            </button>
-          </div>
+                {/* Delete button */}
+                <button 
+                  onClick={() => setShowDeleteModal(true)}
+                  className="bg-red-100 cursor-pointer p-2 rounded-sm text-red-500 hover:text-red-700 flex items-center justify-center"
+                  aria-label="حذف الحجز"
+                >
+                  <Trash2 size={16} className="ml-1" /> الغاء
+                </button>
+              </div>
+            )}
+
         </div>
       </div>
 

@@ -75,6 +75,7 @@ export async function updateTripScore(tripId, rate = null) {
     .single();
 
   if (error || !data) {
+    console.log(error)
     console.error("Failed to fetch trip:", error || "Trip not found");
     return;
   }
