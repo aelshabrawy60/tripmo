@@ -82,6 +82,14 @@ class PaymentRedirectFlow {
 
     return await this.gateways[gatewayName].payout(payoutData);
   }
+  
+  async getTransferStatus(gatewayName, transferId){
+    if (!this.gateways[gatewayName]) {
+      throw new Error(`Gateway ${gatewayName} not configured`);
+    }
+
+    return await this.gateways[gatewayName].getTransferStatus(transferId);
+  }
 
 }
 
@@ -156,6 +164,12 @@ async function initPayout(payoutData, gatewayConfig = paymentGateawayConfig) {
   return payoutData_
 }
 
+async function getWithdrawStatus(transferId, gatewayConfig = paymentGateawayConfig) {
+  const paymentService = new PaymentRedirectFlow(gatewayConfig);
+  const transfareStatus = paymentService.getTransferStatus(gatewayConfig.name, transferId)
+  return transfareStatus
+}
+
 function generatePaymentId(phone, bookId) {
   const timestamp = Date.now(); // Current timestamp
   const uniqueString = `${phone}-${bookId.toString()}-${timestamp}`;
@@ -171,4 +185,5 @@ module.exports = {
   initRefund,
   initPayout,
   paymentGateawayConfig,
+  getWithdrawStatus
 };

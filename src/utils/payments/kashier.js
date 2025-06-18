@@ -12,6 +12,7 @@ class KashierRedirect {
     this.kashierGetApi = this.mode == "test" ? "https://test-api.kashier.io/v3" : "https://api.kashier.io/v3"
     this.kashierCreateRefund = this.mode == "test" ? "https://test-fep.kashier.io/v3" : "https://fep.kashier.io/v3"
     this.kashierPayout = this.mode == "test" ? "https://test-fep.kashier.io/v3/transfers/single" : "https://fep.kashier.io/v3/transfers/single"
+    this.kashierTransfareStatus = this.mode == "test" ? "https://test-api.kashier.io/v2/transfers/":  "https://api.kashier.io/v2/transfers/"
   }
 
   generateKashierOrderHash(order) {
@@ -236,6 +237,30 @@ class KashierRedirect {
 
     } catch (error) {
       console.error('Error during payout:', error.message);
+      throw error;
+    }
+  }
+
+  async getTransferStatus(transferId){
+    const url = `${this.kashierTransfareStatus}${transferId}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': this.secretKey,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.status; // You can also return specific fields like data.status if needed
+    } catch (error) {
+      console.error('Error fetching transfer status:', error.message);
       throw error;
     }
   }

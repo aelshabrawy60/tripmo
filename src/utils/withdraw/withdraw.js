@@ -2,10 +2,10 @@ import { supabaseAdmin } from "../supabase/service";
 import { calculateAvalBalance, resetBalance } from "@/app/api/dashboard/balance/helper";
 import {initPayout} from "@/utils/payments/payments"
 
-async function addWithdrawRecord(groupId, withdraw_method_id, amount, status) {
+async function addWithdrawRecord(groupId, withdraw_method_id, amount, status, transferId) {
     const {data, error} = await supabaseAdmin
         .from("withdraws")
-        .insert([{"group_id": groupId, withdraw_method_id, amount, status}])
+        .insert([{"group_id": groupId, withdraw_method_id, amount, status, transfer_id: transferId}])
         .select("*")
         .single()
     
@@ -40,22 +40,33 @@ export async function withdraw(groupId, withdraw_method_id){
     // fetch withdraw method
     const withdrawMethod = await fetchWithdrawMethode(withdraw_method_id)
 
-    // add withdraw record
-    const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending")
-
-    //
-    const r = await resetBalance(groupId)
-
-    const payoutData = {
-        amount: balance,
-        method: withdrawMethod.methode,
-        recipientName: 'John Doe',
-        merchantTransferId: record.id,
-        recipientBank: withdrawMethod.bank,
-        recipientNumber: withdrawMethod.number,
-        webhookUrl: 'https://tripmo.vercel.app/api/webhook/withdraws'
+    try{
+        // Generate a unique merchant transfer ID (you can use UUID or timestamp)
+        const merchantTransferId = `withdraw_${groupId}_${Date.now()}`
+        
+        const payoutData = {
+            amount: balance,
+            method: withdrawMethod.methode,
+            recipientName: 'John Doe',
+            merchantTransferId: merchantTransferId,
+            recipientBank: withdrawMethod.bank,
+            recipientNumber: withdrawMethod.number,
+            webhookUrl: 'https://tripmo.vercel.app/api/webhook/withdraws'
+        }
+        
+        // Try payout first
+        const payout = await initPayout(payoutData)
+        
+        // Only create record if payout succeeds
+        const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", payout.data[0]?.transferId)
+        
+        // Reset balance only after successful payout and record creation
+        const r = await resetBalance(groupId)
+        return r
+        
+    }catch(error){
+        console.error('Error during payout:', error.message);
+        // No record created, balance not reset
+        throw error;
     }
-    const payout = await initPayout(payoutData)
-
-    return r
 }
