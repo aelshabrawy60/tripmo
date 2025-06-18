@@ -36,7 +36,7 @@ export async function confirmDeposit(bookId) {
     // Single query to check status and get phone in one go
     const { data: booking, error: fetchError } = await supabaseAdmin
         .from("bookings")
-        .select("status, clients(phone)")
+        .select("status, clients(phone), bookable_id")
         .eq("id", bookId)
         .single();
 
