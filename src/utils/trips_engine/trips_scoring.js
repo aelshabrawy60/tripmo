@@ -46,6 +46,7 @@ export function calcTripScore(tripData) {
   const freshness = freshnessScore(tripData.bookings);
   const price = priceValue(tripData.pricing?.PersonPrice || 0, tripData.ratings);
 
+  console.log("scores", rating, availability, frequency, freshness, price)
   const score = (
     0.4 * rating +
     0.2 * frequency +

@@ -19,6 +19,8 @@ export class ZixFlowWhatsAppChannel extends WhatsAppChannel {
       submissionStatus: true,
     };
 
+
+    console.log("payload", payload)
     try {
       const response = await axios({
         method: "post",
@@ -37,6 +39,7 @@ export class ZixFlowWhatsAppChannel extends WhatsAppChannel {
         response: response.data,
       };
     } catch (error) {
+      console.log("[ZixFlow] Error sending message:", error.response?.data || error.message)
       console.error("[ZixFlow] Error sending message:", error.response?.data || error.message);
       return {
         success: false,
