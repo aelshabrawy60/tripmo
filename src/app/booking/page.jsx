@@ -73,9 +73,7 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
 
         {
           !isBookRated ? 
-          <div className="p-6 text-center">
             <AddComment tripId={bookingData.bookable_id} senderName={bookingData.client_name} groupId={bookingData.group_id} bookId={bookingData.id} bookData={bookingData}/>
-          </div>
           :
           null
         }
@@ -145,9 +143,7 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
         </div>
 
         {/* cancel booking */}
-        <div className="p-6 text-center">
-          <CancelBookClient bookId={bookingData.id} bookData={bookingData}/>
-        </div>
+        <CancelBookClient bookId={bookingData.id} bookData={bookingData}/>
       </div>
     </div>
   );

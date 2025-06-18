@@ -98,20 +98,22 @@ function CancelBookClient({bookId, bookData}) {
   }
   return (
     <div>
-      <button
-        onClick={handleCancelClick}
-        disabled={isCheckingRefund}
-        className="bg-red-500 w-full text-white px-6 py-3 rounded-lg hover:bg-red-600 disabled:bg-red-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium shadow-md hover:shadow-lg"
-      >
-        {isCheckingRefund ? (
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            جاري التحقق...
-          </div>
-        ) : (
-          'إلغاء الحجز'
-        )}
-      </button>
+      <div className='p-4'>
+        <button
+          onClick={handleCancelClick}
+          disabled={isCheckingRefund}
+          className="bg-red-500 w-full text-white px-6 py-3 rounded-lg hover:bg-red-600 disabled:bg-red-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium shadow-md hover:shadow-lg"
+        >
+          {isCheckingRefund ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              جاري التحقق...
+            </div>
+          ) : (
+            'إلغاء الحجز'
+          )}
+        </button>
+      </div>
 
       {/* Confirmation Modal */}
       {isModalOpen && (
