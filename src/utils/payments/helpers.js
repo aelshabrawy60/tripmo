@@ -59,7 +59,9 @@ export async function confirmDeposit(bookId) {
         supabaseAdmin
             .from("bookings")
             .update({ status: "active" })
-            .eq("id", bookId),
+            .eq("id", bookId)
+            .select("Group(notifications_number)")
+            .single(),
     ]);
 
     if (depositResult.error || bookingResult.error) {
@@ -74,7 +76,7 @@ export async function confirmDeposit(bookId) {
     const phone = booking?.clients?.phone;
     if (phone) {
         const notifications = new NotificationService();
-        notifications.sendBookConfirmation("whatsapp", phone)
+        notifications.sendBookConfirmation("whatsapp", phone, bookingResult.data, bookingResult.data.Group.notifications_number)
             .catch(err => console.error("Notification error:", err));
     }
 
