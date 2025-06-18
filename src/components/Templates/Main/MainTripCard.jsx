@@ -17,7 +17,13 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
 
   const firstImage = images && images.length > 0 ? images[0] : null;
   const ratingAverage = rates_sum / rates_count;
-  const formattedPrice = pricing ? pricing.PersonPrice.toLocaleString() : '';
+  const formattedPrice = pricing
+    ? new Intl.NumberFormat('en-EG', {
+        style: 'currency',
+        currency: 'EGP',
+        minimumFractionDigits: 0,
+      }).format(pricing.PersonPrice)
+    : '';
 
   return (
     <Link href={`/site/trips/${slug}`} className="block">
@@ -40,7 +46,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
 
           {availability_type && (
             <div className="absolute top-2 right-2 bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-medium shadow-sm">
-              {availability_type === 'fixed' ? 'موعد ثابت' : 'مواعيد متعددة'}
+              {availability_type === 'fixed' ? tripData.available_day : 'مواعيد متعددة'}
             </div>
           )}
 

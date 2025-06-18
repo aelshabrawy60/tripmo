@@ -109,12 +109,25 @@ function MainBookingCard({ tripData }) {
             <div className="space-y-2 mt-3">              
               <div className="flex justify-between">
                 <span className="font-bold">السعر الإجمالي:</span>
-                <span className="font-bold text-blue-600">{totalPrice} ج.م</span>
+                <span className="font-bold text-blue-600">
+                  {new Intl.NumberFormat('en-EG', {
+                    style: 'currency',
+                    currency: 'EGP',
+                    minimumFractionDigits: 0
+                  }).format(totalPrice)}
+                </span>
+
               </div>
               
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">المقدم المطلوب:</span>
-                <span className="font-medium">{depositPrice} ج.م</span>
+                <span className="font-medium">
+                  {new Intl.NumberFormat('en-EG', {
+                    style: 'currency',
+                    currency: 'EGP',
+                    minimumFractionDigits: 0
+                  }).format(depositPrice)}
+                </span>
               </div>
             </div>
           </div>

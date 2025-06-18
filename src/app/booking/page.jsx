@@ -116,7 +116,7 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
             </div>
             <div>
               <p className="text-gray-500">رقم الهاتف</p>
-              <p className="font-medium text-gray-800 ltr:text-left rtl:text-right" dir="ltr">
+              <p className="font-medium text-gray-800">
                 {bookingData.client_phone}
               </p>
             </div>
