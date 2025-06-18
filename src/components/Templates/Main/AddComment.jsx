@@ -101,7 +101,7 @@ const AddComment = ({ tripId, senderName, groupId, bookId, bookData }) => {
     setIsModalOpen(true);
   };
 
-  if(false){
+  if(!canRate){
     return null
   }
   return (

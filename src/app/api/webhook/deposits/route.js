@@ -57,7 +57,7 @@ export async function POST(request) {
       console.log(`[Payment Success] Order: ${merchantOrderId}, TX: ${transactionId}, Amount: ${amount}`);
       const bookingData = await confirmDeposit(merchantOrderId)
 
-      await updateTripScore(bookingData.bookable_id)
+      await updateTripScore(bookingData.bookingData.bookable_id)
     }
 
     return NextResponse.json({ success: true });
