@@ -35,10 +35,7 @@ export async function POST(request) {
 
         // deposit with 0$
         const payment = await initManualDepositPayment(result.data)
-        
-
-        const updated = await updateTripScore(tripId)
-        
+                
         return NextResponse.json({ success: true, data: result.data, redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${payment}` });
 
     } catch (error) {

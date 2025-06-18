@@ -86,7 +86,7 @@ export async function popularTrips() {
   
   // Filter out categories with less than 5 elements and format the result
   const categories = Object.entries(cityGroups)
-    .filter(([city, trips]) => trips.length >= 5)
+    .filter(([city, trips]) => trips.length >= 4)
     .map(([city, trips]) => ({
       city: city,
       trips: trips

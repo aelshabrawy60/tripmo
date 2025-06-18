@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 function DestinationCard({ data }) {
   return (
-    <div className="relative w-full h-64 p-6 rounded-xl overflow-hidden group cursor-pointer transform transition-all duration-300">
+    <a href={`/trips?dest_city=${data.id}`} className="relative w-full h-64 p-6 rounded-xl overflow-hidden group cursor-pointer transform transition-all duration-300">
       {/* Background Image */}
       <Image
         src={data.image}
@@ -33,7 +33,7 @@ function DestinationCard({ data }) {
           <div className="w-12 h-0.5 bg-white rounded"></div>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
 

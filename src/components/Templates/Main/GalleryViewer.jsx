@@ -47,7 +47,7 @@ function GalleryViewer({ images = [] }) {
             alt="Single image"
             fill
             className="object-cover hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 90vw"
           />
         </div>
       ) : (
@@ -78,7 +78,7 @@ function GalleryViewer({ images = [] }) {
                   alt={`Gallery image ${index + 2}`}
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 20vw"
+                  sizes={`(max-width: 768px) 33vw, (max-width: 1200px) ${images.length == 2? '40vw': '30vw'}, ${images.length == 2? '35vw': '25vw'}`}
                 />
                 {hasMoreImages && index === visibleImages.length - 2 && (
                   <div className="absolute inset-0 bg-black/40 bg-opacity-40 flex items-center justify-center z-10">

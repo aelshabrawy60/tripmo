@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import queryString from 'query-string';
 import _ from 'lodash';
 import { confirmDeposit } from '@/utils/payments/helpers';
+import { supabaseAdmin } from '@/utils/supabase/service';
 
 const PAYMENT_API_KEY = "31978aa5-1378-464a-b34f-6bb4653ba2ec"; // Securely store this in your .env
 
@@ -55,7 +56,9 @@ export async function POST(request) {
 
       // TODO: update DB or perform business logic
       console.log(`[Payment Success] Order: ${merchantOrderId}, TX: ${transactionId}, Amount: ${amount}`);
-      await confirmDeposit(merchantOrderId)
+      const bookingData = await confirmDeposit(merchantOrderId)
+
+      await updateTripScore(bookingData.bookable_id)
     }
 
     return NextResponse.json({ success: true });

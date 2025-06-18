@@ -20,6 +20,10 @@ const pages = [
   { name: 'اعرض رحلاتك', link: '/offers' },
 ];
 
+const socialMedia = [
+  {name: "facebook", link: 'https://www.facebook.com/share/1AcqvmjMYw'},
+  {name: "instagram", link: 'https://www.instagram.com/rehlanow/profilecard/?igsh=cWl0dm4zMzcxZW1l'}
+]
 
 export default function RootLayout({ children }) {
   
@@ -30,7 +34,7 @@ export default function RootLayout({ children }) {
             <div>
                 {children}
             </div>
-            <MainFooter/>
+            <MainFooter logo={'/logo.png'} socialMedia={socialMedia}/>
         </MainLayout>
     </>
   );

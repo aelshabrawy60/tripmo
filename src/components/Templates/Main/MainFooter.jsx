@@ -16,9 +16,9 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
 
   // Default contact info if not provided
   const defaultContactInfo = {
-    address: "شارع الرياض، المملكة العربية السعودية",
+    address: "مصر دمياط الجديدة",
     phone: "+966 123 456 789",
-    email: "info@example.com"
+    email: "rehlanow@gmail.com"
   };
 
   // Use provided contact info or fallback to defaults
@@ -37,7 +37,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
                 <img 
                   src={logo} 
                   alt="شعار الشركة" 
-                  className="h-12 w-auto"
+                  className="h-20 w-auto"
                 />
               ) : (
                 <div className="text-2xl font-bold" style={{ color: theme }}>شعاري</div>
@@ -55,6 +55,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
                   style={{ 
                     ':hover': { backgroundColor: `${theme}20` } 
                   }}
+                  target='_blank'
                   aria-label={item.name}
                 >
                   {getSocialIcon(item.name)}

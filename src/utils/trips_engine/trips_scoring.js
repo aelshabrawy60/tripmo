@@ -59,6 +59,8 @@ export function calcTripScore(tripData) {
 }
 
 export async function updateTripScore(tripId, rate = null) {
+  console.log("updating score", tripId)
+
   const { data, error } = await supabaseAdmin
     .from("trips")
     .select(`
