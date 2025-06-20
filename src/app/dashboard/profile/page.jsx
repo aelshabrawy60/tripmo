@@ -1,4 +1,5 @@
 "use client"
+import ProfileOnboarding from '@/components/Onboarding/Onboarding'
 import PaymentsList from '@/components/Payments/PaymentsList'
 import AdminProfileCard from '@/components/profile/AdminProfileCard'
 import EditNotificationNumber from '@/components/profile/EditNotificationNumber'

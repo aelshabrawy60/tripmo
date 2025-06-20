@@ -265,7 +265,7 @@ const Sidebar = ({
           
           
           <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-            <img src='/logo.svg' width={80}></img>
+            <img src='/logo.png' width={40}></img>
           </div>
         </nav>
       )}

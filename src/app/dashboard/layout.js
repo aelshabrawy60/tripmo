@@ -8,10 +8,11 @@ import { useAuth } from "@/context/AuthContext";
 import Loading from "@/components/Loading";
 import { SharedContext } from "@/context/ShareAut";
 import SignInPage from "../signin/page";
+import ProfileOnboarding from "@/components/Onboarding/Onboarding";
 
 
 export default function RootLayout({ children }) {
-  const { user, groupId, role, loading } = useAuth();
+  const { user, groupId, role, loading, onboardStep } = useAuth();
   
   if(loading){
     return(
@@ -25,10 +26,14 @@ export default function RootLayout({ children }) {
   return (
     <>
         <SharedContext.Provider value={{ groupId, role }}>
-          <Sidebar title="TRIPMO" groupId={groupId} role={role}/>
-          <div className="lg:mr-[260px]">
+          {onboardStep == null && <Sidebar title="TRIPMO" groupId={groupId} role={role}/>}
+          {onboardStep !== null && <ProfileOnboarding profileId={groupId}/>}
+          {
+          onboardStep == null &&
+          <div className={'lg:mr-[260px]'}>
               {children}
           </div>
+          } 
         </SharedContext.Provider>
     </>
   );

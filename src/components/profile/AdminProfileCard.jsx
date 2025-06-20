@@ -281,8 +281,7 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
           />
         ) : (
           profileDataState.about && (
-            <div className='text-gray-600 text-lg mb-4 text-center max-w-full break-words'>
-              {profileDataState.about}
+            <div className='text-gray-600 text-lg mb-4 text-center max-w-full break-words'  dangerouslySetInnerHTML={{ __html: profileDataState.about.replace(/\n/g, "<br />") }}>
             </div>
           )
         )}
