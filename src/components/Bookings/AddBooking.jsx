@@ -84,56 +84,6 @@ const AddBooking = ({
     }
   };
   
-  // Function to register a new player
-  const registerNewPlayer = async (name, phone) => {
-    setRegistrationStatus("جاري تسجيل اللاعب الجديد...");
-    
-    try {
-      const phoneToSend = phone; // Format phone if needed
-      
-      console.log(`Registering new player: ${name}, ${phoneToSend}`);
-      
-      const response = await fetch('/api/dashboard/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          phone: phoneToSend, 
-          name: name, 
-          groupId: groupId 
-        }),
-      });
-
-      const data = await response.json();
-      console.log("Registration response:", data);
-      
-      if(response.status === 409) {
-        setError("هذا الرقم مسجل بالفعل");
-        setRegistrationStatus(null);
-        return null;
-      }
-      
-      if (!response.ok) {        
-        setError(data.error || `فشل إضافة اللاعب. الحالة: ${response.status}`);
-        setRegistrationStatus(null);
-        return null;
-      }
-
-      setRegistrationStatus("تم تسجيل اللاعب بنجاح");
-      
-      // Return the ID of the newly registered player
-      const playerId = data.id || data.userId || data.playerId;
-      console.log(`Player registered with ID: ${playerId}`);
-      return playerId || null;
-    } catch (e) {
-      console.error("Error registering player:", e);
-      setError(e.message || "حدث خطأ غير متوقع أثناء تسجيل اللاعب.");
-      setRegistrationStatus(null);
-      return null;
-    }
-  };
-  
   // Validate form before submission
   const validateForm = () => {
     setError(null);
@@ -207,15 +157,6 @@ const AddBooking = ({
         tripId: formData.tripData.id,
       };
       
-      // Check if we need to register a new player first
-      if (formData.name && formData.phone && !formData.playerId) {
-        console.log("New player needs to be registered first");
-        
-        const newPlayerId = await registerNewPlayer(formData.name, formData.phone);
-        
-        console.log(`Updating slot with new player ID: ${newPlayerId}`);
-      }
-      
       console.log("Submitting data:", submitData);
       // Now add the slot with complete player information
       await addSlot(submitData);
@@ -254,7 +195,7 @@ const AddBooking = ({
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md" dir="rtl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">
-                'إضافة حجز جديد'
+               إضافة حجز جديد
               </h2>
               <button 
                 onClick={handleCloseModal}
@@ -274,12 +215,6 @@ const AddBooking = ({
                   groupId={formData.groupId} 
                   onChange={handlePlayerChange}
                 />
-                {!formData.playerId && formData.name && formData.phone && (
-                  <p className="text-amber-600 text-xs mt-1">
-                    هذا اللاعب غير مسجل
-                    * سيتم تسجيله تلقائيًا عند حجز الموعد
-                  </p>
-                )}
               </div>
 
               <div className='mb-4'>

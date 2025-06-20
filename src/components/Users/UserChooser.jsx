@@ -32,35 +32,6 @@ const UserChooser = ({ groupId, onChange }) => {
     const [activeField, setActiveField] = useState(null)
 
     useEffect(() => {
-        fetchPlayers();
-    }, [groupId])
-
-    const fetchPlayers = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await fetch(`/api/dashboard/users?groupId=${groupId}`);
-            if (!response.ok) {
-                throw new Error(`خطأ في الاتصال! الحالة: ${response.status}`);
-            }
-            let responseData = await response.json();
-
-            responseData = responseData.users
-            
-            if (Array.isArray(responseData)) {
-                setPlayersData(responseData);
-            } else {
-                throw new Error("تنسيق البيانات المستلمة غير صحيح");
-            }
-        } catch (e) {
-            setError(e.message);
-            setPlayersData([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
         updateFilteredPlayers();
     }, [typedPlayerName, typedPlayerPhone, playersData, activeField]);
     

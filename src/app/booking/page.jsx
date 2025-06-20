@@ -7,6 +7,7 @@ import { paymentGateawayConfig } from '../../utils/payments/payments';
 import CancelBookClient from '@/components/Bookings/CancelBookClient';
 import CanceldOrder from '@/components/Bookings/CanceldOrder';
 import AddComment from '@/components/Templates/Main/AddComment';
+import ProfileCard from '@/components/website/ProfileCard';
 
 // Fetch booking data from Supabase
 async function fetchBookingData(id) {
@@ -63,7 +64,7 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
             </div>
           </div>
           <p className="text-center text-white/90">
-            تمت عملية الدفع بنجاح وتم تأكيد حجزك
+            تمت عملية الدفع بنجاح
           </p>
         </div>
 
@@ -77,8 +78,7 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
           :
           null
         }
-        
-
+       
         {/* Trip details */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center mb-4">
@@ -104,6 +104,10 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
           </div>
         </div>
 
+        <div className="p-6 border-gray-200 border-b">
+          <h3 className="text-lg font-bold text-gray-800 mb-2">مقدم الخدمة</h3>
+          <ProfileCard profileId={tripData.group_id} type={1} showPhone={true}/>
+        </div>
 
 
         {/* Customer details */}

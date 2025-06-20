@@ -47,7 +47,8 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
     profile_image: '',
     about: '',
     rating_avg: 0,
-    rating_count: 0
+    rating_count: 0,
+    clients_contact_phone: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -55,7 +56,8 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
   const [editForm, setEditForm] = useState({
     name: '',
     about: '',
-    profile_image: ''
+    profile_image: '',
+    clients_contact_phone: '',
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -76,7 +78,8 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
           setEditForm({
             name: profileInfo.name || '',
             about: profileInfo.about || '',
-            profile_image: profileInfo.profile_image || ''
+            profile_image: profileInfo.profile_image || '',
+            clients_contact_phone: profileInfo.clients_contact_phone || '',
           });
         } catch (error) {
           console.error('Error fetching profile data:', error);
@@ -89,7 +92,8 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
       setEditForm({
         name: profileDataState.name || '',
         about: profileDataState.about || '',
-        profile_image: profileDataState.profile_image || ''
+        profile_image: profileDataState.profile_image || '',
+        clients_contact_phone: profileDataState.clients_contact_phone || '',
       });
     }
   }, [profileData, profileId]);
@@ -99,7 +103,8 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
     setEditForm({
       name: profileDataState.name || '',
       about: profileDataState.about || '',
-      profile_image: profileDataState.profile_image || ''
+      profile_image: profileDataState.profile_image || '',
+      clients_contact_phone: profileDataState.clients_contact_phone || '',
     });
     setImagePreview('');
   };
@@ -111,7 +116,8 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
     setEditForm({
       name: profileDataState.name || '',
       about: profileDataState.about || '',
-      profile_image: profileDataState.profile_image || ''
+      profile_image: profileDataState.profile_image || '',
+      clients_contact_phone: profileDataState.clients_contact_phone || '',
     });
   };
 
@@ -157,7 +163,8 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
       let updatedProfile = {
         name: editForm.name,
         about: editForm.about,
-        profile_image: editForm.profile_image
+        profile_image: editForm.profile_image,
+        clients_contact_phone: editForm.clients_contact_phone,
       };
 
       // Upload new image if selected
@@ -229,7 +236,7 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                Change Photo
+                تغير الصورة
                 <input
                   type="file"
                   accept="image/*"
@@ -276,6 +283,30 @@ function AdminProfileCard({ profileData, profileId = null, onUpdate }) {
           profileDataState.about && (
             <div className='text-gray-600 text-lg mb-4 text-center max-w-full break-words'>
               {profileDataState.about}
+            </div>
+          )
+        )}
+
+        {/* Contact Phone Section */}
+        {isEditing ? (
+          <div className='w-full mb-4'>
+            <label className='block text-sm font-medium text-gray-700 mb-2 text-right'>رقم التواصل مع العملاء</label>
+            <input
+              type="tel"
+              value={editForm.clients_contact_phone}
+              onChange={(e) => setEditForm(prev => ({ ...prev, clients_contact_phone: e.target.value }))}
+              className='w-full p-3 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-lg'
+              placeholder="ادخل رقم التواصل"
+              dir="ltr"
+            />
+          </div>
+        ) : (
+          profileDataState.clients_contact_phone && (
+            <div className='flex items-center gap-2 mb-4 text-lg'>
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span className='text-gray-700'>{profileDataState.clients_contact_phone}</span>
             </div>
           )
         )}

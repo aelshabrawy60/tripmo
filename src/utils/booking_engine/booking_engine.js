@@ -115,7 +115,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
             client_phone: phone,
             persons: numberOfSeats,
             total_price: price,
-            deposite_price: deposit,
+            deposite_price: user_role == "admin" ? 0 : deposit,
             can_canceled_until: cancel_deadline,
             status: deposit > 0 && user_role != "admin" ? "pending" : "active",
             client_id: client_id

@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { Menu, ChevronRight, ChevronLeft} from 'react-feather';
 import { Users} from 'react-feather';
 import { usePathname } from 'next/navigation';
-import { FileText, HomeIcon } from 'lucide-react';
+import { FileText, HomeIcon, Settings, Settings2, SettingsIcon, User } from 'lucide-react';
 import { FaMoneyCheck } from 'react-icons/fa';
-import { PiMountainsBold } from "react-icons/pi";
+import { PiCarProfile, PiMountainsBold } from "react-icons/pi";
+import AdminProfileCard from '../profile/AdminProfileCard';
 
 
 // Define your sidebar items function that filters based on role
@@ -24,14 +25,24 @@ const getSidebarItems = (isAdmin) => {
       icon: <PiMountainsBold size={20} />,
     },
     {
-      title : 'سجل الحجز',
+      title : 'الحجوزات',
       path: '/dashboard/bookings',
       icon: <FileText size={20}/>
     },
     {
-      title: "المدفوعات الواردة",
+      title: "الرصيد",
       path: '/dashboard/payments',
       icon: <FaMoneyCheck/>
+    },
+    {
+      title: "الملف الشخصي",
+      path: '/dashboard/profile',
+      icon: <User/>
+    },
+    {
+      title: "الأعدادات",
+      path: '/dashboard/settings',
+      icon: <Settings2/>
     },
     // Show these items only if user is not an admin
     ...(isAdmin ? [] : [
@@ -45,9 +56,7 @@ const getSidebarItems = (isAdmin) => {
 
 // Custom logo component
 const logo = (
-  <div className="bg-tripmo-500 text-white p-2 rounded-md">
-    <span className="font-bold">نظام</span>
-  </div>
+  <img src='/logo.png' width={70}></img>
 );
 
 // Footer content
@@ -284,7 +293,6 @@ const Sidebar = ({
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div className={`flex items-center ${logoClassName}`}>
               {logo && <div className={`${expanded ? 'ml-3' : 'mx-auto'}`}>{logo}</div>}
-              {expanded && <h1 className="text-xl font-bold">{title}</h1>}
             </div>
 
             <button
