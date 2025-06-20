@@ -29,7 +29,7 @@ export class MessageBirdWhatsAppChannel extends WhatsAppChannel {
         contacts: [
           {
             identifierKey: "phonenumber",
-            identifierValue: to
+            identifierValue: "+" + to
           }
         ]
       },
