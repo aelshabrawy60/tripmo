@@ -36,7 +36,7 @@ export class MessageBirdWhatsAppChannel extends WhatsAppChannel {
       template: {
         projectId: template.name,
         version: template.version || "latest",
-        locale: template.language || "ar",
+        locale: template.language || "en",
         parameters: parameters
       }
     };
