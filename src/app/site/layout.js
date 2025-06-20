@@ -1,7 +1,7 @@
 "use client"
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { useAuth } from "@/context/AuthContext";
@@ -24,10 +24,17 @@ const socialMedia = [
 
 export default function RootLayout({ children }) {
   
+  const pathname = usePathname()
+
+  // Define routes where you want to HIDE the navbar
+  const hideNavbarRoutes = ['/booking']
+
+  const shouldHideNavbar = hideNavbarRoutes.includes(pathname)
+
   return (
     <>
         <MainLayout>
-            <MainNavbar pages={pages}/>
+            {!shouldHideNavbar && <MainNavbar pages={pages}/>}
             <div>
                 {children}
             </div>
