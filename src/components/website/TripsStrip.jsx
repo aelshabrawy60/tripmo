@@ -155,18 +155,6 @@ function TripsStrip({ tripsData }) {
           </div>
         ))}
       </div>
-
-      {/* Scroll Indicator Dots */}
-      {tripsData.length > 3 && (
-        <div className="flex justify-center mt-6 gap-2">
-          {Array.from({ length: Math.ceil(tripsData.length / 3) }).map((_, index) => (
-            <div
-              key={index}
-              className="w-2 h-2 rounded-full bg-gray-300 transition-colors duration-200"
-            />
-          ))}
-        </div>
-      )}
     </div>
   )
 }
