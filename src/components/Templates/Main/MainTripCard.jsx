@@ -26,7 +26,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
     : '';
 
   return (
-    <Link href={`/site/trips/${slug}`} className="block">
+    <Link href={`/trips/${slug}`} className="block">
       <div className="max-w-lg rounded-md overflow-hidden transition-all duration-300 m-2 flex flex-col h-full">
         {/* Image container */}
         <div className="relative h-52 overflow-hidden rounded-b-lg">

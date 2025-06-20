@@ -10,7 +10,7 @@ function TripsContent() {
   const [loading, setLoading] = useState(true)
   const searchParams = useSearchParams()
 
-  const departureCity = searchParams.get('departure_city')
+  const departureCity = searchParams.get('depature_city')
   const destCity = searchParams.get('dest_city')
   const query = searchParams.get('q')
 
@@ -18,7 +18,7 @@ function TripsContent() {
     setLoading(true)
     try {
       const params = new URLSearchParams()
-      if (departureCity) params.append('departure_city', departureCity)
+      if (departureCity) params.append('depature_city', departureCity)
       if (destCity) params.append('dest_city', destCity)
       if (query) params.append('q', query)
 

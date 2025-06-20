@@ -15,6 +15,8 @@ export async function GET(request) {
     const destCity = url.searchParams.get("dest_city");
     const query = url.searchParams.get("q");
 
+    console.log("depature_city", departureCity)
+    console.log("destCity", destCity)
 
     if(tripSlug){
       const trip = await getTrip(tripSlug, true);
@@ -35,14 +37,7 @@ export async function GET(request) {
     // If departure_city or dest_city is provided, filter trips by location
     if (departureCity || destCity || query) {
 
-      const { data, error } = await supabaseAdmin.rpc('search_trips', {
-        query: query || '',
-        depature_city_filter: departureCity,
-        dest_city_filter: destCity,
-        limit_count: 10,
-        offset_count: 0
-      });
-      
+      const data = await filterTripsByLocation(departureCity, destCity)
       return NextResponse.json(data);
     }
 

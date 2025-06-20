@@ -6,6 +6,10 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
             .from("trips")
             .select("*");
 
+
+        if(destLocationId != null && depatureLoctionId != null){
+            query = query.eq("dest_city", destLocationId).eq("depature_city", depatureLoctionId);
+        }
         // Apply filters only if the parameter is not null/undefined
         if (depatureLoctionId != null) {
             query = query.eq("depature_city", depatureLoctionId);
@@ -14,6 +18,8 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
         if (destLocationId != null) {
             query = query.eq("dest_city", destLocationId);
         }
+
+       
 
         // Execute the query
         const { data, error } = await query;

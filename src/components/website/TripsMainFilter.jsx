@@ -123,7 +123,7 @@ function TripsMainFilter() {
           {/* Search Button - Full width on mobile */}
           <div className="p-4 sm:p-6 pt-0">
             <a
-              href={`site/trips?${selectedDepartureCity != null ?  `depature_city=${selectedDepartureCity?.id || null}`: ''}${selectedDestinationCity != null ?  `&dest_city=${selectedDestinationCity?.id || null}`: ''}`}
+              href={`/trips?${selectedDepartureCity != null ?  `depature_city=${selectedDepartureCity?.id || null}`: ''}${selectedDestinationCity != null ?  `&dest_city=${selectedDestinationCity?.id || null}`: ''}`}
               disabled={isSearchDisabled || isSearching}
               className={`
                 w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2

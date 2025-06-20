@@ -64,8 +64,8 @@ const SignInPage = () => {
                                 }}
                             />
                             <div className='absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-                                <h2 className="text-3xl font-bold text-white">إدارة رحلاتك السياحية بكفاءة</h2>
-                                <p className="mt-3 text-white text-opacity-90">منصة متكاملة لإدارة الحجوزات والرحلات والعملاء بطريقة سهلة وفعالة</p>
+                                <h2 className="text-3xl font-bold text-white">منصة احترافية لإدارة وتسويق رحلاتك السياحية</h2>
+                                <p className="mt-3 text-white text-opacity-90">حل متكامل لأصحاب الرحلات لتنظيم الحجوزات والتواصل مع العملاء بكفاءة</p>
                             </div>
                         </div>
                     </div>
@@ -75,10 +75,8 @@ const SignInPage = () => {
                             
 
                             <div className="p-[30px] text-center">
-                                <div className="bg-white mb-6 text-white px-8 text-center relative overflow-hidden">
-                                    { <div className="flex justify-center items-center text-tripmo-500 font-bold text-3xl">
-                                        TRIPMO
-                                    </div> }
+                                <div className="bg-white mb-2 flex justify-center text-white px-8 text-center relative overflow-hidden">
+                                    { <img src='/logo.png' width={100}></img>}
                                     
                                 </div>
                                 <div className="mb-[20px] relative z-10">كل ما تحتاجه لإدارة شركتك السياحية علي الانترنت.</div>
@@ -126,12 +124,6 @@ const SignInPage = () => {
                                             onChange={(e) => setPassword(e.target.value)}
                                             disabled={loading}
                                         />
-                                    </div>
-
-                                    <div className="flex items-center justify-between mb-[20px]">
-                                        <Link href="/forgot-password" className="text-sm text-tripmo-500 hover:underline">
-                                            نسيت كلمة المرور؟
-                                        </Link>
                                     </div>
 
                                     {errorMessage && (

@@ -14,10 +14,7 @@ import MainFooter from "@/components/Templates/Main/MainFooter";
 
 
 const pages = [
-  { name: 'الرئيسية', link: '/' },
-  { name: 'الرحلات', link: '/trips' },
-  { name: 'اتصل بنا', link: '/contact' },
-  { name: 'اعرض رحلاتك', link: '/offers' },
+  { name: 'اعرض رحلاتك', link: '/dashboard/home' },
 ];
 
 const socialMedia = [

@@ -22,10 +22,12 @@ function TripsStrip({ tripsData }) {
       const isRTL = document.documentElement.dir === 'rtl' || document.body.dir === 'rtl'
       
       if (isRTL) {
-        // For RTL, scrollLeft is negative or starts from max value
-        const maxScrollLeft = scrollWidth - clientWidth
-        setShowLeftArrow(Math.abs(scrollLeft) < maxScrollLeft - 1)
-        setShowRightArrow(Math.abs(scrollLeft) > 0)
+        // For RTL, scrollLeft behavior varies by browser
+        // In most browsers, scrollLeft starts at 0 and goes negative as you scroll right
+        // We need to check if we can scroll more to the right (negative direction)
+        const maxScrollLeft = -(scrollWidth - clientWidth)
+        setShowLeftArrow(scrollLeft > maxScrollLeft) // Can scroll more to the right (shows left arrow on right side)
+        setShowRightArrow(scrollLeft < 0) // Can scroll back to the left (shows right arrow on left side)
       } else {
         // For LTR (default behavior)
         setShowLeftArrow(scrollLeft > 0)
@@ -44,10 +46,11 @@ function TripsStrip({ tripsData }) {
       
       let targetScroll
       if (isRTL) {
-        // For RTL, reverse the scroll direction logic
+        // For RTL: left arrow (visually on right) scrolls to show more items on right (negative direction)
+        // right arrow (visually on left) scrolls to show previous items (positive direction)
         targetScroll = direction === 'left' 
-          ? currentScroll + scrollAmount 
-          : currentScroll - scrollAmount
+          ? currentScroll - scrollAmount  // Show more items to the right
+          : currentScroll + scrollAmount  // Show previous items to the left
       } else {
         // For LTR (default behavior)
         targetScroll = direction === 'left' 
@@ -114,28 +117,6 @@ function TripsStrip({ tripsData }) {
 
   return (
     <div className="relative w-full py-6" dir="rtl">
-      {/* Left Arrow - Hidden on mobile */}
-      {showLeftArrow && !isMobile && (
-        <button
-          onClick={() => scroll('left')}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-all duration-200 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          aria-label="Scroll left"
-        >
-          <ChevronLeft className="w-5 h-5 text-gray-700" />
-        </button>
-      )}
-
-      {/* Right Arrow - Hidden on mobile */}
-      {showRightArrow && !isMobile && (
-        <button
-          onClick={() => scroll('right')}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-all duration-200 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          aria-label="Scroll right"
-        >
-          <ChevronRight className="w-5 h-5 text-gray-700" />
-        </button>
-      )}
-
       {/* Scrollable Container */}
       <div 
         ref={scrollContainerRef}

@@ -21,6 +21,8 @@ async function page() {
         />
         <div className='mt-[100px]'>
             <TripsStripSection tripsData={topTrips.top} title={'رحلات رائجة'}/>
+            <TopDestinations destinations={topDestinations}/>
+
             {
               topTrips.categories?.map((categorie) => {
                 return (
@@ -32,7 +34,6 @@ async function page() {
                 )
               })
             }
-            <TopDestinations destinations={topDestinations}/>
         </div>
     </>
   )

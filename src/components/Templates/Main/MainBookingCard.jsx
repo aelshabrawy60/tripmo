@@ -135,7 +135,7 @@ function MainBookingCard({ tripData }) {
         
         {/* Booking Button */}
         <a
-          href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum}`}
+          href={`/site/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum}`}
           className="bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2"
         >
           حجز الآن
