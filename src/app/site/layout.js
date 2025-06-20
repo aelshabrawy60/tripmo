@@ -38,7 +38,7 @@ export default function RootLayout({ children }) {
             <div>
                 {children}
             </div>
-            <MainFooter logo={'/logo.png'} socialMedia={socialMedia}/>
+            {!shouldHideNavbar && <MainFooter logo={'/logo.png'} socialMedia={socialMedia}/>}
         </MainLayout>
     </>
   );
