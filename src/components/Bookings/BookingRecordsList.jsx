@@ -77,8 +77,8 @@ export default function BookingRecordsList({groupId}) {
   // Note: Date filtering is now handled server-side through API parameters
   const filteredBookings = bookings.filter(booking => {
     const matchesSearch = 
-      booking.client_name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      booking.client_phone.includes(searchTerm);
+      booking.client_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      booking.client_phone?.includes(searchTerm);
     
     const matchesStatus = statusFilter === 'all' || booking.status === statusFilter;
     

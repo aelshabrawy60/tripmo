@@ -12,9 +12,11 @@ import MainLayout from "@/components/Templates/Main/MainLayout";
 import MainNavbar from "@/components/Templates/Main/MainNavbar";
 import MainFooter from "@/components/Templates/Main/MainFooter";
 
+const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
+const protocol = typeof window !== 'undefined' ? window.location.protocol : 'https:';
 
 const pages = [
-  { name: 'اعرض رحلاتك', link: '/dashboard/home' },
+  { name: 'اعرض رحلاتك', link: `${protocol}//host.${currentHost}`, },
 ];
 
 const socialMedia = [
