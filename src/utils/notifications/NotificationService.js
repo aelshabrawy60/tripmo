@@ -16,8 +16,8 @@ export default class NotificationService{
         console.log("sending confirmation", bookData , hostNumber);
 
         // Define both templates
-        const clientTemplate = { name: "opt_in_message" };
-        const hostTemplate = { name: "hello_text" };
+        const clientTemplate = { name: "cacd0dcd-2d18-4b9f-a112-5d5fc7307dd9" , variables: {otp: 5673}};
+        const hostTemplate = { name: "cacd0dcd-2d18-4b9f-a112-5d5fc7307dd9" , variables: {otp: 5673}};
 
         // Send both messages in parallel
         const [clientResult, hostResult] = await Promise.all([

@@ -1,9 +1,9 @@
 import { ZixFlowWhatsAppChannel } from "./channels/whatsapp/ZixFlowWhatsAppChannel";
-
+import { MessageBirdWhatsAppChannel } from "./channels/whatsapp/MessageBirdWhatsAppChannel";
 export class ChannelDispatcher {
   constructor(config) {
     this.channels = {
-      whatsapp: new ZixFlowWhatsAppChannel(config), // Or MessageBirdWhatsAppChannel
+      whatsapp: new MessageBirdWhatsAppChannel(config), // Or MessageBirdWhatsAppChannel
       // email: new EmailChannel(config),
       // sms: new SMSChannel(config),
     };
