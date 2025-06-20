@@ -16,6 +16,20 @@ export function middleware(request) {
     return NextResponse.next()
   }
 
+  // If it's a subdomain like host.maindomain.com
+  if (subdomain === 'host') {
+    // Handle root path for host subdomain
+    if (url.pathname === '/') {
+      console.log('[MIDDLEWARE] Host subdomain root, rewriting to /dashboard/home')
+      url.pathname = '/dashboard/home'
+      return NextResponse.rewrite(url)
+    }
+    
+    // For other paths under host subdomain, let them pass through normally
+    console.log(`[MIDDLEWARE] Host subdomain detected, allowing path: ${url.pathname}`)
+    return NextResponse.next()
+  }
+
   // If it's the main domain (no subdomain)
   if (!subdomain || subdomain === 'www') {
     if (url.pathname === '/') {
@@ -41,13 +55,6 @@ export function middleware(request) {
       console.log(`[MIDDLEWARE] Direct /site path access: ${url.pathname}`)
       return NextResponse.next()
     }
-  }
-
-  // If it's a subdomain like host.maindomain.com
-  if (subdomain === 'host') {
-    console.log('[MIDDLEWARE] Subdomain "host" detected, rewriting to /dashboard/home')
-    url.pathname = '/dashboard/home'
-    return NextResponse.rewrite(url)
   }
 
   // For any other subdomain trying to access /site/* paths, redirect to main domain
