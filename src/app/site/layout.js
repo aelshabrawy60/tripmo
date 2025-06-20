@@ -28,7 +28,7 @@ const getHostLink = () => {
 };
 
 const pages = [
-  { name: 'اعرض رحلاتك', link: `${getHostLink()}` },
+  { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
 ];
 
 
