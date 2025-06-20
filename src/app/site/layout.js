@@ -12,12 +12,25 @@ import MainLayout from "@/components/Templates/Main/MainLayout";
 import MainNavbar from "@/components/Templates/Main/MainNavbar";
 import MainFooter from "@/components/Templates/Main/MainFooter";
 
-const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
-const protocol = typeof window !== 'undefined' ? window.location.protocol : 'https:';
+const getHostLink = () => {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+
+    // Ensure hostname contains a domain (avoid just `localhost`)
+    if (host && host.includes('.')) {
+      const protocol = window.location.protocol;
+      return `${protocol}//host.${host}`;
+    }
+  }
+
+  // Fallback or empty string
+  return '';
+};
 
 const pages = [
-  { name: 'اعرض رحلاتك', link: `${protocol}//host.${currentHost}`, },
+  { name: 'اعرض رحلاتك', link: `${getHostLink()}` },
 ];
+
 
 const socialMedia = [
   {name: "facebook", link: 'https://www.facebook.com/share/1AcqvmjMYw'},

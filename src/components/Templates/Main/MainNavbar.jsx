@@ -28,7 +28,7 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6" }) {
               {pages?.map((page, index) => (
                 <a
                   key={index}
-                  href={page.link || "#"}
+                  href={page.link}
                   className="text-gray-700 hover:opacity-80 px-3 py-2 rounded-md text-sm font-medium transition duration-300 ease-in-out"
                   style={{
                     ':hover': { color: theme }
@@ -67,7 +67,7 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6" }) {
           {pages?.map((page, index) => (
             <a
               key={index}
-              href={page.link || "#"}
+              href={page.link}
               className="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium text-right"
               style={{
                 ':hover': { color: theme }
