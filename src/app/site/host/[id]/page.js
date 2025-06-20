@@ -9,7 +9,7 @@ async function page({params}) {
   
   async function fetchProfileData() {
     // Use absolute URL or ensure proper base URL handling
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL
     const response = await fetch(`${baseUrl}/api/client/host?id=${id}`)
     
     if (!response.ok) {
