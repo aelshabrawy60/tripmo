@@ -75,6 +75,7 @@ export async function popularTrips() {
   // Get top 20 trips
   const top20 = data.slice(0, 20);
   
+  console.log("top20", top20)
   // Get remaining 80 trips for categorization
   const remaining80 = data.slice(20);
   
