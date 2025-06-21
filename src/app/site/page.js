@@ -2,7 +2,6 @@ import MainHero from '@/components/Templates/Main/MainHero'
 import React from 'react'
 import { TrendingDestinations, popularTrips } from '@/utils/trips_engine/trips_engine'
 import TopDestinations from '@/components/website/TopDestinations'
-import TripsStrip from '@/components/website/TripsStrip'
 import TripsStripSection from '@/components/website/TripsStripSection'
 
 export const revalidate = 21600 // Revalidate every 6 hours
