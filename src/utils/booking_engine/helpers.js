@@ -61,12 +61,33 @@ export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, ed
     }
 }
 
-export function calculateCancelDeadline(bookDay, canCancelUntil, timeZone) {
-    const amount = canCancelUntil + timeZone;
+export function calculateCancelDeadline(bookDay, cancellationPolicy, timeZone) {
+
     const [year, month, day] = bookDay.split('-').map(Number);
-    const utcBookDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
-    
-    utcBookDate.setUTCHours(utcBookDate.getUTCHours() - amount);
-    
-    return utcBookDate;
+    const utcBookDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0)); // the booking date in the UTC time
+
+
+    // if the booking is refundable all time
+    if(cancellationPolicy.type == "refund"){
+        // return the booking start date
+        const utcBookDate_ = utcBookDate
+        utcBookDate_.setUTCHours(utcBookDate_.getUTCHours() - timeZone) // remove the diffrence of time between the UTC and the user timezone
+        return utcBookDate_
+    }
+
+    // if the booking is not refundable all the tme
+    if(cancellationPolicy.type == "no_refund"){
+        return null
+    }
+
+    // if the booking is refundable untile X hours before the booking day
+
+    if(cancellationPolicy.type == "refund_until"){
+        const amount = cancellationPolicy.until + timeZone; // amount in hours
+        utcBookDate.setUTCHours(utcBookDate.getUTCHours() - amount);
+        
+        return utcBookDate;
+    }
+
+    return null
 }

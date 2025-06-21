@@ -103,7 +103,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
 
     const {price, deposit} = await getBookingPrice(tripId, date, numberOfSeats, TripData);
 
-    const cancel_deadline = calculateCancelDeadline(date, TripData.cancellation_policy.until, timeZone);
+    const cancel_deadline = calculateCancelDeadline(date, TripData.cancellation_policy, timeZone);
     
     const { data, error } = await supabaseAdmin
         .from('bookings')
@@ -261,7 +261,7 @@ async function fetchTripData(tripId){
 export async function canBookRefunded(bookId){
     const {data, error} = await supabaseAdmin
         .from('bookings')
-        .select('can_canceled_until, trips (cancellation_policy)')
+        .select('can_canceled_until')
         .eq('id', bookId)
         .single()
 
@@ -270,12 +270,8 @@ export async function canBookRefunded(bookId){
         return false;
     }
 
-    if (data.trips.cancellation_policy.type == "refund"){
-        return true; // Booking can be refunded without any conditions
-    }
-
-    if (data.trips.cancellation_policy.type == "no_refund"){
-        return false; // Booking cannot be refunded
+    if(data.can_canceled_until == null){
+        return false
     }
 
     const canCanceledUntil = new Date(data.can_canceled_until);

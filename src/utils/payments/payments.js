@@ -149,7 +149,7 @@ async function initRefund(bookId, amount = null, gatewayConfig = paymentGateaway
   const paymentService = new PaymentRedirectFlow(gatewayConfig);
   const refundData = await paymentService.createRefund(gatewayConfig.name, bookId, amount);
 
-  const refund = await AddRefund(bookId, refundData.status, amount);
+  const refund = await AddRefund(bookId, refundData.status, amount, refundData.transactionId);
   
   if (!refund) {
     throw new Error("Failed to create refund record");

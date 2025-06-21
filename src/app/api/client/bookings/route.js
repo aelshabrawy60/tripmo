@@ -86,6 +86,7 @@ export async function DELETE(request){
     if (!bookingId) {
         return NextResponse.json({ success: false, message: "Booking ID is required." }, { status: 400 });
     }
+    
     try {
         const result = await cancelBooking(bookingId);
         const canRefund = await canBookRefunded(bookingId);
