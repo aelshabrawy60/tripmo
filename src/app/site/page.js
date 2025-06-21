@@ -5,7 +5,7 @@ import TopDestinations from '@/components/website/TopDestinations'
 import TripsStrip from '@/components/website/TripsStrip'
 import TripsStripSection from '@/components/website/TripsStripSection'
 
-export const revalidate = 60 // Revalidate every 60 seconds
+export const revalidate = 21600 // Revalidate every 6 hours
 
 
 async function page() {
