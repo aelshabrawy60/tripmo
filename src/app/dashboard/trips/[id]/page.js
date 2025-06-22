@@ -11,6 +11,7 @@ import CityChooser from "@/components/Trips/CityChooser";
 import TripCancellationPolicyEditor from "@/components/Trips/TripCancellationPolicyEditor";
 import ImgUploader from "@/components/Trips/ImgUploader";
 import LoadingCirc from "@/components/Loading/LoadingCirc";
+import TripVisibilityToggle from "@/components/Trips/TripVisibilityToggle";
 
 export default function TripDetailPage({ params }) {
     const { id: tripId } = React.use(params);
@@ -269,43 +270,6 @@ export default function TripDetailPage({ params }) {
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("هل انت متأكد من حذف هذه الرحلة؟ لن تتمكن من استرجاعها.")) {
-      return;
-    }
-    
-    setLoading(true);
-    
-    try {
-      const response = await fetch(`/api/dashboard/trips?id=${tripId}`, {
-        method: "DELETE",
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to delete trip");
-      }
-      
-      // Handle success
-      setStatusMessage({
-        type: "success",
-        message: "Trip deleted successfully! Redirecting..."
-      });
-      
-      // Redirect to trips list after a short delay
-      setTimeout(() => {
-        router.push("/dashboard/trips");
-      }, 1500);
-      
-    } catch (error) {
-      console.error("Error deleting trip:", error);
-      setStatusMessage({
-        type: "error",
-        message: error.message || "Failed to delete trip. Please try again."
-      });
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -333,6 +297,7 @@ export default function TripDetailPage({ params }) {
   return (
     <div className="mx-auto mt-6 p-6 pt-0 max-w-xl bg-white rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
       <div className="flex justify-between items-center mb-6 bg-white sticky top-0 z-10 py-4">
+
         <h1 className="text-xl font-bold text-gray-800">
           {editing ? "تعديل الرحلة" : "تفاصيل الرحلة"}
         </h1>
@@ -372,13 +337,8 @@ export default function TripDetailPage({ params }) {
             </>
           ) : (
             <>
-              <button
-                onClick={handleDelete}
-                className="flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
-              >
-                <Trash2 size={16} className="mr-1" />
-                حذف
-              </button>
+              <TripVisibilityToggle tripId={tripData.id} initialStatus={tripData.status}/>
+
               <button
                 onClick={handleEditMode}
                 className="flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"

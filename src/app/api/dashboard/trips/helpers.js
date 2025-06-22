@@ -98,8 +98,8 @@ export async function updateTrip(tripId, updatedTrip) {
   return data;
 }
 
-export async function getTrip(tripId, bySlogan = false) {
-  const { data, error } = await supabaseAdmin
+export async function getTrip(tripId, bySlogan = false, active = false) {
+  let query = supabaseAdmin
     .from("trips")
     .select(`
       *,
@@ -107,9 +107,13 @@ export async function getTrip(tripId, bySlogan = false) {
       depature_city:depature_city (*),
       dest_city:dest_city (*)
     `)
-    .eq(`${bySlogan? 'slug' : 'id'}`, tripId)
-    .single();
+    .eq(`${bySlogan ? 'slug' : 'id'}`, tripId);
 
+  if (active) {
+    query = query.eq("status", "active");
+  }
+
+  const { data, error } = await query.single();
 
   if (error) {
     throw new Error(`Error fetching trip: ${error.message}`);
@@ -127,11 +131,17 @@ export async function getTrip(tripId, bySlogan = false) {
 }
 
 
-export async function getAllTrips(groupId) {
-  const { data, error } = await supabaseAdmin
+export async function getAllTrips(groupId, active = false) {
+  let query = supabaseAdmin
     .from("trips")
     .select("*, categories (id, name), ratings (*)")
     .eq("group_id", groupId);
+
+  if (active) {
+    query = query.eq("status", "active");
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(`Error fetching trips: ${error.message}`);

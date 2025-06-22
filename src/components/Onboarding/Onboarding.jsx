@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'; // Added useCallback
 import { ChevronRight, ChevronLeft, User, Phone, FileText, Camera, Check, Star, MessageCircle } from 'lucide-react';
 import LoadingCirc from '../Loading/LoadingCirc';
+import TermsAcceptance from '../website/TermsAcceptance';
 
 const ProfileOnboarding = ({profileId}) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -716,7 +717,11 @@ const ProfileOnboarding = ({profileId}) => {
               </button>
             )}
           </div>
+          <div className='mt-4'>
+            <TermsAcceptance link={'/terms'}/>
+          </div>
         </div>
+
       </div>
     </div>
   );

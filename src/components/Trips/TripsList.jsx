@@ -15,14 +15,26 @@ function TripsList({groupId}) {
     const fetchTrips = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/dashboard/trips?groupId=${groupId}&`);
-        
+        const response = await fetch(`/api/dashboard/trips?groupId=${groupId}`);
+
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
         }
-        
-        const data = await response.json();
-        setTrips(data);
+
+        let data = await response.json();
+
+        data.sort((a, b) => {
+        // First: active trips come before non-active
+        if (a.status === "active" && b.status !== "active") return -1;
+        if (a.status !== "active" && b.status === "active") return 1;
+
+        // Then: sort by created_at descending (latest first)
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+
+      setTrips(data);
+
+
         setError(null);
       } catch (err) {
         console.error('Error fetching trips:', err);
@@ -34,6 +46,7 @@ function TripsList({groupId}) {
 
     fetchTrips();
   }, []);
+
 
   if (loading) {
     return (

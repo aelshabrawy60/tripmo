@@ -33,6 +33,7 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@csstools/postcss-oklab-function": "^4.0.10",
     "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4"
   }

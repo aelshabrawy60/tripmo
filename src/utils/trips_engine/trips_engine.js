@@ -4,7 +4,8 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
         // Start building the query
         let query = supabaseAdmin
             .from("trips")
-            .select("*");
+            .select("*")
+            .eq("status", "active");
 
 
         if(destLocationId != null && depatureLoctionId != null){
@@ -61,6 +62,7 @@ export async function popularTrips() {
       depature:depature_city (name)
     `)
     .order("score", { ascending: false })
+    .eq("status", "active")
     .limit(100);
 
   if (error) {

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
+import TripVisibilityToggle from './TripVisibilityToggle';
 
 function TripCard({ tripData }) {
   const { 
@@ -35,6 +36,10 @@ function TripCard({ tripData }) {
             {availability_type === 'fixed' ? 'موعد ثابت' : 'مواعيد متعددة'}
           </div>
         )}
+
+        <div className="absolute top-3 left-3 font-semibold">
+           <TripVisibilityToggle tripId={tripData.id} initialStatus={tripData.status}/>
+        </div>
       </div>
       
       {/* Content */}

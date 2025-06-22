@@ -19,7 +19,7 @@ export async function GET(request) {
     console.log("destCity", destCity)
 
     if(tripSlug){
-      const trip = await getTrip(tripSlug, true);
+      const trip = await getTrip(tripSlug, true, true);
       return NextResponse.json(trip);
     }
     // If tripId is provided, get the specific trip
@@ -30,7 +30,7 @@ export async function GET(request) {
     
     // If groupId is provided, get all trips for that group
     if (groupId) {
-      const trips = await getAllTrips(groupId);
+      const trips = await getAllTrips(groupId, true);
       return NextResponse.json(trips);
     }
 

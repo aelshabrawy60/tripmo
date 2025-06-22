@@ -199,30 +199,37 @@ export default async function Page({ searchParams }) {
       ? JSON.parse(searchParams.merchantOrderId)
       : searchParams.merchantOrderId;
 
+    console.log("merchantId", merchantOrderId)
     // Fetch booking and trip data
     const bookingData = await fetchBookingData(merchantOrderId);
     const tripData = await fetchTripData(bookingData.bookable_id);
-    const isBookRated_ = await isBookRated(bookingData.id);
+    const isBookRated_ = await isBookRated(bookingData.id);    
 
-    const groupId = bookingData.group_id;
-    const paymentConfig = paymentGateawayConfig; // Use the default payment gateway config
-    //const paymentConfig = await fetchPaymentsOptions(groupId);
-    
-    const paymentService = new PaymentRedirectFlow(paymentConfig);
-
-    const verf = await paymentService.verifyPaymentReturn(paymentConfig.name, searchParams);
 
     if(bookingData.status == "canceled"){
       return <CanceldOrder bookingData={bookingData} tripData={tripData}/>
     }
-    // If successful, confirm the deposit
-    if (verf.success) {
-      await confirmDeposit(merchantOrderId);
+
+    if(bookingData.status == "active"){
       return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_} />;
-    } else {
-      // Payment verification failed
-      return <ErrorDisplay message="فشل التحقق من الدفع. يرجى الاتصال بخدمة العملاء." />;
+
+    }else{
+      const paymentConfig = paymentGateawayConfig; // Use the default payment gateway config
+      //const paymentConfig = await fetchPaymentsOptions(groupId);
+      
+      const paymentService = new PaymentRedirectFlow(paymentConfig);
+      const verf = await paymentService.verifyPaymentReturn(paymentConfig.name, searchParams);
+
+      // If successful, confirm the deposit
+      if (verf.success) {
+        await confirmDeposit(merchantOrderId);
+        return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_} />;
+      } else {
+        // Payment verification failed
+        return <ErrorDisplay message="فشل التحقق من الدفع. يرجى الاتصال بخدمة العملاء." />;
+      }
     }
+    
   } catch (error) {
     console.error("Error in booking page:", error);
     return <ErrorDisplay message={error.message} />;
