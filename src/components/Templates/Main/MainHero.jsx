@@ -10,7 +10,7 @@ function MainHero({img, title, subtitle = null}) {
   return (
     <div className='w-full h-screen relative rounded-2xl lg:rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black max-h-[520px] md:max-h-[320px] mb-16 sm:mb-20 md:mb-10'>
         {/* Background overlay for smooth transition */}
-        <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/60 to-black/40 rounded-2xl lg:rounded-3xl transition-opacity duration-500 ${imageLoaded ? 'opacity-0' : 'opacity-100'} z-[1]`} />
+<div className={`absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-2xl lg:rounded-3xl transition-opacity duration-500 ${imageLoaded ? 'opacity-0' : 'opacity-100'} z-[1]`} style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }} />
         
         {/* Loading skeleton */}
         <div className={`absolute inset-0 rounded-2xl lg:rounded-3xl transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'} z-[2]`}>
