@@ -1,6 +1,21 @@
 // app/api/storage/upload/route.js
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
+import crypto from 'crypto';
+
+// Function to generate safe filename while preserving extension
+function generateSafeFileName(originalName) {
+  const extension = originalName.split('.').pop();
+  const nameWithoutExt = originalName.replace(`.${extension}`, '');
+  
+  // Generate a unique hash from the original name
+  const hash = crypto.createHash('md5').update(nameWithoutExt).digest('hex').substring(0, 8);
+  
+  // Create timestamp
+  const timestamp = Date.now();
+  
+  return `${hash}_${timestamp}.${extension}`;
+}
 
 export async function POST(request) {
   try {
@@ -14,7 +29,7 @@ export async function POST(request) {
     
     // Extract the bucket and file path
     const [bucket, ...fileParts] = path.split('/');
-    const filePath = fileParts.join('/');
+    let filePath = fileParts.join('/');
     
     if (!bucket || !filePath) {
       return NextResponse.json(
@@ -31,6 +46,12 @@ export async function POST(request) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
     
+    // Generate safe filename
+    const pathParts = filePath.split('/');
+    const originalFileName = pathParts.pop();
+    const safeFileName = generateSafeFileName(file.name);
+    filePath = pathParts.length > 0 ? `${pathParts.join('/')}/${safeFileName}` : safeFileName;
+    
     // Check if bucket exists and create it if it doesn't
     const { data: buckets } = await supabaseAdmin
       .storage
@@ -43,8 +64,8 @@ export async function POST(request) {
       const { error: createBucketError } = await supabaseAdmin
         .storage
         .createBucket(bucket, {
-          public: true, // Make bucket publicly accessible
-          fileSizeLimit: 5242880, // 5MB limit per file
+          public: true,
+          fileSizeLimit: 5242880,
         });
       
       if (createBucketError) {
@@ -66,7 +87,7 @@ export async function POST(request) {
       .from(bucket)
       .upload(filePath, buffer, {
         contentType: file.type,
-        upsert: false, // Don't overwrite existing files with same name
+        upsert: false,
       });
     
     if (error) {
@@ -86,7 +107,9 @@ export async function POST(request) {
     return NextResponse.json({
       success: true,
       url: publicUrl,
-      path: `${bucket}/${filePath}`
+      path: `${bucket}/${filePath}`,
+      originalFileName: file.name,
+      storedFileName: safeFileName
     });
     
   } catch (error) {

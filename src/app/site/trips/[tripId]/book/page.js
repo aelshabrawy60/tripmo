@@ -6,6 +6,7 @@ import ClientAuthFlow from '@/components/auth/ClientAuthFlow';
 import BookSummaryCard from '@/components/website/BookSummaryCard';
 import LoadingCirc from '@/components/Loading/LoadingCirc';
 import Loading from '@/components/Loading';
+import TermsAcceptance from '@/components/website/TermsAcceptance';
 
 function BookingPage() {
   const params = useParams();
@@ -191,6 +192,7 @@ function BookingPage() {
             />
             
             {showPaymentButton && (
+              <>
               <button
                 onClick={handlePaymentClick}
                 disabled={isSubmitting}
@@ -198,6 +200,9 @@ function BookingPage() {
               >
                 {isSubmitting ? 'جاري المعالجة...' : 'دفع'}
               </button>
+              <TermsAcceptance link={`/terms`}/>
+              </>
+              
             )}
           </div>
 

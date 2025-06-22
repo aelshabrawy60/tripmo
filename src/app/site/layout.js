@@ -28,6 +28,10 @@ const pages = [
   { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
 ];
 
+const footerPages = [
+  { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
+  {name: "الشروط والأحكام", link: "/terms"}
+]
 const socialMedia = [
   {name: "facebook", link: 'https://www.facebook.com/share/1AcqvmjMYw'},
   {name: "instagram", link: 'https://www.instagram.com/rehlanow/profilecard/?igsh=cWl0dm4zMzcxZW1l'}
@@ -48,7 +52,7 @@ export default function RootLayout({ children }) {
       <MainLayout>
         {!shouldHideNavbar && <MainNavbar pages={pages} />}
         <div>{children}</div>
-        {!shouldHideNavbar && <MainFooter logo={'/logo.png'} socialMedia={socialMedia} />}
+        {!shouldHideNavbar && <MainFooter logo={'/logo.png'} pages={footerPages} socialMedia={socialMedia} />}
       </MainLayout>
     </>
   );

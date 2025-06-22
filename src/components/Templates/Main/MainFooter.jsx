@@ -16,7 +16,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
 
   // Default contact info if not provided
   const defaultContactInfo = {
-    address: "مصر دمياط الجديدة",
+    address: "مصر , دمياط الجديدة",
     phone: "+966 123 456 789",
     email: "rehlanow@gmail.com"
   };
@@ -28,7 +28,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
     <footer className="text-gray-800 mt-10">
       {/* Main Footer Content */}
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="flex flex-col md:flex-row justify-between gap-8">
+        <div className="flex flex-col md:flex-row justify-between gap-x-20 gap-y-8">
           
           {/* Company Info */}
           <div className="mb-6 md:mb-0 md:w-1/3">

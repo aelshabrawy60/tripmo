@@ -6,6 +6,7 @@ import OTPInputForm from './OTPInputForm';
 import NameInputForm from './NameInputForm';
 import { LoaderCircle } from 'lucide-react';
 import LoadingCirc from '../Loading/LoadingCirc';
+import TermsAcceptance from '../website/TermsAcceptance';
 
 
 const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
@@ -126,6 +127,9 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
               onSuccess={handlePhoneSuccess}
               primary_color={primary_color}
             />
+            <div className='mt-4'>
+            <TermsAcceptance link={`/terms`}/>
+            </div>
           </div>
         )}
 
