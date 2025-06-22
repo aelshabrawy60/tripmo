@@ -33,7 +33,7 @@ function TripsMainFilter() {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Main Filter Form - Responsive Layout */}
-<div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200" style={{ borderColor: '#E5E7EB' }}>
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200">        
         {/* Desktop Layout (lg and up) */}
         <div className="hidden md:flex items-center">
           {/* Departure City */}
@@ -76,10 +76,9 @@ function TripsMainFilter() {
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                     : isSearching
                     ? 'bg-blue-500 text-white cursor-wait'
-: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md'
                 }
                 `}
-            style={{ backgroundColor: isSearchDisabled ? '' : isSearching ? '' : '#2563EB' }}
             >
                 {isSearching ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
