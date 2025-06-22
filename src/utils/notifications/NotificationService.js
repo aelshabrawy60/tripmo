@@ -16,8 +16,33 @@ export default class NotificationService{
         console.log("sending confirmation", bookData , hostNumber);
 
         // Define both templates
-        const clientTemplate = { name: "cacd0dcd-2d18-4b9f-a112-5d5fc7307dd9" , variables: {otp: 5673}};
-        const hostTemplate = { name: "cacd0dcd-2d18-4b9f-a112-5d5fc7307dd9" , variables: {otp: 5673}};
+        const clientTemplate = { 
+            name: "45d35f93-1514-411d-8051-0efd2b9aeca4" ,
+            variables: {
+                name: bookData.client_name,
+                destination: bookData.trips.name,
+                date: bookData.day,
+                persons: bookData.persons,
+                price: bookData.total_price,
+                deposit: bookData.deposite_price,
+                host_name: bookData.Group.name,
+                host_phone: bookData.Group.clients_contact_phone,
+                booking_link: `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${bookData.deposits.payment_id}` 
+            }
+        };
+
+        const hostTemplate = { 
+            name: "2a8c6d39-7605-4b77-a950-c893279b5665", 
+            variables: {
+                trip_name: bookData.trips.name,
+                date: bookData.day,
+                persons: bookData.persons,
+                price: bookData.total_price,
+                deposit: bookData.deposite_price,
+                client_name: bookData.client_name,
+                client_phone: bookData.client_phone
+            }
+        };
 
         // Send both messages in parallel
         const [clientResult, hostResult] = await Promise.all([

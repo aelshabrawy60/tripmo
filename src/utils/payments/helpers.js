@@ -60,7 +60,7 @@ export async function confirmDeposit(bookId) {
             .from("bookings")
             .update({ status: "active" })
             .eq("id", bookId)
-            .select("Group(notifications_number), bookable_id")
+            .select("Group(*), *, trips(name), deposits(payment_id)")
             .single(),
     ]);
 
