@@ -7,7 +7,7 @@ export class MessageBirdWhatsAppChannel extends WhatsAppChannel {
     super();
     this.accessToken = config?.accessToken || "gPD8wRMLUu8Wb8uovgsPSDumy95J0gcSIS1z";
     this.workspaceId = config?.workspaceId || "bdd3106f-494d-4c51-ba93-8805b29043c3";
-    this.channelId = config?.channelId || "d7818c6e-85dd-5e34-be27-ad96351eac06";
+    this.channelId = config?.channelId || "eca0238b-291e-5f0c-8c40-f45a1ac64d50";
     this.baseUrl = `https://api.bird.com/workspaces/${this.workspaceId}/channels/${this.channelId}`;
   }
 
