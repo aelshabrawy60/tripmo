@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://rehlanow.com/</loc>
+    <lastmod>2025-06-23T22:01:36.854Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://rehlanow.com/site</loc>
+    <lastmod>2025-06-23T22:01:36.855Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://rehlanow.com/site/booking</loc>
+    <lastmod>2025-06-23T22:01:36.855Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://rehlanow.com/site/trips</loc>
+    <lastmod>2025-06-23T22:01:36.855Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://rehlanow.com/site/host</loc>
+    <lastmod>2025-06-23T22:01:36.855Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://rehlanow.com/site/terms</loc>
+    <lastmod>2025-06-23T22:01:36.855Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://rehlanow.com/terms</loc>
+    <lastmod>2025-06-23T22:01:36.855Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>
