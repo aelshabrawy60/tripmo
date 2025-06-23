@@ -28,10 +28,7 @@ function DestinationCard({ data }) {
           </p>
         </div>
 
-        {/* Optional: Add a subtle indicator */}
-        <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="w-12 h-0.5 bg-white rounded"></div>
-        </div>
+
       </div>
     </a>
   );

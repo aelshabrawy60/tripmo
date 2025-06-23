@@ -102,7 +102,7 @@ export async function DELETE(request){
         if (result.success) {
 
             const notifications = new NotificationService();
-                notifications.sendBookCancellation("whatsapp", bookingId)
+                notifications.sendBookCancellation("whatsapp", bookingId, canRefund)
                     .catch(err => console.error("Notification error:", err));
 
             return NextResponse.json({ success: true, message: "Booking cancelled successfully." }, { status: 200 });

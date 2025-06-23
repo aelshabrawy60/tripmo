@@ -53,16 +53,53 @@ export default class NotificationService{
         return { clientResult, hostResult };
     }
 
-    async sendBookCancellation(channelName, bookId){
+    async sendBookCancellation(channelName, bookId, canRefund){
         console.log("sending cancellation" );
 
         const bookData = await fetchBookData(bookId)
         const hostNumber = bookData.Group.notifications_number
         const to = bookData.clients.phone
         // Define both templates
-        const clientTemplate = { name: "opt_in_message" };
-        const hostTemplate = { name: "hello_text" };
+        let clientTemplate = { };
 
+        if(canRefund){
+            clientTemplate = {
+                name : "a41f8b47-e639-4149-8476-c13cbe6aeeb6",
+                variables : {
+                    name: bookData.client_name,
+                    trip_name: bookData.trips.name,
+                    date: bookData.day,
+                    persons: bookData.persons,
+                    total_price: bookData.total_price,
+                    refund_amount: bookData.total_price
+                }
+            }
+        }else{
+            clientTemplate = {
+                name: "a0796746-2048-4e6e-a2f3-79b32d3f1b07",
+                variables: {
+                    name: bookData.client_name,
+                    trip_name: bookData.trips.name,
+                    date: bookData.day,
+                    persons: bookData.persons,
+                }
+            }
+        }
+        
+        const hostTemplate = { 
+            name: "b580a06f-0d70-46bd-aa8c-04f441b0851e",
+            variables: {
+                client_name: bookData.client_name,
+                client_phone: bookData.client_phone,
+                trip_name: bookData.trips.name,
+                date: bookData.day,
+                persons: bookData.persons,
+                total_price: bookData.total_price,
+                refund_amount: canRefund == true ? bookData.total_price : 0
+            }
+        };
+
+        
         // Send both messages in parallel
         console.log("hi")
         const [clientResult, hostResult] = await Promise.all([

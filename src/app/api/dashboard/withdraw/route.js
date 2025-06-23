@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
 import { withdraw } from "@/utils/withdraw/withdraw";
 import { supabaseAdmin } from "@/utils/supabase/service";
+import { withAuth } from "@/lib/auth";
 
-export async function POST(request) {
+export const POST = withAuth(async (request) => {
+    const {groupId} = request.auth
+
     try {
         const body = await request.json();
-        const { group_id, withdraw_method_id } = body;
+        const { withdraw_method_id } = body;
 
-        const withd = await withdraw(group_id, withdraw_method_id);
+        const withd = await withdraw(groupId, withdraw_method_id);
 
         if (withd) {
             return NextResponse.json(
@@ -21,7 +24,7 @@ export async function POST(request) {
             { status: 500 }
         );
     }
-}
+})
 
 export async function GET(request) {
     try {
