@@ -220,7 +220,7 @@ class KashierRedirect {
           merchantTransferId: merchant_id,
           recipientBank: payoutData.recipientBank,
           recipientNumber: payoutData.recipientNumber,
-          webhookUrl: payoutData.webhookUrl
+          serverWebhook: "https://tripmo.vercel.app/api/webhook/payouts"
         })
       });
 
