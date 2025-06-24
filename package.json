@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.49.4",
     "axios": "^1.9.0",
     "framer-motion": "^12.9.4",
+    "fuse.js": "^7.1.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
