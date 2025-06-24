@@ -16,7 +16,7 @@ async function page() {
   return (
     <>
         <MainHero 
-            img="/shutterstock-2409522421.webp" 
+            img="/0x0.webp" 
             title="رحلتك القادمة تبدأ من هنا"
             subtitle="اكتشف أجمل الوجهات، قارن بين أفضل العروض، واحجز رحلتك بكل سهولة."
         />
