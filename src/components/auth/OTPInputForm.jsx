@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 const OTPInputForm = ({
   phoneNumber,
   isExistingUser,
+  verificationId,
   primary_color = '#3b82f6',
   onVerified,
 }) => {
@@ -32,7 +33,7 @@ const OTPInputForm = ({
 
   const handleOtpInput = (e) => {
     const value = e.target.value.replace(/\D/g, '');
-    if (value.length <= 4) {
+    if (value.length <= 6) {
       setOtp(value);
     }
   };
@@ -46,19 +47,23 @@ const OTPInputForm = ({
       const response = await fetch('/api/client/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: phoneNumber, otp }),
+        body: JSON.stringify({ phone: phoneNumber, otp, verificationId }),
       });
 
       const data = await response.json();
+      console.log('OTP Response:', data); // Debug log
 
       if (response.ok && data.success) {
         Cookies.set('client_token', data.clientToken, { expires: 1000 });
 
         if (onVerified) onVerified(data); // Callback after success (e.g., redirect)
       } else {
+        console.log('OTP Failed:', data); // Debug log
+
         setError(data.message || 'حدث خطأ أثناء التحقق');
       }
     } catch (err) {
+      
       console.error(err);
       setError('حدث خطأ في الاتصال بالخادم');
     }
@@ -88,8 +93,8 @@ const OTPInputForm = ({
             value={otp}
             onChange={handleOtpInput}
             className="w-full px-4 py-3 text-center text-2xl font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent tracking-widest"
-            placeholder="1234"
-            maxLength={4}
+            placeholder="123456"
+            maxLength={6}
             disabled={isLoading}
             style={{ '--tw-ring-color': primary_color }}
           />
@@ -100,10 +105,10 @@ const OTPInputForm = ({
 
         <button
           type="submit"
-          disabled={isLoading || otp.length !== 4}
+          disabled={isLoading || otp.length !== 6}
           className="w-full py-3 bg-tripmo-500 px-4 rounded-lg text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
-            opacity: (isLoading || otp.length !== 4) ? 0.5 : 1
+            opacity: (isLoading || otp.length !== 6) ? 0.5 : 1
           }}
         >
           {isLoading ? (

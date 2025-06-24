@@ -48,7 +48,7 @@ const PhoneInputForm = ({
       }
 
       Cookies.set('client_phone', fullPhone, { expires: 1 }); // save phone in cookie
-      if (onSuccess) onSuccess(fullPhone);
+      if (onSuccess) onSuccess(fullPhone, data.verificationId);
     } catch (err) {
       setError(err.message);
     }

@@ -1,11 +1,12 @@
 // verify the OTP and if its verified then check if this phone has account if not create one for it
 import { NextResponse } from "next/server";
 import { isUserExists , createClient, getClientTokenByPhone} from "@/utils/client_auth/client_auth";
+import verifyService from "@/lib/messagebird";
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { phone, otp } = body;
+    const { phone, otp, verificationId } = body;
 
     // Validate required fields
     if (!phone || !otp) {
@@ -16,19 +17,18 @@ export async function POST(request) {
     }
 
     // Validate OTP format (should be 6 digits)
-    if (!/^\d{4}$/.test(otp)) {
+    if (!/^\d{6}$/.test(otp)) {
       return NextResponse.json({
         success: false,
-        message: 'رمز التحقق يجب أن يكون 4 أرقام'
+        message: 'رمز التحقق يجب أن يكون 6 أرقام'
       }, { status: 400 });
     }
 
-    console.log('Verifying OTP with Fazpass:', { phone, otp: '******' });
+    const result = await verifyService.verifyCode(verificationId, otp);
 
-    const verficationResult = true
+    const verficationResult = result.success && result.verified
 
     if (verficationResult) {
-
       // check if the phone has an account
       const user = await isUserExists(phone)
 
@@ -52,9 +52,11 @@ export async function POST(request) {
         clientPhone: UserPhone,
         clientId: UserId
       });
+
     } else {
-      console.error('Fazpass OTP Verify Error:', data);
+      console.error('OTP Verify Error:', result);
       
+      const data = result
       // Handle specific error cases
       let errorMessage = 'رمز التحقق غير صحيح';
       

@@ -15,6 +15,7 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
   const [selectedCountryCode, setSelectedCountryCode] = useState({ code: '+20', name: 'Egypt', flag: '🇪🇬' });
   const [isExistingUser, setIsExistingUser] = useState(false);
   const [otpData, setOtpData] = useState(null);
+  const [verificationId, setVerificationId] = useState(null)
 
   // Country codes data
   const countryCodes = [
@@ -31,6 +32,8 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
     { code: '+213', name: 'Algeria', flag: '🇩🇿' },
     { code: '+216', name: 'Tunisia', flag: '🇹🇳' },
   ];
+
+
 
   // Check for existing token on component mount
   useEffect(() => {
@@ -72,8 +75,9 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
     checkExistingToken();
   }, [onSuccess]);
 
-  const handlePhoneSuccess = (phone) => {
+  const handlePhoneSuccess = (phone, verificationId) => {
     setPhoneNumber(phone);
+    setVerificationId(verificationId)
     setCurrentStep('otp');
   };
 
@@ -139,6 +143,7 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
             isExistingUser={isExistingUser}
             primary_color={primary_color}
             onVerified={handleOTPVerified}
+            verificationId={verificationId}
           />
         )}
 

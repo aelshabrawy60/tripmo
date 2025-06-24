@@ -27,7 +27,7 @@ class MessageBirdVerify {
       timeout = 600,
       codeLength = 4,
       whatsappTemplate = {
-        "projectId": "cacd0dcd-2d18-4b9f-a112-5d5fc7307dd9",
+        "projectId": "bf6c37fa-0c79-4c5e-9cdc-8d6a4e894358",
         "version": "latest",
         "locale": "en"
       }

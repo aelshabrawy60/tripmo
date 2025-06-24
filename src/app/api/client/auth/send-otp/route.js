@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import verifyService from '@/lib/messagebird';
 
 export async function POST(request) {
