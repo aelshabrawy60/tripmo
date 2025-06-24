@@ -16,18 +16,32 @@ export function middleware(request) {
     return NextResponse.next()
   }
 
+  // Clone the request headers to add pathname
+  const requestHeaders = new Headers(request.headers)
+  
+  // Add the original pathname to headers (before any rewrites)
+  requestHeaders.set('x-pathname', url.pathname)
+  
   // If it's a subdomain like host.maindomain.com
   if (subdomain === 'host') {
     // Handle root path for host subdomain
     if (url.pathname === '/') {
       console.log('[MIDDLEWARE] Host subdomain root, rewriting to /dashboard/home')
       url.pathname = '/dashboard/home'
-      return NextResponse.rewrite(url)
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      })
     }
     
     // For other paths under host subdomain, let them pass through normally
     console.log(`[MIDDLEWARE] Host subdomain detected, allowing path: ${url.pathname}`)
-    return NextResponse.next()
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    })
   }
 
   // If it's the main domain (no subdomain)
@@ -35,7 +49,11 @@ export function middleware(request) {
     if (url.pathname === '/') {
       console.log('[MIDDLEWARE] Rewriting / to /site')
       url.pathname = '/site'
-      return NextResponse.rewrite(url)
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      })
     }
     
     // Rewrite clean URLs to /site/* internally
@@ -47,13 +65,21 @@ export function middleware(request) {
       const rewritePath = `/site${url.pathname}`
       console.log(`[MIDDLEWARE] Rewriting ${url.pathname} to ${rewritePath}`)
       url.pathname = rewritePath
-      return NextResponse.rewrite(url)
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      })
     }
     
     // Handle direct /site/* paths (in case someone accesses them directly)
     if (url.pathname.startsWith('/site')) {
       console.log(`[MIDDLEWARE] Direct /site path access: ${url.pathname}`)
-      return NextResponse.next()
+      return NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      })
     }
   }
 
@@ -65,7 +91,11 @@ export function middleware(request) {
   }
 
   console.log('[MIDDLEWARE] No rewrite, continuing...')
-  return NextResponse.next()
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
 }
 
 export const config = {

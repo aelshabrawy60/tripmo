@@ -44,6 +44,7 @@ export default function RootLayout({ children }) {
   const hideNavbarRoutes = ['/booking'];
   const shouldHideNavbar = hideNavbarRoutes.includes(pathname);
 
+  console.log("patho", pathname, shouldHideNavbar)
   return (
     <>
       <Head>

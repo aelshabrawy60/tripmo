@@ -83,8 +83,8 @@ async function CancelledOrder({ bookingData, TripData }) {
   const refundStatus = getRefundStatusDisplay();
 
   return (
-    <div className='p-4'>
-      <div className="max-w-2xl mx-auto my-4 md:my-8 bg-white rounded-xl shadow-xl">
+    <div className=''>
+      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-xl">
         {/* Cancellation header */}
         <div className="bg-red-500 p-6 text-white">
           <div className="flex items-center justify-center space-x-2 mb-2">
