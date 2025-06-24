@@ -38,17 +38,18 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
 
 
 export async function TrendingDestinations() {
-    const {data, error} = await supabaseAdmin
-        .from("cities")
-        .select("*")
-        .limit(5)
+  const { data, error } = await supabaseAdmin
+    .from("cities")
+    .select("*")
+    .order("score", { ascending: false })
+    .limit(5);
 
-    if(error){
-        console.log(error)
-        return null
-    }
+  if (error) {
+    console.error(error);
+    return null;
+  }
 
-    return data
+  return data;
 }
 
 
