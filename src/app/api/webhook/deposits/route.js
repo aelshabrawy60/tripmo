@@ -6,7 +6,7 @@ import queryString from 'query-string';
 import _ from 'lodash';
 import { confirmDeposit } from '@/utils/payments/helpers';
 import { updateTripScore } from '@/utils/trips_engine/trips_scoring';
-const PAYMENT_API_KEY = "31978aa5-1378-464a-b34f-6bb4653ba2ec"; // Securely store this in your .env
+const PAYMENT_API_KEY = process.env.KASHIER_PAYMENT_KEY; // Securely store this in your .env
 
 export async function POST(request) {
   try {

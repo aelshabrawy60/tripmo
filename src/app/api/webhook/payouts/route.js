@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 // Secret key from your dashboard
-const TRANSFER_API_KEY = "31978aa5-1378-464a-b34f-6bb4653ba2ec";
+const TRANSFER_API_KEY = process.env.KASHIER_PAYMENT_KEY;
 
 const verifySignature = (payload, signature, secret) => {
   try {

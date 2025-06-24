@@ -5,9 +5,9 @@ const KashierRedirect = require('./kashier');
 const paymentGateawayConfig = {
   name: "kashier",
   type: "auto",
-  key_1: "MID-34194-211",
-  key_2: "31978aa5-1378-464a-b34f-6bb4653ba2ec",
-  key_3: "be73f1e6187aee67e47f5aa2eab6f6c6$a88c240bebf4b5802b26759dcb552125cea354a93c52ccf1f91e02106587cb3537ce8f60738d50d6bb9248e996423a94",
+  key_1: process.env.KASHIER_MERCHANT_ID,
+  key_2: process.env.KASHIER_PAYMENT_KEY,
+  key_3: process.env.KASHIER_SECRET_KEY,
   status: "active",
   mode: "test"
 }

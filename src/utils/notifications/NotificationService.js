@@ -115,7 +115,7 @@ export default class NotificationService{
 
 async function fetchBookData(bookId) {
     const {data, error} = await supabaseAdmin.from("bookings")
-        .select("*, Group(notifications_number), clients(phone)")
+        .select("*, Group(notifications_number), clients(phone), trips(name)")
         .eq('id', bookId)
         .single()
 
