@@ -36,7 +36,7 @@ function PaymentCard({ paymentData }) {
   };
 
   // Check if payment is refunded
-  const isRefunded = paymentData.host_status === 'refunded';
+  const isRefunded = paymentData.status === 'refunded';
 
   // Get status display info
   const getStatusInfo = (status) => {
@@ -65,12 +65,12 @@ function PaymentCard({ paymentData }) {
           icon: <Check size={18} className="ml-2" />,
           text: 'تم التأكيد'
         };
-      case 'rejected':
+      case 'refunded':
         return {
           color: 'bg-red-100 text-red-800 border-red-200',
           bgHover: 'hover:bg-red-50',
           icon: <AlertCircle size={18} className="ml-2" />,
-          text: 'مرفوض'
+          text: 'مستردة'
         };
       default:
         return {

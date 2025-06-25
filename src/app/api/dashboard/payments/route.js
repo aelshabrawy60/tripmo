@@ -7,7 +7,7 @@ async function fetchPayments(groupId) {
         .from("deposits")
         .select("* , trips(id, name), bookings (id, client_name, client_phone, total_price)")
         .eq("group_id", groupId)
-        .in("status", ["confirmed", "client_confirmed"])
+        .in("status", ["confirmed", "client_confirmed", "refunded"])
         .gt("amount", 0)
         .order("created_at", { ascending: false }); // sort by latest first
 
