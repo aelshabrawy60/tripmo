@@ -1,9 +1,9 @@
-import { CheckCircle, Clock, XCircle } from "lucide-react";
+import { CheckCircle, Clock, Shield, XCircle } from "lucide-react";
 
 // Compact inline version
 const InlineCancelationPolicy = ({ policy }) => {
   const getPolicyContent = () => {
-    switch (policy.type) {
+    switch (policy?.type) {
       case 'no_refund':
         return {
           icon: <XCircle className="w-3 h-3 text-red-600" />,

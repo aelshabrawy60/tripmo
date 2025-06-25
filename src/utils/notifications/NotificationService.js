@@ -17,7 +17,7 @@ export default class NotificationService{
 
         // Define both templates
         const clientTemplate = { 
-            name: "45d35f93-1514-411d-8051-0efd2b9aeca4" ,
+            name: "c68824fb-6ea8-404c-bb38-f770f5eb2c56" ,
             variables: {
                 name: bookData.client_name,
                 destination: bookData.trips.name,

@@ -88,6 +88,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
         setPersonPricing([]);
         setAdvancePaymentPercentage(MIN_ADVANCE_PERCENTAGE); // Ensure default is MIN_ADVANCE_PERCENTAGE
     }
+    
   }, [initialValue, MIN_ADVANCE_PERCENTAGE]); // Added MIN_ADVANCE_PERCENTAGE to dependencies, though it's a constant.
 
   

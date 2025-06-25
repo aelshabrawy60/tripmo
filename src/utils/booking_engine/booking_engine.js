@@ -37,7 +37,7 @@ export async function getBookingPrice(tripId, date, numberOfSeats, TripData = nu
     }
 
     if(TripData.pricing.PricePerPersons?.length > 0){
-        const personPrice = TripData.pricing.PricePerPersons.find((price) => price.personsCount === numberOfSeats);
+        const personPrice = TripData.pricing.PricePerPersons.find((price) => price.personsCount == numberOfSeats);
         if(personPrice){
             DeafultTripPrice *= personPrice.price / 100;
         }
