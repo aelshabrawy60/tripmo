@@ -10,6 +10,8 @@ import {
   Info,
   CreditCard
 } from 'lucide-react';
+import { FaMoneyBill } from 'react-icons/fa';
+import { PiMoney } from 'react-icons/pi';
 
 function TripPricingEditor({ onChange, initialValue = null, fixedDate = false }) {
   const MIN_ADVANCE_PERCENTAGE = 20; // Define the minimum advance percentage
@@ -200,7 +202,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
       {/* Default person price */}
       <div className="mb-4">
         <div className="flex items-center mb-1">
-          <DollarSign size={16} className="ml-1 text-blue-600" />
+          <PiMoney size={16} className="ml-1 text-blue-600" />
           <label className="text-gray-700 text-xs font-medium">
             السعر للفرد
           </label>
@@ -430,7 +432,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
         {showSummary && (
           <div className="mt-2 p-3 bg-white rounded border border-gray-200">
             <div className="mb-2 text-right flex items-center">
-              <DollarSign size={14} className="ml-1 text-gray-500" />
+              <PiMoney size={14} className="ml-1 text-gray-500" />
               <span className="text-xs font-medium">السعر الأساسي: </span>
               <span className="text-xs mr-1">{personPrice || ''}</span>
             </div>
