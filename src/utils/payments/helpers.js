@@ -31,7 +31,6 @@ export async function createDeposit(bookData, url, paymentId, type) {
         url: url,
         payment_id: paymentId,
         type: type,
-        host_status: "pending",
         net_amount: calculateNetAmount(amount, bookData.total_price),
         release_date: calculateReleaseDate(bookData.day)
     }])
