@@ -3,7 +3,6 @@ import { headers } from 'next/headers';
 import MainLayout from "@/components/Templates/Main/MainLayout";
 import MainNavbar from "@/components/Templates/Main/MainNavbar";
 import MainFooter from "@/components/Templates/Main/MainFooter";
-import Head from 'next/head';
 
 export const metadata = {
   title: "رحلة ناو | احجز رحلتك القادمة",
@@ -30,31 +29,30 @@ const pages = [
 
 const footerPages = [
   { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
-  {name: "الشروط والأحكام", link: "/terms"}
-]
+  { name: "الشروط والأحكام", link: "/terms" }
+];
+
 const socialMedia = [
-  {name: "facebook", link: 'https://www.facebook.com/share/1AcqvmjMYw'},
-  {name: "instagram", link: 'https://www.instagram.com/rehlanow/profilecard/?igsh=cWl0dm4zMzcxZW1l'}
+  { name: "facebook", link: 'https://www.facebook.com/share/1AcqvmjMYw' },
+  { name: "instagram", link: 'https://www.instagram.com/rehlanow/profilecard/?igsh=cWl0dm4zMzcxZW1l' }
 ];
 
 export default function RootLayout({ children }) {
   const headersList = headers();
   const pathname = headersList.get('x-pathname') || '';
-  
+
   const hideNavbarRoutes = ['/booking'];
   const shouldHideNavbar = hideNavbarRoutes.includes(pathname);
 
-  console.log("patho", pathname, shouldHideNavbar)
   return (
-    <>
-      <Head>
-      <meta name="apple-mobile-web-app-title" content="MyWebSite" />
-      </Head>
-      <MainLayout>
-        {!shouldHideNavbar && <MainNavbar pages={pages} />}
-        <div>{children}</div>
-        {!shouldHideNavbar && <MainFooter logo={'/logo.png'} pages={footerPages} socialMedia={socialMedia} />}
-      </MainLayout>
-    </>
+    <html lang="ar">
+      <body>
+        <MainLayout>
+          {!shouldHideNavbar && <MainNavbar pages={pages} />}
+          <div>{children}</div>
+          {!shouldHideNavbar && <MainFooter logo={'/logo.png'} pages={footerPages} socialMedia={socialMedia} />}
+        </MainLayout>
+      </body>
+    </html>
   );
 }
