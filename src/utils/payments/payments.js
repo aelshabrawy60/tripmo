@@ -128,7 +128,7 @@ async function initDepositPayment(bookData, gatewayConfig = paymentGateawayConfi
   try {
     const paymentService = new PaymentRedirectFlow(gatewayConfig);
     const redirectData = await paymentService.createRedirect(gatewayConfig.name, paymentData);
-    const deposit = await createDeposit(bookData.group_id, bookData.bookable_id, bookData.id, bookData.deposite_price, redirectData.redirectUrl, redirectData.paymentId, gatewayConfig.name, bookData.total_price)
+    const deposit = await createDeposit(bookData, redirectData.redirectUrl, redirectData.paymentId, gatewayConfig.name)
 
     return redirectData;
   } catch (error) {
@@ -140,7 +140,7 @@ async function initDepositPayment(bookData, gatewayConfig = paymentGateawayConfi
 
 async function initManualDepositPayment(bookData) {
   const paymentId = generatePaymentId(bookData.client_phone, bookData.id)
-  const deposit = await createDeposit(bookData.group_id, bookData.bookable_id, bookData.id, bookData.deposite_price, paymentId, paymentId, "manual")
+  const deposit = await createDeposit(bookData, paymentId, paymentId, "manual")
 
   return paymentId
 }

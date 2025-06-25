@@ -5,22 +5,35 @@ export function calculateNetAmount(amount, total_price){
     return amount - (total_price * 0.2)
 }
 
+export function calculateReleaseDate(bookDay) {
+  // Parse the input date
+  const date = new Date(bookDay + "T00:00:00Z");
 
-export async function createDeposit(groupId, tripId, bookId, amount, url, paymentId , type, total_price= null) {
+  // Add one day (in milliseconds)
+  date.setUTCDate(date.getUTCDate() + 1);
 
+  // Return as ISO string in UTC
+  return date.toISOString(); // Example: "2025-05-24T00:00:00.000Z"
+}
+
+
+export async function createDeposit(bookData, url, paymentId, type) {
+
+    const amount = bookData.deposite_price
     const status = amount > 0 ? "pending": "confirmed"
 
     const {data, error} = await supabaseAdmin.from("deposits").insert([{
-        group_id: groupId,
-        trip_id: tripId,
-        book_id: bookId,
-        amount: amount,
+        group_id: bookData.group_id,
+        trip_id: bookData.bookable_id,
+        book_id: bookData.id,
+        amount: bookData.deposite_price,
         status: status,
         url: url,
         payment_id: paymentId,
         type: type,
         host_status: "pending",
-        net_amount: calculateNetAmount(amount, total_price)
+        net_amount: calculateNetAmount(amount, bookData.total_price),
+        release_date: calculateReleaseDate(bookData.day)
     }])
 
     if(error){

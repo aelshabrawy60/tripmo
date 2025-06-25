@@ -5,7 +5,7 @@ export async function calculateTotalBalance(groupId) {
         .from("deposits")
         .select("net_amount")
         .eq("group_id", groupId)
-        .in("host_status", ["pending", "aval"])
+        .eq("withdrawn", false)
         .eq("status", "confirmed");
     
     if (error) {
@@ -23,7 +23,8 @@ export async function calculateAvalBalance(groupId) {
         .from("deposits")
         .select("net_amount")
         .eq("group_id", groupId)
-        .eq("host_status", "aval")
+        .lte("release_date", new Date().toISOString())
+        .eq("withdrawn", false)
         .eq("status", "confirmed");
     
     if (error) {
@@ -39,9 +40,9 @@ export async function calculateAvalBalance(groupId) {
 export async function resetBalance(groupId) {
     const {data, error} = await supabaseAdmin
         .from("deposits")
-        .update({host_status: "processing"})
+        .update({withdrawn: true})
         .eq("group_id", groupId)
-        .eq("host_status", "aval")
+        .eq("withdrawn", false)
         .eq("status", "confirmed")
         .select("*");
 
