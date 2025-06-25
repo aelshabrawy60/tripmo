@@ -161,3 +161,15 @@ export async function getAllTrips(groupId, active = false) {
 
   return tripsWithRatings;
 }
+
+
+export async function getAllTripsSlugs() {
+  const {data, error} = await supabaseAdmin.from("trips")
+    .select("slug")
+
+  if(error){
+    throw new error(error)
+  }
+
+  return data
+}

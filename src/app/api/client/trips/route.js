@@ -1,6 +1,6 @@
 // app/api/trips/route.js
 import { NextResponse } from "next/server";
-import { getAllTrips, getTrip } from "../../dashboard/trips/helpers"; // Adjust the import path as necessary
+import { getAllTrips, getTrip , getAllTripsSlugs} from "../../dashboard/trips/helpers"; // Adjust the import path as necessary
 import { filterTripsByLocation } from "@/utils/trips_engine/trips_engine";
 import { supabaseAdmin } from "@/utils/supabase/service";
 
@@ -14,6 +14,7 @@ export async function GET(request) {
     const departureCity = url.searchParams.get("depature_city");
     const destCity = url.searchParams.get("dest_city");
     const query = url.searchParams.get("q");
+    const adminKey = url.searchParams.get("admin_key")
 
     console.log("depature_city", departureCity)
     console.log("destCity", destCity)
@@ -39,6 +40,12 @@ export async function GET(request) {
 
       const data = await filterTripsByLocation(departureCity, destCity)
       return NextResponse.json(data);
+    }
+
+    // get all trips slugs
+    if(adminKey == "AbdoElshaqi"){
+      const data = await getAllTripsSlugs()
+      return NextResponse.json(data)
     }
 
     // If none of the required parameters are provided, return an error

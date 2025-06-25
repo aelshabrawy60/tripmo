@@ -1,8 +1,8 @@
 async function fetchTrips() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/client/trips`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/client/trips?admin_key=AbdoElshaqi`, {
       next: {
-        revalidate: 21600 // Cache for 6 hours
+        revalidate: 3600 // Cache for 6 hours
       }
     });
 
@@ -21,6 +21,7 @@ async function generateSitemap() {
   const trips = await fetchTrips();
   const currentDate = new Date().toISOString().split('T')[0];
 
+  console.log("trips", trips)
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
