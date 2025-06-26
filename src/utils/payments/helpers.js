@@ -84,6 +84,7 @@ export async function confirmDeposit(bookId) {
         return null;
     }
 
+    console.log("booking result", bookingResult.data)
     // Send notification asynchronously (don't await)
     const phone = booking?.clients?.phone;
     if (phone) {
