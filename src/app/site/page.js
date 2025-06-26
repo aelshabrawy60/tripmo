@@ -3,6 +3,7 @@ import React from 'react'
 import { TrendingDestinations, popularTrips } from '@/utils/trips_engine/trips_engine'
 import TopDestinations from '@/components/website/TopDestinations'
 import TripsStripSection from '@/components/website/TripsStripSection'
+import PaymentWays from '@/components/website/PaymentWays'
 
 export const revalidate = 21600 // Revalidate every 6 hours
 
@@ -22,7 +23,9 @@ async function page() {
         />
         <div className='mt-[100px]'>
             <TripsStripSection tripsData={topTrips.top} title={'رحلات رائجة'}/>
-            <TopDestinations destinations={topDestinations}/>
+            <div className='mt-[50px]'>
+              <TopDestinations destinations={topDestinations}/>
+            </div>
 
             {
               topTrips.categories?.map((categorie) => {
@@ -35,6 +38,11 @@ async function page() {
                 )
               })
             }
+
+            <div className='mt-20'>
+              <PaymentWays/>
+            </div>
+
         </div>
     </>
   )

@@ -6,7 +6,7 @@ function TopDestinations({ destinations }) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto">
       <h2 className="text-2xl font-bold mb-8 text-gray-800">وجهات رائجة</h2>
 
       {/* Grid container */}
