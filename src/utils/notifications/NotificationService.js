@@ -29,7 +29,7 @@ export default class NotificationService{
                 deposit: bookData.deposite_price,
                 host_name: bookData.Group.name,
                 host_phone: bookData.Group.clients_contact_phone,
-                booking_link: `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${bookData.deposits.payment_id}` 
+                booking_link: `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${bookData.deposits[0].payment_id}` 
             }
         };
 
