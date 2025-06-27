@@ -37,7 +37,7 @@ class KashierRedirect {
     const orderId = String(orderDetails.id);
 
     const payload = {
-      expireAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      expireAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
       maxFailureAttempts: 3,
       paymentType: "credit",
       amount,

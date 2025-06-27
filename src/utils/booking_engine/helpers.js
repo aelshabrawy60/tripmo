@@ -24,12 +24,15 @@ export function isDayInPast(date) {
 }
 
 export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, edit = false, editingBookingId = null) {
+    // Calculate the timestamp for 10 minutes ago
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    
     let { data, error } = await supabaseAdmin
         .from('bookings')
         .select('*')
         .eq('bookable_id', tripId)
         .eq('day', date)
-        .eq('status', 'active')
+        .or(`status.eq.active,and(status.eq.pending,created_at.gte.${tenMinutesAgo})`)
 
     if (error) {
         console.error("Error fetching booking data:", error);
@@ -37,7 +40,6 @@ export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, ed
     }
 
     if (data) {
-
         // If edit is true, we need to exclude the current booking from the count
         if (edit && editingBookingId) {
             data = data.filter(booking => booking.id !== editingBookingId);

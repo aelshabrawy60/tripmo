@@ -181,6 +181,7 @@ export async function fetchAllBookings(groupId, startFilter = null, endFilter = 
         .from('bookings')
         .select('* , trips (id, name)')
         .eq('group_id', groupId)
+        .eq('status', 'active')
         .order('created_at', { ascending: false });
 
     if (startFilter) {

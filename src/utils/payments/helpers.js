@@ -1,9 +1,48 @@
 import { supabaseAdmin } from "../supabase/service";
 import NotificationService from "../notifications/NotificationService";
 
-export function calculateNetAmount(amount, total_price){
-    return amount - (total_price * 0.2)
+
+
+
+// check for valid copuns
+async function checkForActiveCoupons(groupId) {
+    const {data, error} = await supabaseAdmin
+        .from("coupons")
+        .select("amount")
+        .eq("status" , "used")
+        .eq("group_id", groupId)
+        .gte("end_date", new Date().toISOString())
+
+    
+    if(error){
+        console.log(error)
+        return null
+    }
+
+    if(data.length >= 1){
+        return data[0].amount
+    }
+
+    return null
 }
+
+export async function calculateNetAmount(amount, total_price, group_id){
+    let RehlaNowCommision = 0.2
+
+    const coupon = await checkForActiveCoupons(group_id)
+
+    console.log("coupun", coupon)
+    if(coupon != null){
+        const s = 1 - (coupon / 100)
+        RehlaNowCommision = RehlaNowCommision * s
+    }
+
+    const commision = total_price * RehlaNowCommision > 3 ? total_price * RehlaNowCommision : 3
+
+    return amount - commision
+}
+
+
 
 export function calculateReleaseDate(bookDay) {
   // Parse the input date
@@ -31,7 +70,7 @@ export async function createDeposit(bookData, url, paymentId, type) {
         url: url,
         payment_id: paymentId,
         type: type,
-        net_amount: calculateNetAmount(amount, bookData.total_price),
+        net_amount: await calculateNetAmount(amount, bookData.total_price, bookData.group_id),
         release_date: calculateReleaseDate(bookData.day)
     }])
 
