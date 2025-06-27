@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, DollarSign, CreditCard, Wallet, Building2, CheckCircle } from 'lucide-react';
 import { banks } from './WithdrawManager';
+import { PiMoney, PiMoneyDuotone, PiMoneyThin } from 'react-icons/pi';
+import { FaRegMoneyBillAlt } from 'react-icons/fa';
 
 function WithdrawConfirmation({ groupId, withdrawMethod }) {
   const [balance, setBalance] = useState(null);
@@ -137,7 +139,7 @@ function WithdrawConfirmation({ groupId, withdrawMethod }) {
           <div className="flex items-center justify-between">
             <span className="text-gray-600 font-medium">الرصيد المتاح</span>
             <div className="flex items-center space-x-2">
-              <DollarSign className="w-5 h-5 text-green-600" />
+              <PiMoney className="w-5 h-5 text-green-600" />
               {loading ? (
                 <div className="animate-pulse bg-gray-300 h-6 w-20 rounded"></div>
               ) : balance !== null ? (

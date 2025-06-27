@@ -32,7 +32,6 @@ export const metadata = {
   },
 };
 
-
 const tajawal = Tajawal({
   variable: "--font-tajawal",
   weight: ['200', '300', '400', '500', '700', '800', '900'],
@@ -45,10 +44,21 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <Head>
           <meta name="apple-mobile-web-app-title" content="MyWebSite" />
+
+          {/* Google tag (gtag.js) */}
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-WN20P3M769"></script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-WN20P3M769');
+              `,
+            }}
+          />
         </Head>
-        <body
-          className={`${tajawal.variable} antialiased`}
-        >
+        <body className={`${tajawal.variable} antialiased`}>
           {children}
         </body>
       </html>
