@@ -10,6 +10,7 @@ import AddBooking from '@/components/Bookings/AddBooking'
 import AddBookingClient from '@/components/Bookings/AddBookClient'
 import Loading from '@/components/Loading'
 import LoadingCirc from '@/components/Loading/LoadingCirc'
+import ActivateCoupon from '@/components/coupon/ActivateCoupon'
 
 function BookingPage() {
   const { groupId, role } = useSharedContext()
