@@ -46,6 +46,20 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="ar">
+      <head>
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-WN20P3M769"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-WN20P3M769');
+            `,
+          }}
+        />
+      </head>
       <body>
         <MainLayout>
           {!shouldHideNavbar && <MainNavbar pages={pages} />}
