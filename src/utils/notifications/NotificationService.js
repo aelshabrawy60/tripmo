@@ -15,8 +15,6 @@ export default class NotificationService{
     async sendBookConfirmation(channelName, to, bookData, hostNumber) {
         console.log("sending confirmation", bookData , hostNumber);
 
-        console.log("book data", bookData)
-
         // Define both templates
         const clientTemplate = { 
             name: "c68824fb-6ea8-404c-bb38-f770f5eb2c56" ,

@@ -23,7 +23,7 @@ async function page() {
         />
         <div className='mt-[100px]'>
             <TripsStripSection tripsData={topTrips.top} title={'رحلات رائجة'}/>
-            <div className='mt-[50px]'>
+            <div className='mt-5'>
               <TopDestinations destinations={topDestinations}/>
             </div>
 
