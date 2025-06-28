@@ -95,22 +95,26 @@ function ActivateCoupon() {
     }
   };
 
-  const handleReset = () => {
-    setCouponCode('');
-    setResult(null);
-  };
-
-
-  // Show loading spinner during initial check
-  if (initialLoading) {
-    return (
-      <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg" dir="rtl">
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="mr-3 text-gray-700">جارٍ التحقق من الكوبونات...</span>
+  // Skeleton Loading Component
+  const SkeletonLoader = () => (
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg" dir="rtl">
+      <div className="animate-pulse">
+        {/* Form skeleton */}
+        <div className="space-y-4">
+          <div>
+            <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+            <div className="h-10 bg-gray-200 rounded w-full"></div>
+          </div>
+          
+          <div className="h-10 bg-gray-200 rounded w-full"></div>
         </div>
       </div>
-    );
+    </div>
+  );
+
+  // Show skeleton loading during initial check
+  if (initialLoading) {
+    return <SkeletonLoader />;
   }
 
   // Show active coupon info if exists
@@ -119,7 +123,7 @@ function ActivateCoupon() {
     
     return (
       <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-        <div className="bg-green-50 border border-green-200 p-4 rounded-md mb-4">
+        <div className="bg-green-50 border border-green-200 p-4 rounded-md">
           <div className="flex items-center text-green-800">
             <div className="flex-shrink-0 ml-2">
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -168,11 +172,6 @@ function ActivateCoupon() {
   // Show normal coupon activation form
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg" dir="rtl">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">تفعيل الكوبون</h2>
-        <p className="text-gray-600">أدخل كود الكوبون للتفعيل</p>
-      </div>
-
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -188,23 +187,20 @@ function ActivateCoupon() {
           />
         </div>
 
-        <div className="flex gap-3">
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {loading ? 'جارٍ التفعيل...' : 'تفعيل الكوبون'}
-          </button>
-          
-          <button
-            onClick={handleReset}
-            disabled={loading}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            إعادة تعيين
-          </button>
-        </div>
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+        >
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white ml-2"></div>
+              جارٍ التفعيل...
+            </>
+          ) : (
+            'تفعيل الكوبون'
+          )}
+        </button>
       </div>
 
       {result && (
@@ -228,7 +224,7 @@ function ActivateCoupon() {
               )}
             </div>
             <div>
-              <p className="font-medium text-lg">{result.message}</p>
+              <p className="font-medium text-sm">{result.message}</p>
               {result.coupon && (
                 <div className="mt-3 text-sm bg-white p-3 rounded border">
                   <p className="mb-1"><strong>نوع الكوبون:</strong> {result.coupon.type || 'غير محدد'}</p>
@@ -236,18 +232,6 @@ function ActivateCoupon() {
                   <p><strong>مدة الصلاحية:</strong> {result.duration || result.coupon.duration || 0} يوم</p>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Loading overlay */}
-      {loading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <div className="flex items-center space-x-3">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-              <span className="text-gray-700">جارٍ تفعيل الكوبون...</span>
             </div>
           </div>
         </div>
