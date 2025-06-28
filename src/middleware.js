@@ -22,6 +22,38 @@ export function middleware(request) {
   // Add the original pathname to headers (before any rewrites)
   requestHeaders.set('x-pathname', url.pathname)
   
+  // If it's a subdomain like admin.maindomain.com
+  if (subdomain === 'admin') {
+    // Handle root path for admin subdomain
+    if (url.pathname === '/') {
+      console.log('[MIDDLEWARE] Admin subdomain root, rewriting to /admin')
+      url.pathname = '/admin'
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      })
+    }
+    
+    // For other paths under admin subdomain, prepend /admin if not already there
+    if (!url.pathname.startsWith('/admin')) {
+      console.log(`[MIDDLEWARE] Admin subdomain, rewriting ${url.pathname} to /admin${url.pathname}`)
+      url.pathname = `/admin${url.pathname}`
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      })
+    }
+    
+    console.log(`[MIDDLEWARE] Admin subdomain detected, allowing path: ${url.pathname}`)
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    })
+  }
+  
   // If it's a subdomain like host.maindomain.com
   if (subdomain === 'host') {
     // Handle root path for host subdomain
@@ -59,7 +91,7 @@ export function middleware(request) {
     // Rewrite clean URLs to /site/* internally
     // e.g., /trips/... -> /site/trips/...
     // Exclude certain paths from rewriting
-    const excludedPaths = ['/site', '/_next', '/api', '/favicon.ico', '/robots.txt', '/sitemap.xml']
+    const excludedPaths = ['/site', '/_next', '/api', '/favicon.ico', '/robots.txt', '/sitemap.xml', '/admin']
     
     if (!excludedPaths.some(path => url.pathname.startsWith(path))) {
       const rewritePath = `/site${url.pathname}`
@@ -88,6 +120,17 @@ export function middleware(request) {
     console.log(`[MIDDLEWARE] Redirecting /site path from subdomain to main domain`)
     const mainDomainUrl = new URL(url.pathname, `https://${domainParts.slice(-2).join('.')}`)
     return NextResponse.redirect(mainDomainUrl)
+  }
+
+  // Block /admin/* paths on non-admin subdomains (let them 404 naturally)
+  if (url.pathname.startsWith('/admin') && subdomain !== 'admin') {
+    console.log(`[MIDDLEWARE] Blocking /admin path on non-admin subdomain, allowing to 404`)
+    // Don't rewrite or redirect, just let it pass through to naturally 404
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    })
   }
 
   console.log('[MIDDLEWARE] No rewrite, continuing...')

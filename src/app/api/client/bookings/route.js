@@ -5,6 +5,7 @@ import { supabaseAdmin } from "@/utils/supabase/service";
 import { getTrip } from "../../dashboard/trips/helpers";
 import { updateTripScore } from "@/utils/trips_engine/trips_scoring";
 import NotificationService from "@/utils/notifications/NotificationService";
+import { calculateNetAmount } from "@/utils/payments/helpers";
 
 
 export async function POST(request) {
@@ -95,7 +96,8 @@ export async function DELETE(request){
             // If the booking can be refunded, initiate the refund process
             await initRefund(bookingId);
         }else{
-            await removeFees(bookingId);
+            // downgrade fees from total price to the deposit amount
+            await editFees(bookingId);
         }
 
         // If the booking cancellation was successful
@@ -117,34 +119,41 @@ export async function DELETE(request){
 }
 
 
-async function removeFees(bookId) {
-    // First, get the current amount values
-    const {data: deposits, error: fetchError} = await supabaseAdmin
+
+//
+async function editFees(bookId) {
+
+    // Get the current deposit and related booking
+    const { data: deposit, error: fetchError } = await supabaseAdmin
         .from("deposits")
-        .select("id, amount")
+        .select("id, amount, group_id")
         .eq("book_id", bookId)
-    
+        .single();
+
     if (fetchError) {
-        console.error('Error fetching deposits:', fetchError)
-        throw fetchError
+        console.error("Error fetching deposit:", fetchError);
+        throw fetchError;
     }
-    
-    // Update each deposit to set net_amount = amount
-    const updates = deposits.map(deposit => 
-        supabaseAdmin
-            .from("deposits")
-            .update({net_amount: deposit.amount})
-            .eq("id", deposit.id)
-    )
-    
-    const results = await Promise.all(updates)
-    
-    // Check for errors in any of the updates
-    const errors = results.filter(result => result.error)
-    if (errors.length > 0) {
-        console.error('Error updating deposits:', errors)
-        throw new Error('Failed to update some deposits')
+
+    const newAmount = await calculateNetAmount(
+        deposit.amount,
+        deposit.amount,
+        deposit.group_id
+    );
+
+
+    // Update the single deposit
+    const { data: updatedDeposit, error: updateError } = await supabaseAdmin
+        .from("deposits")
+        .update({ net_amount: newAmount })
+        .eq("id", deposit.id)
+        .select()
+        .single();
+
+    if (updateError) {
+        console.error("Error updating deposit:", updateError);
+        throw updateError;
     }
-    
-    return results.map(result => result.data).flat()
+
+    return updatedDeposit;
 }
