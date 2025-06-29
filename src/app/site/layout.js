@@ -29,7 +29,8 @@ const pages = [
 
 const footerPages = [
   { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
-  { name: "الشروط والأحكام", link: "/terms" }
+  { name: "الشروط والأحكام", link: "/terms" },
+  { name: "سياسة الاسترداد", link: "/terms#cancellation-policy" },
 ];
 
 const socialMedia = [
