@@ -134,13 +134,23 @@ function MainBookingCard({ tripData }) {
         )}
         
         {/* Booking Button */}
-        <a
-          href={`/site/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum}`}
-          className="bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2"
-        >
-          حجز الآن
-          <ArrowRight size={18} />
-        </a>
+        {isAvail ? (
+          <a
+            href={`/site/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum}`}
+            className="bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2"
+          >
+            حجز الآن
+            <ArrowRight size={18} />
+          </a>
+        ) : (
+          <button
+            disabled
+            className="bg-gray-400 w-full text-gray-600 font-medium py-3 px-6 rounded-lg cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            حجز الآن
+            <ArrowRight size={18} />
+          </button>
+        )}
         
       </div>
     </div>
