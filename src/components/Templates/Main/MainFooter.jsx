@@ -17,7 +17,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
   // Default contact info if not provided
   const defaultContactInfo = {
     address: "مصر , دمياط الجديدة",
-    phone: "+966 123 456 789",
+    phone: "01061455364",
     email: "rehlanow@gmail.com"
   };
 
