@@ -114,7 +114,7 @@ function WithdrawConfirmation({ groupId, withdrawMethod }) {
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
         <h3 className="text-xl font-bold text-gray-900 mb-2">تم السحب بنجاح!</h3>
-        <p className="text-gray-600 mb-6">سيتم معالجة طلب السحب في أقرب وقت ممكن</p>
+        <p className="text-gray-600 mb-6">يرجى العلم أن عملية التحويل تستغرق حتى ثلاثة أيام عمل لإيداع المبلغ في حسابك .</p>
         <a
           href='/dashboard/payments/withdraws'
           className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 transition-colors"

@@ -627,14 +627,24 @@ export default function TripDetailPage({ params }) {
                   <p className="text-gray-600">{tripData.dest_city.name}</p>
                 </div>
                 
-                {["daily", "weekly"].includes(tripData.availability_type) && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-700 mb-1">فترة الإتاحة</h3>
-                    <p className="text-gray-600">
-                      من {new Date(tripData.start_date).toLocaleDateString('ar-EG')} إلى {new Date(tripData.end_date).toLocaleDateString('ar-EG')}
-                    </p>
-                  </div>
+                {["daily", "weekly"].includes(tripData.availability_type) &&
+                  (tripData.start_date || tripData.end_date) && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-1">فترة الإتاحة</h3>
+                      <p className="text-gray-600">
+                        من{" "}
+                        {tripData.start_date
+                          ? new Date(tripData.start_date).toLocaleDateString("ar-EG")
+                          : "غير محدود"}{" "}
+                        إلى{" "}
+                        {tripData.end_date
+                          ? new Date(tripData.end_date).toLocaleDateString("ar-EG")
+                          : "غير محدود"}
+                      </p>
+                    </div>
                 )}
+
+
                 
                 {tripData.availability_type === "weekly" && tripData.weekly_days?.length > 0 && (
                   <div>

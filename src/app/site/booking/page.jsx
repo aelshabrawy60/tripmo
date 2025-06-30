@@ -184,11 +184,12 @@ export default async function Page({ searchParams }) {
       const bookId = await fetchBookId(paymentId)
       const bookingData = await fetchBookingData(bookId);
       const tripData = await fetchTripData(bookingData.bookable_id);
+      const isBookRated_ = await isBookRated(bookingData.id);    
 
       if(bookingData.status == "canceled"){
       return <CanceldOrder bookingData={bookingData} tripData={tripData}/>
       }
-      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} />;
+      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_}/>;
     }
     return <ErrorDisplay message="المعلمات المطلوبة مفقودة" />;
   }
