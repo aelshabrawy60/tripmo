@@ -56,7 +56,7 @@ const SignInPage = () => {
                     <div className="hidden relative p-8 lg:flex items-center justify-center">
                         <div className="text-center h-full rounded-lg bg-black">
                             <img 
-                                src="/signin-image.jpg" 
+                                src="/0x0.webp" 
                                 alt="Tourism Management" 
                                 className="w-full h-full rounded-lg opacity-50 shadow-lg object-cover"
                                 onError={(e) => {

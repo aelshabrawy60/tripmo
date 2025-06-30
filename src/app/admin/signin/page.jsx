@@ -72,7 +72,7 @@ const AdminSignInPage = () => {
                     <div className="hidden relative p-8 lg:flex items-center justify-center">
                         <div className="text-center h-full rounded-lg bg-black">
                             <img 
-                                src="/signin-image.jpg" 
+                                src="/shutterstock_1181523733.webp" 
                                 alt="Admin Panel" 
                                 className="w-full h-full rounded-lg opacity-50 shadow-lg object-cover"
                                 onError={(e) => {

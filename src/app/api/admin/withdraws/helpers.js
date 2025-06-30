@@ -18,9 +18,10 @@ export async function fetchWithdraws(filters = {}) {
     sortOrder = 'desc'
   } = filters;
 
+  // Add { count: 'exact' } to get the total count
   let query = supabaseAdmin
     .from("withdraws")
-    .select("*, withdraw_methodes(*), Group(name, id)");
+    .select("*, withdraw_methodes(*), Group(name, id)", { count: 'exact' });
 
   // Apply time-based filters
   if (timeFilter && timeFilter !== 'custom') {
@@ -81,7 +82,14 @@ export async function fetchWithdraws(filters = {}) {
     query = query.eq('user_id', userId);
   }
 
- 
+  // Apply amount filters (you had these parameters but weren't using them)
+  if (minAmount !== undefined && minAmount !== null) {
+    query = query.gte('amount', parseFloat(minAmount));
+  }
+
+  if (maxAmount !== undefined && maxAmount !== null) {
+    query = query.lte('amount', parseFloat(maxAmount));
+  }
 
   // Apply sorting
   query = query.order(sortBy, { ascending: sortOrder === 'asc' });
@@ -91,14 +99,15 @@ export async function fetchWithdraws(filters = {}) {
   const to = from + limit - 1;
   query = query.range(from, to);
 
-  console.log("query", query)
-
+  console.log("query", query);
 
   const { data, error, count } = await query;
 
-  console.log("data", data)
+  console.log("data", data);
+  console.log("count", count); // This should now show the actual count
+
   if (error) {
-    console.log(error)
+    console.log(error);
     throw error;
   }
 
@@ -170,10 +179,10 @@ export async function getWithdrawStats(filters = {}) {
   const stats = {
     total: withdraws.length,
     totalAmount: withdraws.reduce((sum, w) => sum + (parseFloat(w.amount) || 0), 0),
-    pending: withdraws.filter(w => w.status === 'pending').length,
-    completed: withdraws.filter(w => w.status === 'completed').length,
-    rejected: withdraws.filter(w => w.status === 'rejected').length,
-    processing: withdraws.filter(w => w.status === 'processing').length,
+    pending: withdraws.filter(w => w.status === 'INITIATED' || w.status === 'IN_TRANSIT').length,
+    completed: withdraws.filter(w => w.status === 'TRANSFERRED').length,
+    rejected: withdraws.filter(w => w.status === 'FAILED').length,
+    processing: withdraws.filter(w => w.status === 'INITIATED' || w.status === 'IN_TRANSIT').length,
   };
 
   return stats;
