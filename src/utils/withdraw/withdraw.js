@@ -19,7 +19,7 @@ async function addWithdrawRecord(groupId, withdraw_method_id, amount, status, tr
 
 
 async function fetchWithdrawMethode(id) {
-    const {data, error} = await supabaseAdmin.from("withdraw_methodes").select('*').eq("id", id).single()
+    const {data, error} = await supabaseAdmin.from("withdraw_methodes").select('*, Group(name)').eq("id", id).single()
 
     if(error){
         console.log(error)
@@ -48,7 +48,7 @@ export async function withdraw(groupId, withdraw_method_id) {
         const payoutData = {
             amount: balance,
             method: withdrawMethod.methode,
-            recipientName: 'John Doe',
+            recipientName: withdrawMethod.Group.name || 'John Doe',
             merchantTransferId: merchantTransferId,
             recipientNumber: withdrawMethod.number,
         };
