@@ -45,7 +45,7 @@ function TripsViewer({ trips, isLoading = false, language = 'ar' }) {
           return (
             <div
               key={trip?.id || trip?.tripId || `trip-${index}`}
-              className="w-full transition-transform duration-200 hover:scale-105"
+              className="w-full"
             >
               <MainTripCard 
                 tripData={trip} 

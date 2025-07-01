@@ -8,11 +8,60 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
   const [deleting, setDeleting] = useState(null)
   const [dragOver, setDragOver] = useState(false)
   const [errors, setErrors] = useState([])
+  const [compressing, setCompressing] = useState({})
   const fileInputRef = useRef(null)
+
+  // Compression settings
+  const COMPRESSION_QUALITY = 0.85 // 85% quality (0.1 to 1.0)
+  const MAX_WIDTH = 1920 // Max width in pixels
+  const MAX_HEIGHT = 1080 // Max height in pixels
 
   useEffect(() => {
     console.log("imgs", imgs)
   }, [])
+
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const img = new Image()
+
+      img.onload = () => {
+        // Calculate new dimensions while maintaining aspect ratio
+        let { width, height } = img
+        
+        if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+          const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height)
+          width *= ratio
+          height *= ratio
+        }
+
+        canvas.width = width
+        canvas.height = height
+
+        // Draw and compress
+        ctx.drawImage(img, 0, 0, width, height)
+        
+        canvas.toBlob((blob) => {
+          // Create a new file with the compressed blob
+          const compressedFile = new File([blob], file.name, {
+            type: file.type,
+            lastModified: Date.now()
+          })
+          
+          console.log(`Compressed ${file.name}: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`)
+          resolve(compressedFile)
+        }, file.type, COMPRESSION_QUALITY)
+      }
+
+      img.onerror = () => {
+        console.warn(`Could not compress ${file.name}, using original`)
+        resolve(file)
+      }
+
+      img.src = URL.createObjectURL(file)
+    })
+  }
 
   const handleFilesChange = async (e) => {
     const files = Array.from(e.target.files)
@@ -31,8 +80,8 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
         newErrors.push(`${file.name} ليس ملف صورة صالح`)
         return
       }
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        newErrors.push(`${file.name} حجم كبير جداً (الحد الأقصى 10 ميجابايت)`)
+      if (file.size > 50 * 1024 * 1024) { // 50MB limit for original files
+        newErrors.push(`${file.name} حجم كبير جداً (الحد الأقصى 50 ميجابايت)`)
         return
       }
       validFiles.push(file)
@@ -40,19 +89,42 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
 
     setErrors(newErrors)
 
-    // Upload valid files
+    // Process and upload valid files
     for (const file of validFiles) {
       const fileId = uuidv4()
-      const filePath = `trips/${groupId}/${fileId}-${file.name}`
+      
+      try {
+        // Start compression indicator
+        setCompressing(prev => ({ ...prev, [fileId]: true }))
+        
+        // Compress image
+        const compressedFile = await compressImage(file)
+        
+        // Stop compression indicator
+        setCompressing(prev => {
+          const newCompressing = { ...prev }
+          delete newCompressing[fileId]
+          return newCompressing
+        })
 
-      const formData = new FormData()
-      formData.append('file', file)
+        const filePath = `trips/${groupId}/${fileId}-${compressedFile.name}`
+        const formData = new FormData()
+        formData.append('file', compressedFile)
 
-      onUploading(true)
+        onUploading(true)
+        await uploadImageWithProgress(fileId, filePath, formData)
+        onUploading(false)
 
-      await uploadImageWithProgress(fileId, filePath, formData)
-
-      onUploading(false)
+      } catch (error) {
+        console.error('Error processing file:', error)
+        setErrors(prev => [...prev, `فشل في معالجة ${file.name}`])
+        setCompressing(prev => {
+          const newCompressing = { ...prev }
+          delete newCompressing[fileId]
+          return newCompressing
+        })
+        onUploading(false)
+      }
     }
 
     // Clear file input
@@ -152,6 +224,8 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
   }
 
   const hasUploading = Object.keys(progress).length > 0
+  const hasCompressing = Object.keys(compressing).length > 0
+  const isProcessing = hasUploading || hasCompressing
 
   return (
     <div className="space-y-6" dir="rtl">
@@ -180,7 +254,7 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
             ? 'border-blue-400 bg-blue-50 scale-[1.02]' 
             : 'border-gray-300 hover:border-blue-300 hover:bg-gray-50'
           }
-          ${hasUploading ? 'pointer-events-none opacity-50' : ''}
+          ${isProcessing ? 'pointer-events-none opacity-50' : ''}
         `}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -193,7 +267,7 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
           multiple
           onChange={handleFilesChange}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          disabled={hasUploading}
+          disabled={isProcessing}
         />
         
         <div className="space-y-4">
@@ -211,7 +285,7 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
               اسحب وأسقط الصور هنا، أو انقر للتصفح
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              يدعم JPG, PNG, GIF حتى 10 ميجابايت لكل صورة
+              يدعم JPG, PNG, GIF حتى 50 ميجابايت لكل صورة
             </p>
           </div>
         </div>

@@ -1,8 +1,7 @@
 // app/api/trips/route.js
 import { NextResponse } from "next/server";
 import { getAllTrips, getTrip , getAllTripsSlugs} from "../../dashboard/trips/helpers"; // Adjust the import path as necessary
-import { filterTripsByLocation } from "@/utils/trips_engine/trips_engine";
-import { supabaseAdmin } from "@/utils/supabase/service";
+import { filterTripsByLocation, popularTrips } from "@/utils/trips_engine/trips_engine";
 
 // GET handler - Fetch a specific trip by ID, all trips by group ID, or filter by location
 export async function GET(request) {
@@ -46,6 +45,12 @@ export async function GET(request) {
     if(adminKey == "AbdoElshaqi"){
       const data = await getAllTripsSlugs()
       return NextResponse.json(data)
+    }
+
+    // if no parameters are provided, return popular trips
+    if (!tripId && !groupId && !departureCity && !destCity && !query) {
+      const trips = await popularTrips();
+      return NextResponse.json(trips.top);
     }
 
     // If none of the required parameters are provided, return an error
