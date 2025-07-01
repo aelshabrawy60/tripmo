@@ -17,7 +17,7 @@ function BookingPage() {
 
   const [tripsData, setTripsData] = useState([])
   const [selectedTrip, setSelectedTrip] = useState(null)
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
+  const [selectedDate, setSelectedDate] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [refreshBookings, setRefreshBookings] = useState(0)
@@ -53,7 +53,9 @@ function BookingPage() {
     fetchTrips()
   }, [groupId])
   
+  
   const handleTripSelect = (trip) => {
+    setSelectedDate(null)
     setSelectedTrip(trip)
   }
 
@@ -61,6 +63,10 @@ function BookingPage() {
   const handleBookingSuccess = () => {
     // Increment the refreshBookings counter to trigger a re-render of TripBookingsList
     setRefreshBookings(prev => prev + 1)
+  }
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date)
   }
 
   // Determine if there are any available trips
@@ -106,7 +112,7 @@ function BookingPage() {
                 />
 
                 {selectedTrip && (
-                  <DateChooser tripData={selectedTrip} onDateChange={setSelectedDate}/>
+                  <DateChooser tripData={selectedTrip} onDateChange={handleDateChange}/>
                 )}
 
                 {selectedTrip && (
@@ -120,7 +126,7 @@ function BookingPage() {
                 )}
               </div>
 
-              {selectedTrip && (
+              {selectedTrip && selectedDate && (
                 <div>
                   <TripBookingsList 
                     tripData={selectedTrip} 

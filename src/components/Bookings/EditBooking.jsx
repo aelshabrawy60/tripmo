@@ -26,8 +26,6 @@ const EditBooking = ({
   useEffect(() => {
     setDate(initialDate);
     setNumberOfSeats(initialNumberOfSeats);
-    console.log('Initial date:', initialDate);
-    console.log('Initial number of seats:', initialNumberOfSeats);
   }, [initialDate, initialNumberOfSeats]);
 
   // Handle close modal

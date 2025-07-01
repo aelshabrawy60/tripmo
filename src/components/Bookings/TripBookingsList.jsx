@@ -46,7 +46,7 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
       setTripBookings(bookings);
     };
     getTripBookings();
-  }, [tripId, date, refreshTrigger, localRefreshTrigger]);
+  }, [tripData, date, refreshTrigger, localRefreshTrigger]);
 
   // Handle booking deletion
   const handleDeleteBooking = (deletedBookingId) => {
@@ -64,7 +64,7 @@ function TripBookingsList({ tripData, date, groupId, refreshTrigger = 0}) {
   const renderSeatsInfo = () => (
     <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
       <div className="p-4 bg-gray-50 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800">معلومات الحجز</h2>
+        <h2 className="text-lg font-semibold text-gray-800">معلومات الحجز - {date}</h2>
       </div>
       
       <div className="p-5">

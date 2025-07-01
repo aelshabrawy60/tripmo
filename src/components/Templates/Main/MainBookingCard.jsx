@@ -2,10 +2,7 @@
 import DateChooser from '@/components/Bookings/DateChooser'
 import PersonsNumChooser from '@/components/Bookings/PersonsNumChooser'
 import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { Calendar, Users, Check, X, Loader, ArrowRight } from 'lucide-react'
-import BookingFormWithModal from './MainBookForm'
-import Loading from '@/components/Loading'
 
 function MainBookingCard({ tripData }) {
   const [selectedDate, setSelectedDate] = useState(new Date())

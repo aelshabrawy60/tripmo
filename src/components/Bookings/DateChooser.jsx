@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 
-function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) {
-  const [selectedDate, setSelectedDate] = useState(intiateDate);
+function DateChooser({ tripData = {}, onDateChange, intiateDate = null }) {
+  const [selectedDate, setSelectedDate] = useState(intiateDate || new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedDays, setSelectedDays] = useState(tripData.weekly_days || []);
   // Set language to Arabic with Gregorian calendar
   const [language, setLanguage] = useState('ar');
 
@@ -32,35 +31,54 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
   };
 
   useEffect(() => {
-    if (tripData.availability_type == "fixed") {
-      onDateChange(tripData.available_day);
-    } else if (tripData.availability_type == "weekly" && selectedDays.length > 0) {
-      // For weekly type, find the nearest available day
-      const nearestDate = findNearestWeeklyDay(selectedDays);
-      setSelectedDate(nearestDate);
-      
-      const year = nearestDate.getFullYear();
-      const month = String(nearestDate.getMonth() + 1).padStart(2, '0');
-      const day = String(nearestDate.getDate()).padStart(2, '0');
-      const localDateString = `${year}-${month}-${day}`;
-      onDateChange(localDateString);
-    } else {
-      // For daily type or when no weekly days are selected
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const localDateString = `${year}-${month}-${day}`;
-      onDateChange(localDateString);
+    if(!intiateDate){
+      if (tripData.availability_type == "fixed") {
+        onDateChange(tripData.available_day);
+      } else if (tripData.availability_type == "weekly" && tripData.weekly_days?.length > 0) {
+        // For weekly type, find the nearest available day
+        const nearestDate = findNearestWeeklyDay(tripData.weekly_days);
+        setSelectedDate(nearestDate);
+        
+        const year = nearestDate.getFullYear();
+        const month = String(nearestDate.getMonth() + 1).padStart(2, '0');
+        const day = String(nearestDate.getDate()).padStart(2, '0');
+        const localDateString = `${year}-${month}-${day}`;
+        
+        onDateChange(localDateString);
+      } else {
+        // For daily type or when no weekly days are selected
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const localDateString = `${year}-${month}-${day}`;
+        setSelectedDate(new Date(localDateString));
+        onDateChange(localDateString);
+      }
+    }else{
+      if (tripData.availability_type == "fixed") {
+        onDateChange(tripData.available_day);
+      } else if (tripData.availability_type == "weekly" && tripData.weekly_days?.length > 0) {
+        // For weekly type, find the nearest available day
+        const nearestDate = intiateDate;
+        setSelectedDate(nearestDate);
+        
+        const year = nearestDate.getFullYear();
+        const month = String(nearestDate.getMonth() + 1).padStart(2, '0');
+        const day = String(nearestDate.getDate()).padStart(2, '0');
+        const localDateString = `${year}-${month}-${day}`;
+        onDateChange(localDateString);
+      } else {
+        // For daily type or when no weekly days are selected
+        const date = intiateDate;
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const localDateString = `${year}-${month}-${day}`;
+        onDateChange(localDateString);
+      }
     }
-  }, [tripData.availability_type, selectedDays]);
-
-  // If trip data changes, update our state
-  useEffect(() => {
-    if (tripData.weekly_days) {
-      setSelectedDays(tripData.weekly_days);
-    }
-  }, [tripData]);
+  }, [tripData.availability_type, tripData]);
 
   // Arabic day names
   const daysOfWeekArabic = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
@@ -107,7 +125,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
     // For daily type, all days are selectable
     // For weekly type, only days matching selectedDays are selectable
     const dayOfWeek = date.getDay();
-    if (tripData.availability_type === "daily" || selectedDays.includes(dayOfWeek)) {
+    if (tripData.availability_type === "daily" || tripData.weekly_days?.includes(dayOfWeek)) {
       setSelectedDate(date);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
@@ -129,7 +147,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
       return true;
     }
     // For weekly trips, only dates matching selectedDays are selectable
-    return selectedDays.includes(date.getDay());
+    return tripData.weekly_days?.includes(date.getDay());
   };
 
   const renderCalendar = () => {
@@ -310,7 +328,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
                 <div 
                   key={day} 
                   className={`h-8 w-8 flex items-center justify-center text-xs font-medium 
-                    ${selectedDays.includes(index) ? 'text-blue-600 font-bold' : 'text-gray-500'}`}
+                    ${tripData.weekly_days?.includes(index) ? 'text-blue-600 font-bold' : 'text-gray-500'}`}
                 >
                   {day}
                 </div>
@@ -330,7 +348,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = new Date() }) 
                 تم {/* Done in Arabic */}
               </button>
               <div className="text-xs text-gray-500 italic">
-                متاح فقط في {selectedDays.map(dayIndex => daysOfWeekArabic[dayIndex]).join('، ')} {/* Only available on x days in Arabic */}
+                متاح فقط في {tripData.weekly_days?.map(dayIndex => daysOfWeekArabic[dayIndex]).join('، ')} {/* Only available on x days in Arabic */}
               </div>
             </div>
           </div>

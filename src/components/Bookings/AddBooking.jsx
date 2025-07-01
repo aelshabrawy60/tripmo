@@ -24,7 +24,7 @@ const AddBooking = ({
     name: '',
     phone: '',
     numberOfSeats: 1,
-    date: initialData?.date? initialData.date : initialData?.tripData?.availability_type == "fixed" ? initialData?.tripData?.available_day : '',
+    date: '',
     tripData: initialData?.tripData || {},
     groupId: groupId,
   });
@@ -56,6 +56,7 @@ const AddBooking = ({
   };
   // Handle time select changes
   const handleDateChange = (date) => {
+    console.log("changing date", date)
     setFormData(prevData => ({
       ...prevData,
       date: date
@@ -156,6 +157,7 @@ const AddBooking = ({
         ...formData,
         tripId: formData.tripData.id,
       };
+
       
       console.log("Submitting data:", submitData);
       // Now add the slot with complete player information
