@@ -42,7 +42,11 @@ export async function changeClientName(name, token) {
             throw new Error("Failed to update name: " + error.message);
         }
 
-        return data[0];
+        return {
+            clientPhone: data[0].phone,
+            clientName: data[0].name,
+            clientId: data[0].id
+        };
     } catch (err) {
         throw new Error("Invalid or expired token");
     }

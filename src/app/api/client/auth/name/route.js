@@ -13,6 +13,7 @@ export async function POST(request) {
 
         const updatedClient = await changeClientName(name, token);
 
+        
         return NextResponse.json({
             message: "Name updated successfully",
             client: updatedClient,
