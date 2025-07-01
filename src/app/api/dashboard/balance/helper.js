@@ -43,6 +43,7 @@ export async function resetBalance(groupId) {
         .update({withdrawn: true})
         .eq("group_id", groupId)
         .eq("withdrawn", false)
+        .lte("release_date", new Date().toISOString())
         .eq("status", "confirmed")
         .select("*");
 
