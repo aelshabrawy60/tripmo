@@ -211,20 +211,19 @@ const AddBooking = ({
             {registrationStatus && <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">{registrationStatus}</div>}
             
             <form onSubmit={handleSubmit}>
-              {/* Player selection with PlayerChooser */}
-              <div className="mb-4">
-                <UserChooser 
-                  groupId={formData.groupId} 
-                  onChange={handlePlayerChange}
-                />
-              </div>
-
               <div className='mb-4'>
                 <DateChooser tripData={formData.tripData} onDateChange={handleDateChange} intiateDate={new Date(formData.date)}/>
               </div>
               
               <PersonsNumChooser onChange={handlePersonsChange}/>
-              
+              {/* Player selection with PlayerChooser */}
+              <div className="mt-4">
+                <UserChooser 
+                  groupId={formData.groupId} 
+                  onChange={handlePlayerChange}
+                />
+              </div>
+                            
               <div className="flex mt-4 items-center justify-between">
                 <button
                   type="submit"

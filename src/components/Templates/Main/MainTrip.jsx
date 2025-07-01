@@ -26,7 +26,7 @@ function MainTrip({tripData}) {
           {tripData.rates_sum && tripData.rates_count?
           (
             <div className='flex mb-4 gap-1 items-center text-gray-600'>
-              <div>{tripData.rates_sum / tripData.rates_count}</div>
+              <div>{(tripData.rates_sum / tripData.rates_count).toFixed(1)}</div>
               <StarsRates rate={tripData.rates_sum / tripData.rates_count} size={5}/>
               <div>{`(${tripData.rates_count})`}</div>
             </div>
