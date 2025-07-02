@@ -3,11 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, ChevronRight, ChevronLeft} from 'react-feather';
-import { Users} from 'react-feather';
 import { usePathname } from 'next/navigation';
-import { FileText, HomeIcon, Settings, Settings2, SettingsIcon, User } from 'lucide-react';
-import { FaMoneyCheck } from 'react-icons/fa';
-import { PiCarProfile, PiMountainsBold } from "react-icons/pi";
+import { BanknoteArrowDown, FileText, HomeIcon, MapPlus, Settings, Settings2, SettingsIcon, Ticket, Tickets, TicketSlash, User } from 'lucide-react';
 
 
 // Define your sidebar items function that filters based on role
@@ -18,30 +15,30 @@ const getSidebarItems = (isAdmin) => {
       path: '/',
       icon: <HomeIcon size={20} />,
     },
-    { 
-      title: 'عمليات السحب',
-      path: '/withdraws',
-      icon: <PiMountainsBold size={20} />,
+    {
+      title: "الحجوزات",
+      path: '/bookings',
+      icon: <Tickets size={20}/>
     },
     {
       title : 'عمليات الاسترداد',
       path: '/refunds',
-      icon: <FileText size={20}/>
+      icon: <TicketSlash size={20}/>
     },
-    {
-      title: "الحجوزات",
-      path: '/bookings',
-      icon: <FaMoneyCheck/>
+        { 
+      title: 'عمليات السحب',
+      path: '/withdraws',
+      icon: <BanknoteArrowDown size={20} />,
     },
     {
       title: "الرحلات",
       path: '/trips',
-      icon: <User/>
+      icon: <MapPlus size={20}/>
     },
     {
       title: "الأعدادات",
       path: '/dashboard/settings',
-      icon: <Settings2/>
+      icon: <Settings2 size={20}/>
     },
     // Show these items only if user is not an admin
     ...(isAdmin ? [] : [

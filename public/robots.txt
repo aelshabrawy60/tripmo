@@ -1,9 +1,11 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://rehlanow.com/api/sitemap.xml
+# Sitemap (moved to clean path)
+Sitemap: https://rehlanow.com/sitemap.xml
 
-# Disallow admin and API routes
+# Disallow admin and general API routes, but ALLOW sitemap
 Disallow: /admin/
 Disallow: /api/
+
+Allow: /api/sitemap.xml

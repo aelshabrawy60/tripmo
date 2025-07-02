@@ -13,5 +13,15 @@ const nextConfig = {
     ],
     minimumCacheTTL: 2678400, // 31 days
   },
-}
-export default nextConfig
+
+  async rewrites() {
+    return [
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap.xml',
+      },
+    ];
+  },
+};
+
+export default nextConfig;

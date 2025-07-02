@@ -32,17 +32,17 @@ const getSidebarItems = (isAdmin) => {
     {
       title: "الرصيد",
       path: '/dashboard/payments',
-      icon: <FaMoneyCheck/>
+      icon: <FaMoneyCheck size={20}/>
     },
     {
       title: "الملف الشخصي",
       path: '/dashboard/profile',
-      icon: <User/>
+      icon: <User size={20}/>
     },
     {
       title: "الأعدادات",
       path: '/dashboard/settings',
-      icon: <Settings2/>
+      icon: <Settings2 size={20}/>
     },
     // Show these items only if user is not an admin
     ...(isAdmin ? [] : [
