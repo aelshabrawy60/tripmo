@@ -130,7 +130,7 @@ function TripsStrip({ tripsData }) {
         {tripsData.map((trip, index) => (
           <div
             key={trip.id || index}
-            className="flex-shrink-0 w-68"
+            className="flex-shrink-0 w-64 md:w-68 "
           >
             <MainTripCard tripData={trip} />
           </div>

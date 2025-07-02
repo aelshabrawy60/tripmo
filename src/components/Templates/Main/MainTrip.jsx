@@ -7,6 +7,7 @@ import MainRatingsSection from './MainRatingsSection'
 import ProfileCard from '@/components/website/ProfileCard'
 import StarsRates from '@/components/website/StarsRates'
 import InlineCancelationPolicy from '@/components/Trips/InlineCancelationPolicy'
+import FromTo from '@/components/Trips/FromTo'
 
 function MainTrip({tripData}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,11 +41,12 @@ function MainTrip({tripData}) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
           {/* Trip Details - Takes full width on mobile, half on larger screens */}
           <div className="order-2 lg:order-1">
-            
             <MainTripDetails 
               name={tripData.name}
               about={tripData.about}
               groupId={tripData.group_id}
+              depature_city={tripData.depature_city.name}
+              dest_city={tripData.dest_city.name}
             />
           </div>
           

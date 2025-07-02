@@ -2,6 +2,7 @@ import StarsRates from '@/components/website/StarsRates';
 import Link from 'next/link';
 import Image from 'next/image'; // ✅ Import Next.js Image
 import React from 'react';
+import FromTo from '@/components/Trips/FromTo';
 
 function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
   const { 
@@ -12,7 +13,9 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
     id,
     slug,
     rates_sum,
-    rates_count
+    rates_count,
+    dest,
+    depature,
   } = tripData;
 
   const firstImage = images && images.length > 0 ? images[0] : null;
@@ -29,7 +32,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
     <Link href={`/trips/${slug}`} className="block">
       <div className="max-w-lg rounded-md overflow-hidden transition-all duration-300 m-2 flex flex-col h-full">
         {/* Image container */}
-        <div className="relative h-52 overflow-hidden rounded-b-lg">
+        <div className="relative h-50 md:h-52 overflow-hidden rounded-b-lg">
           {firstImage ? (
             <Image
               src={firstImage}
@@ -46,7 +49,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
 
           {availability_type && (
             <div className="absolute top-2 right-2 bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-medium shadow-sm">
-              {availability_type === 'fixed' ? tripData.available_day : 'مواعيد متعددة'}
+              {availability_type === 'fixed' ? tripData.available_day : availability_type === 'daily' ? 'يوميا' : 'مواعيد متعددة'}
             </div>
           )}
 
@@ -60,7 +63,9 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
         {/* Content */}
         <div className="p-3 flex-1 flex flex-col">
           <div className="flex flex-col justify-between items-start">
-            <h2 className="text-md font-bold text-gray-800 mb-2">{name}</h2>
+            <div>
+              <h2 className="text-md font-bold text-gray-800 mb-2">{name}</h2>
+            </div>
             {ratingAverage ? (
               <div className='flex gap-1 items-center text-gray-600'>
                 <div>{ratingAverage.toFixed(1)}</div>

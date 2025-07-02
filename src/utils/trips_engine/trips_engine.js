@@ -7,7 +7,11 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
         // Start building the query
         let query = supabaseAdmin
             .from("trips")
-            .select("*")
+            .select(
+              `* , 
+              dest:dest_city (name),
+              depature:depature_city (name)`
+            )
             .eq("status", "active");
 
 
