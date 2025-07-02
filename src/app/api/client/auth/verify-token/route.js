@@ -11,7 +11,6 @@ export async function GET(req) {
 
     const token = authHeader.split(" ")[1]; // Remove "Bearer "
 
-    console.log("token__", token)
     const user = await verifyToken(token);
 
     const client = {

@@ -4,7 +4,6 @@ import Cookies from 'js-cookie';
 import PhoneInputForm from './PhoneInputFom';
 import OTPInputForm from './OTPInputForm';
 import NameInputForm from './NameInputForm';
-import { LoaderCircle } from 'lucide-react';
 import LoadingCirc from '../Loading/LoadingCirc';
 import TermsAcceptance from '../website/TermsAcceptance';
 

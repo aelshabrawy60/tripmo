@@ -3,10 +3,9 @@ import { initDepositPayment, initManualDepositPayment, initRefund } from "@/util
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
 import { getTrip } from "../../dashboard/trips/helpers";
-import { updateTripScore } from "@/utils/trips_engine/trips_scoring";
 import NotificationService from "@/utils/notifications/NotificationService";
 import { calculateNetAmount } from "@/utils/payments/helpers";
-
+import { requireClient } from "@/utils/middleware/requireClient";
 
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();
@@ -84,10 +83,37 @@ export async function DELETE(request){
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get("bookingId");
 
+    // Authenticate client
+    const authResult = await requireClient();
+    if (!authResult.success) return authResult.response;
+    const client = authResult.client;
+
     if (!bookingId) {
         return NextResponse.json({ success: false, message: "Booking ID is required." }, { status: 400 });
     }
-    
+
+    // check if the booking belongs to the client
+    const { data: booking, error: fetchError } = await supabaseAdmin
+        .from("bookings")
+        .select("id, client_id")
+        .eq("id", bookingId)
+        .single();
+
+    if (fetchError) {
+        console.error("Error fetching booking:", fetchError);
+        return NextResponse.json({ success: false, message: "Error fetching booking." }, { status: 500 });
+    }
+
+    if (!booking) {
+        return NextResponse.json({ success: false, message: "Booking not found." }, { status: 404 });
+    }
+
+    // Check if the booking belongs to the authenticated client
+    if (booking.client_id !== client.id) {
+        return NextResponse.json({ success: false, message: "You are not authorized to cancel this booking." }, { status: 403 });
+    }
+
+    // Proceed with cancellation
     try {
         const result = await cancelBooking(bookingId);
         const canRefund = await canBookRefunded(bookingId);

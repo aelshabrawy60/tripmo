@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import ClientAuthFlow from '../auth/ClientAuthFlow';
 
 function CancelBookClient({bookId, bookData}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -8,6 +9,8 @@ function CancelBookClient({bookId, bookData}) {
   const [isCheckingRefund, setIsCheckingRefund] = useState(false);
   const [canCancel, setCanCancel] = useState(false)
   const [error, setError] = useState(null);
+  const [showAuthFlow, setShowAuthFlow] = useState(false);
+  const [retryAfterAuth, setRetryAfterAuth] = useState(false);
 
   async function fetchBookRefundability(bookId) {
     if (!bookId) {
@@ -48,6 +51,15 @@ function CancelBookClient({bookId, bookData}) {
         method: 'DELETE',
       });
 
+      // Check for authentication errors
+      if (response.status === 401 || response.status === 403) {
+        setIsLoading(false);
+        setRetryAfterAuth(true);
+        setShowAuthFlow(true);
+        setIsModalOpen(false); // Close confirmation modal when showing auth flow
+        return;
+      }
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error canceling booking:", errorData.message);
@@ -83,6 +95,24 @@ function CancelBookClient({bookId, bookData}) {
     }
   }
 
+  const handleAuthSuccess = (clientData) => {
+    console.log('Authentication successful:', clientData);
+    setShowAuthFlow(false);
+    
+    // If we were retrying after auth, call the cancel API again
+    if (retryAfterAuth) {
+      setRetryAfterAuth(false);
+      cancelBooking(bookId);
+    }
+  };
+
+  const handleAuthFail = (error) => {
+    console.error('Authentication failed:', error);
+    setShowAuthFlow(false);
+    setRetryAfterAuth(false);
+    setError('فشل في المصادقة. يرجى المحاولة مرة أخرى.');
+  };
+
   useEffect(()=>{
     setCanCancel(showCancelButton(bookData))
   }, [])
@@ -93,9 +123,15 @@ function CancelBookClient({bookId, bookData}) {
     setError(null);
   }
 
+  function closeAuthFlow() {
+    setShowAuthFlow(false);
+    setRetryAfterAuth(false);
+  }
+
   if(!canCancel){
     return null
   }
+
   return (
     <div>
       <div className='p-4'>
@@ -114,6 +150,41 @@ function CancelBookClient({bookId, bookData}) {
           )}
         </button>
       </div>
+
+      {/* Authentication Flow Modal */}
+      {showAuthFlow && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 animate-in fade-in zoom-in duration-200">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  تسجيل الدخول مطلوب
+                </h3>
+                <button
+                  onClick={closeAuthFlow}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="mb-4">
+                <p className="text-gray-600 text-center text-sm">
+                  يجب تسجيل الدخول أولاً لإلغاء الحجز
+                </p>
+              </div>
+
+              <ClientAuthFlow
+                onSuccess={handleAuthSuccess}
+                onFail={handleAuthFail}
+                primary_color="#EF4444" // Red color to match the cancel theme
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Confirmation Modal */}
       {isModalOpen && (
@@ -206,8 +277,6 @@ function CancelBookClient({bookId, bookData}) {
 }
 
 export default CancelBookClient
-
-
 
 function showCancelButton(bookData) {
   const day = bookData.day;
