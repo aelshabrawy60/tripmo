@@ -11,6 +11,7 @@ const nextConfig = {
         hostname: '**',
       },
     ],
+    minimumCacheTTL: 2678400, // 31 days
   },
 }
 export default nextConfig
