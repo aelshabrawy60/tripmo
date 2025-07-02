@@ -78,11 +78,12 @@ export async function deleteTrip(tripId) {
   return data;
 }
 
-export async function updateTrip(tripId, updatedTrip) {
+export async function updateTrip(tripId, updatedTrip, groupId) {
   const { data, error } = await supabaseAdmin
     .from("trips")
     .update(updatedTrip)
     .eq("id", tripId)
+    .eq("group_id", groupId)
     .select(`
       *,
       ratings (*),

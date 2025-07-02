@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/utils/supabase/service";
 import { withAuth } from "@/lib/auth";
 
 export const POST = withAuth(async (request) => {
-    const {groupId} = request.auth
+    const { groupId } = request.auth;
 
     try {
         const body = await request.json();
@@ -24,20 +24,12 @@ export const POST = withAuth(async (request) => {
             { status: 500 }
         );
     }
-})
+});
 
-export async function GET(request) {
+export const GET = withAuth(async (request) => {
+    const { groupId } = request.auth;
+
     try {
-        const { searchParams } = new URL(request.url);
-        const groupId = searchParams.get("group_id");
-
-        if (!groupId) {
-            return NextResponse.json(
-                { error: "Missing group_id parameter" },
-                { status: 400 }
-            );
-        }
-
         const { data, error } = await supabaseAdmin
             .from("withdraws")
             .select("*, withdraw_methodes(*)")
@@ -54,4 +46,4 @@ export async function GET(request) {
             { status: 500 }
         );
     }
-}
+});

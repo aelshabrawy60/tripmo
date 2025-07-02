@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
 import { confirmDeposit } from "@/utils/payments/helpers";
+import { withAuth } from "@/lib/auth";
 
 async function fetchPayments(groupId) {
     const { data, error } = await supabaseAdmin
@@ -39,9 +40,8 @@ export async function POST(request) {
     }
 }
 
-export async function GET(request) {
-    const { searchParams } = new URL(request.url);
-    const groupId = searchParams.get("groupId");
+export const GET = withAuth(async (request) => {
+    const { groupId } = request.auth;
 
     try {
         const result = await fetchPayments(groupId);
@@ -55,4 +55,4 @@ export async function GET(request) {
         console.error("Error in fetching payments:", error);
         return NextResponse.json({ success: false, message: "Unexpected error occurred while fetching payments." }, { status: 500 });
     }
-}
+})

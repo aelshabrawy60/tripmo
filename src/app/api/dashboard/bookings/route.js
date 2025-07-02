@@ -1,10 +1,13 @@
 import { fetchAllBookings, fetchTripBookings, addBooking , cancelBooking, editBooking} from "@/utils/booking_engine/booking_engine";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { withAuth } from "@/lib/auth";
 
 
-export async function POST(request) {
-    const { name, groupId, tripId, date, phone, numberOfSeats } = await request.json();
+export const POST = withAuth(async (request) => {
+    const { groupId } = request.auth;
+
+    const { name, tripId, date, phone, numberOfSeats } = await request.json();
 
     try {
         const result = await addBooking(name, tripId, date, phone, numberOfSeats, "admin");
@@ -18,9 +21,11 @@ export async function POST(request) {
         console.error("Error in booking:", error);
         return NextResponse.json({ success: false, message: "Unexpected error occurred while booking." }, { status: 500 });
     }
-}
+})
 
-export async function PUT(request) {
+export const PUT = withAuth(async (request) => {
+    const { groupId } = request.auth;
+
     const { bookingId, tripId, date, numberOfSeats } = await request.json();
 
     try {
@@ -35,10 +40,12 @@ export async function PUT(request) {
         console.error("Error in editing booking:", error);
         return NextResponse.json({ success: false, message: "Unexpected error occurred while editing booking." }, { status: 500 });
     }
-}
+})
 
 
-export async function DELETE(request) {
+export const DELETE = withAuth(async (request) => {
+    const { groupId } = request.auth;
+    
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get("bookingId");
 
@@ -54,7 +61,7 @@ export async function DELETE(request) {
         console.error("Error in deleting booking:", error);
         return NextResponse.json({ success: false, message: "Unexpected error occurred while deleting booking." }, { status: 500 });
     }
-}
+})
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);

@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { updateProfile } from "./helpers";
+import { withAuth } from "@/lib/auth";
 
-export async function PUT(request) {
+export const PUT = withAuth(async (request) => {
+    const { groupId } = request.auth;
     const body = await request.json();
     const { profileId, ...updatedProfile } = body;
 
-    if (!profileId) {
+    if (!groupId) {
         return NextResponse.json(
             { error: "Profile ID is required" },
             { status: 400 }
@@ -13,7 +15,7 @@ export async function PUT(request) {
     }
 
     try {
-        const updatedData = await updateProfile(profileId, updatedProfile);
+        const updatedData = await updateProfile(groupId, updatedProfile);
         return NextResponse.json(updatedData);
     } catch (error) {
         return NextResponse.json(
@@ -21,4 +23,4 @@ export async function PUT(request) {
             { status: 500 }
         );
     }
-}
+})

@@ -1,6 +1,7 @@
 // app/api/trips/route.js
 import { NextResponse } from "next/server";
 import { createTrip, deleteTrip, getAllTrips, getTrip, updateTrip } from "./helpers"; // Adjust the import path as necessary
+import { withAuth } from "@/lib/auth";
 
 // GET handler - Fetch a specific trip by ID or all trips by group ID
 export async function GET(request) {
@@ -35,9 +36,12 @@ export async function GET(request) {
 }
 
 // POST handler - Create a new trip
-export async function POST(request) {
+export const POST = withAuth(async (request)=> {
+  const { groupId } = request.auth;
+
   try {
     const body = await request.json();
+    body.group_id = groupId
     const trip = await createTrip(body);
     return NextResponse.json(trip, { status: 201 });
   } catch (error) {
@@ -46,10 +50,12 @@ export async function POST(request) {
       { status: 500 }
     );
   }
-}
+})
 
 // PUT handler - Update an existing trip
-export async function PUT(request) {
+export const PUT = withAuth(async (request)=> {
+  const { groupId } = request.auth;
+
   try {
     const body = await request.json();
     const { id, ...updatedTrip } = body;
@@ -61,7 +67,7 @@ export async function PUT(request) {
       );
     }
 
-    const trip = await updateTrip(id, updatedTrip);
+    const trip = await updateTrip(id, updatedTrip, groupId);
     return NextResponse.json(trip);
   } catch (error) {
     return NextResponse.json(
@@ -69,9 +75,12 @@ export async function PUT(request) {
       { status: 500 }
     );
   }
-}
+})
+
 
 // DELETE handler - Delete a trip
+
+/*
 export async function DELETE(request) {
   try {
     const url = new URL(request.url);
@@ -93,3 +102,4 @@ export async function DELETE(request) {
     );
   }
 }
+*/

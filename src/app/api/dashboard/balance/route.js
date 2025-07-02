@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { calculateAvalBalance, calculateTotalBalance } from "./helper";
+import { withAuth } from "@/lib/auth";
 
-export async function GET(request) {
+export const GET = withAuth(async (request) => {
     try {
-        // Extract groupId from URL search params
-        const { searchParams } = new URL(request.url);
-        const groupId = searchParams.get('groupId');
-        
+        const { groupId } = request.auth;
+                
         // Validate groupId parameter
         if (!groupId) {
             return NextResponse.json(
@@ -34,4 +33,4 @@ export async function GET(request) {
             { status: 500 }
         );
     }
-}
+})
