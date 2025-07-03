@@ -89,18 +89,18 @@ export async function sendMetaIntiateCheckout(request, result, phone, numberOfSe
 }
 
 
-export async function sendMetaPurchase(price, phone, numberOfSeats, trackingData){
+export async function sendMetaPurchase(price, phone, numberOfSeats, bookingId , trackingData){
     try {
         await sendMetaEvent({
             eventName: 'Purchase',
-            eventId: `checkout-${result.data.id}`, // Use booking or payment ID
+            eventId: `checkout-${bookingId}`, // Use booking or payment ID
             userData: {
                 ph: phone ? [hashPhone(phone)] : [],
                 ...trackingData
             },
             customData: {
                 value: price,
-                currency: 'EGP', // or use EGP if your ads are set up for it
+                currency: 'EGP',
                 num_items: numberOfSeats
             }
         });
