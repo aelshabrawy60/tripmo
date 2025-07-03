@@ -201,7 +201,7 @@ function getTrackingData(req){
     const fbc = getCookie('_fbc');
     const ip = headers.get('x-forwarded-for') || '';
     const ua = headers.get('user-agent') || '';
-    referer = headers.get('referer') || '';
+    const referer = headers.get('referer') || '';
     
     return {
         fbp,
