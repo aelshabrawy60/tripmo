@@ -6,6 +6,7 @@ import { getTrip } from "../../dashboard/trips/helpers";
 import NotificationService from "@/utils/notifications/NotificationService";
 import { calculateNetAmount } from "@/utils/payments/helpers";
 import { requireClient } from "@/utils/middleware/requireClient";
+import { sendMetaEvent, hashEmail, hashPhone } from '@/lib/metaCapi';
 
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();
@@ -25,6 +26,26 @@ export async function POST(request) {
 
             if(type == "auto"){
                 const payment = await initDepositPayment(result.data)
+
+                // 🟢 Send Meta Conversions API Event (InitiateCheckout)
+                try {
+                await sendMetaEvent({
+                    req: request,
+                    eventName: 'InitiateCheckout',
+                    eventId: `checkout-${result.data.id}`, // Use booking or payment ID
+                    userData: {
+                        ph: phone ? [hashPhone(phone)] : [],
+                    },
+                    customData: {
+                        value: result.data.total_price,
+                        currency: 'EGP', // or use EGP if your ads are set up for it
+                        num_items: numberOfSeats
+                    }
+                });
+                } catch (error) {
+                    console.error('Meta CAPI error:', error);
+                }
+
                 return NextResponse.json({ success: true, data: result.data, redirectUrl: payment.redirectUrl });
 
             }else{
