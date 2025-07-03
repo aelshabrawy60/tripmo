@@ -107,7 +107,7 @@ class PaymentRedirectFlow {
  * @param {String} type - The type of payment (unused currently)
  * @returns {Object} - The redirect information
  */
-async function initDepositPayment(bookData, gatewayConfig = paymentGateawayConfig) {
+async function initDepositPayment(bookData, tracking_data = null, gatewayConfig = paymentGateawayConfig) {
   // Ensure bookData has all required fields
   if (!bookData || !bookData.id || !bookData.deposite_price) {
     throw new Error("Invalid booking data. Missing required fields.");
@@ -128,7 +128,7 @@ async function initDepositPayment(bookData, gatewayConfig = paymentGateawayConfi
   try {
     const paymentService = new PaymentRedirectFlow(gatewayConfig);
     const redirectData = await paymentService.createRedirect(gatewayConfig.name, paymentData);
-    const deposit = await createDeposit(bookData, redirectData.redirectUrl, redirectData.paymentId, gatewayConfig.name)
+    const deposit = await createDeposit(bookData, redirectData.redirectUrl, redirectData.paymentId, gatewayConfig.name, tracking_data)
 
     return redirectData;
   } catch (error) {

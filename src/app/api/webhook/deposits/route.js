@@ -6,6 +6,8 @@ import queryString from 'query-string';
 import _ from 'lodash';
 import { confirmDeposit } from '@/utils/payments/helpers';
 import { updateTripScore } from '@/utils/trips_engine/trips_scoring';
+import { sendMetaPurchase } from '@/lib/metaCapi';
+
 const PAYMENT_API_KEY = process.env.KASHIER_PAYMENT_KEY; // Securely store this in your .env
 
 export async function POST(request) {
@@ -56,6 +58,9 @@ export async function POST(request) {
       // TODO: update DB or perform business logic
       console.log(`[Payment Success] Order: ${merchantOrderId}, TX: ${transactionId}, Amount: ${amount}`);
       const bookingData = await confirmDeposit(merchantOrderId)
+      
+      // 🟢 Send Meta Conversions API Event (Purchase)
+      await sendMetaPurchase(bookingData.bookingData.total_price, bookingData.bookingData.client_phone, bookingData.bookingData.persons, bookingData.deposits.tracking_data )
 
       await updateTripScore(bookingData.bookingData.bookable_id)
     }

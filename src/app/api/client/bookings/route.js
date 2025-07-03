@@ -6,7 +6,7 @@ import { getTrip } from "../../dashboard/trips/helpers";
 import NotificationService from "@/utils/notifications/NotificationService";
 import { calculateNetAmount } from "@/utils/payments/helpers";
 import { requireClient } from "@/utils/middleware/requireClient";
-import { sendMetaEvent, hashEmail, hashPhone } from '@/lib/metaCapi';
+import { sendMetaIntiateCheckout } from "@/lib/metaCapi";
 
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();
@@ -25,26 +25,10 @@ export async function POST(request) {
             const type = "auto"
 
             if(type == "auto"){
-                const payment = await initDepositPayment(result.data)
+                const payment = await initDepositPayment(result.data, getTrackingData(request))
 
                 // 🟢 Send Meta Conversions API Event (InitiateCheckout)
-                try {
-                await sendMetaEvent({
-                    req: request,
-                    eventName: 'InitiateCheckout',
-                    eventId: `checkout-${result.data.id}`, // Use booking or payment ID
-                    userData: {
-                        ph: phone ? [hashPhone(phone)] : [],
-                    },
-                    customData: {
-                        value: result.data.total_price,
-                        currency: 'EGP', // or use EGP if your ads are set up for it
-                        num_items: numberOfSeats
-                    }
-                });
-                } catch (error) {
-                    console.error('Meta CAPI error:', error);
-                }
+                await sendMetaIntiateCheckout(request, result, phone, numberOfSeats)
 
                 return NextResponse.json({ success: true, data: result.data, redirectUrl: payment.redirectUrl });
 
@@ -203,4 +187,27 @@ async function editFees(bookId) {
     }
 
     return updatedDeposit;
+}
+
+
+
+function getTrackingData(req){
+    const headers = req.headers;
+    const cookie = headers.get('cookie') || '';
+    const getCookie = (name) =>
+        cookie.split(';').find((c) => c.trim().startsWith(`${name}=`))?.split('=')[1] || '';
+
+    const fbp = getCookie('_fbp');
+    const fbc = getCookie('_fbc');
+    const ip = headers.get('x-forwarded-for') || '';
+    const ua = headers.get('user-agent') || '';
+    referer = headers.get('referer') || '';
+    
+    return {
+        fbp,
+        fbc,
+        client_ip_address: ip,
+        client_user_agent: ua,
+        referer
+    }
 }

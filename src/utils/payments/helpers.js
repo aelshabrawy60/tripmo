@@ -56,7 +56,7 @@ export function calculateReleaseDate(bookDay) {
 }
 
 
-export async function createDeposit(bookData, url, paymentId, type) {
+export async function createDeposit(bookData, url, paymentId, type, tracking_data = null) {
 
     const amount = bookData.deposite_price
     const status = amount > 0 ? "pending": "confirmed"
@@ -71,7 +71,8 @@ export async function createDeposit(bookData, url, paymentId, type) {
         payment_id: paymentId,
         type: type,
         net_amount: await calculateNetAmount(amount, bookData.total_price, bookData.group_id),
-        release_date: calculateReleaseDate(bookData.day)
+        release_date: calculateReleaseDate(bookData.day),
+        tracking_data: tracking_data
     }])
 
     if(error){
@@ -111,7 +112,7 @@ export async function confirmDeposit(bookId) {
             .from("bookings")
             .update({ status: "active" })
             .eq("id", bookId)
-            .select("Group(*), *, trips(name), deposits(payment_id)")
+            .select("Group(*), *, trips(name), deposits(payment_id, tracking_data)")
             .single(),
     ]);
 
