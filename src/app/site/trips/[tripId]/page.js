@@ -45,7 +45,7 @@ export async function generateMetadata({ params }) {
         ],
         type: 'article',
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/${params.slug}`,
-        siteName: 'ترافيل ناو',
+        siteName: 'رحلة ناو',
       },
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/${params.slug}`,

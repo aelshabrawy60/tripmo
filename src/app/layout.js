@@ -1,25 +1,15 @@
-import { Geist, Geist_Mono, Tajawal } from "next/font/google";
+import { Tajawal } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Head from 'next/head';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata = {
   title: "رحلة ناو | احجز رحلتك القادمة",
-  description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع RehlaNow. عروض رائعة، وجهات مميزة، وتجربة سفر لا مثيل لها.",
-  keywords: ["رحلات", "حجوزات", "سياحة", "سفر", "مغامرات", "رحلات مصر", "رحلات شرم الشيخ", "RehlaNow"],
+  description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now. عروض رائعة، وجهات مميزة، وتجربة سفر لا مثيل لها.",
+  keywords: ["رحلات", "حجوزات", "سياحة", "سفر", "مغامرات", "رحلات مصر", "رحلات شرم الشيخ", "Rehla Now"],
   openGraph: {
     title: "رحلات - استكشف، احجز واستمتع بأفضل العروض",
-    description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع RehlaNow.",
+    description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now.",
     url: "https://rehlanow.com",
     siteName: "RehlaNow",
     type: "website",
@@ -27,7 +17,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "رحلات - استكشف، احجز واستمتع بأفضل العروض",
-    description: "اكتشف أفضل الرحلات في مصر مع RehlaNow.",
+    description: "اكتشف أفضل الرحلات في مصر مع Rehla Now.",
     images: ["https://rehlanow.com/og-image.jpg"],
   },
 };
