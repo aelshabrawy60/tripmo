@@ -203,8 +203,6 @@ class KashierRedirect {
 
     const merchant_id = payoutData.merchantTransferId + "_merchant"
 
-    console.log("merchant_id", merchant_id)
-
     console.log("secret key", this.secretKey)
     try {
       const response = await fetch(this.kashierPayout, {

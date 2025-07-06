@@ -33,8 +33,8 @@ export async function withdraw(groupId, withdraw_method_id) {
     // calculate balance 
     const balance = await calculateAvalBalance(groupId);
 
-    if (balance < 50) {
-        return { result: false, message: "الحد الادني للسحب 50 ج.م" };
+    if (balance < 9) {
+        throw new Error("الحد الادني للسحب 50 ج.م");
     }
 
     // fetch withdraw method

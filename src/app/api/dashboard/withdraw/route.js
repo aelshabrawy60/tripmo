@@ -12,6 +12,8 @@ export const POST = withAuth(async (request) => {
 
         const withd = await withdraw(groupId, withdraw_method_id);
 
+        console.log("withdraw_methoed_id", withd)
+
         if (withd) {
             return NextResponse.json(
                 { message: "success" },
