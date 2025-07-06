@@ -11,7 +11,7 @@ async function addWithdrawRecord(groupId, withdraw_method_id, amount, status, tr
     
     if(error){
         console.log(error)
-        return null
+        throw error
     }
 
     return data
@@ -30,6 +30,9 @@ async function fetchWithdrawMethode(id) {
 }
 
 export async function withdraw(groupId, withdraw_method_id) {
+    const type = "manual"
+    //const type = "auto"
+
     // calculate balance 
     const balance = await calculateAvalBalance(groupId);
 
@@ -61,11 +64,14 @@ export async function withdraw(groupId, withdraw_method_id) {
 
         console.log("payload", payoutData);
 
-        // Try payout first
-        const payout = await initPayout(payoutData);
+        if(type == "auto"){
 
-        // Only create record if payout succeeds
-        const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", payout.data[0]?.transferId);
+            const payout = await initPayout(payoutData);
+            const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", payout.data[0]?.transferId);
+
+        }else{
+            const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", "manual");
+        }
 
         // Reset balance only after successful payout and record creation
         const r = await resetBalance(groupId);
@@ -75,4 +81,19 @@ export async function withdraw(groupId, withdraw_method_id) {
         console.error('Error during payout:', error.message);
         throw error;
     }
+}
+
+
+
+export async function confirmWithdraw(withdraw_id) {
+    const {data, error} = await supabaseAdmin.from("withdraws")
+        .update({status: "TRANSFERRED"})
+        .eq("id", withdraw_id)
+    
+    if(error){
+        console.log(error)
+        throw error
+    }
+
+    return data
 }

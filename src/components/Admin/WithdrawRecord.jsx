@@ -1,7 +1,8 @@
 import React from 'react';
 import { ExternalLink, Building2, Wallet } from 'lucide-react';
+import ConfirmWithdraw from './ConfirmWithdraw';
 
-function WithdrawRecord({ data }) {
+function WithdrawRecord({ data , onConfirm}) {
   // Status configuration with Arabic labels and colors
   const statusConfig = {
     INITIATED: {
@@ -46,13 +47,20 @@ function WithdrawRecord({ data }) {
     }).format(amount);
   };
 
+
   const currentStatus = statusConfig[data.status] || statusConfig.INITIATED;
   const isBank = data.withdraw_methodes?.bank;
 
   return (
-    <div className="w-full" dir="rtl">
+    <div className="w-full relative">
       <div className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200">
         <div className="flex items-center justify-between">
+          {
+            data.transfer_id == "manual" ?
+            <div className='bg-amber-500 px-4 py-1 text-xs text-white rounded-md absolute -top-3'>يدوي</div>
+            :
+            null
+          }
           {/* Right side - Amount and status */}
           <div className="flex items-center space-x-4 space-x-reverse">
             <div>
@@ -89,6 +97,14 @@ function WithdrawRecord({ data }) {
             </a>
           </div>
         </div>
+        {
+          data.status != "TRANSFERRED" ?
+          <div className='mt-3'>
+          <ConfirmWithdraw withdrawId={data.id} onConfirm={onConfirm}/> 
+          </div>
+          :
+          null
+        }
       </div>
     </div>
   );

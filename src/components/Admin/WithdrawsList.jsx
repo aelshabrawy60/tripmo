@@ -104,6 +104,9 @@ function WithdrawsList() {
     }));
   };
 
+  function handleWithdrawConfirm(){
+    fetchWithdraws()
+  }
   // Reset filters
   const resetFilters = () => {
     setFilters({
@@ -384,7 +387,7 @@ function WithdrawsList() {
             </div>
           ) : (
             withdraws.map((withdraw) => (
-              <WithdrawRecord key={withdraw.id} data={withdraw} />
+              <WithdrawRecord key={withdraw.id} data={withdraw} onConfirm={handleWithdrawConfirm}/>
             ))
           )}
         </div>
