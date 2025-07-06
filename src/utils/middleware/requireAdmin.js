@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export async function requireAdmin() {
   const cookieStore = cookies();
   const token = cookieStore.get("admin_token")?.value;
-
+  
   if (!token) {
     return {
       success: false,

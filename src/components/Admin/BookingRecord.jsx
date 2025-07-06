@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ExternalLink, Users, Calendar, Phone, MapPin, Clock } from 'lucide-react';
 import Image from 'next/image';
 
@@ -47,8 +47,17 @@ function BookingRecord({ data }) {
 
   const currentStatus = statusConfig[data.status] || statusConfig.pending;
 
+  useEffect(()=>{
+    console.log("data", data)
+  },[])
   return (
-    <div className="w-full" dir="rtl">
+    <a
+      className="w-full"
+      href={data.deposite_price > 0
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${data.deposits[0]?.payment_id}`
+        : undefined}
+      target="_blank"
+    >
       <div className="group relative bg-white rounded-xl border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-lg hover:shadow-gray-100/50 overflow-hidden">        
         <div className="p-5">
           <div className="flex items-center justify-between gap-4">
@@ -133,7 +142,7 @@ function BookingRecord({ data }) {
           </div>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
 

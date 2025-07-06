@@ -37,7 +37,7 @@ export async function calculateNetAmount(amount, total_price, group_id){
         RehlaNowCommision = RehlaNowCommision * s
     }
 
-    const commision = total_price * RehlaNowCommision > 3 ? total_price * RehlaNowCommision : 3
+    const commision = total_price * RehlaNowCommision
 
     return amount - commision
 }

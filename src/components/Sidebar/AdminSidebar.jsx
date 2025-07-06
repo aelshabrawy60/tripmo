@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, ChevronRight, ChevronLeft} from 'react-feather';
 import { usePathname } from 'next/navigation';
-import { BanknoteArrowDown, FileText, HomeIcon, MapPlus, Settings, Settings2, SettingsIcon, Ticket, Tickets, TicketSlash, User } from 'lucide-react';
+import { BanknoteArrowDown, FileText, HomeIcon, MapPlus, Settings, Settings2, SettingsIcon, Ticket, Tickets, TicketSlash, User, Users } from 'lucide-react';
 
 
 // Define your sidebar items function that filters based on role
@@ -36,9 +36,9 @@ const getSidebarItems = (isAdmin) => {
       icon: <MapPlus size={20}/>
     },
     {
-      title: "الأعدادات",
-      path: '/dashboard/settings',
-      icon: <Settings2 size={20}/>
+      title: "مقدمي الخدمات",
+      path: '/hosts',
+      icon: <Users size={20}/>
     },
     // Show these items only if user is not an admin
     ...(isAdmin ? [] : [

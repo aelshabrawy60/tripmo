@@ -81,7 +81,8 @@ export async function fetchBookings(filters) {
         id,
         amount,
         net_amount,
-        status
+        status,
+        payment_id
       )`);
 
   // Apply the same filters

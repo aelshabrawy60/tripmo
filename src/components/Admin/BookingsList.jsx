@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, Calendar, CheckCircle, XCircle } from 'lucide-react';
 import BookingRecord from './BookingRecord';
-import { FaMoneyBill } from 'react-icons/fa';
+import LoadingCirc from '../Loading/LoadingCirc';
 
 function BookingsList() {
   const [bookings, setBookings] = useState([]);
@@ -317,8 +317,7 @@ function BookingsList() {
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="mr-3 text-gray-600">جاري تحميل الحجوزات...</span>
+          <LoadingCirc/>
         </div>
       )}
 
@@ -337,7 +336,7 @@ function BookingsList() {
 
       {/* Bookings List */}
       {!loading && !error && (
-        <div className="space-y-4">
+        <div className="space-y-4 flex flex-col">
           {bookings.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">لم يتم العثور على حجوزات</p>

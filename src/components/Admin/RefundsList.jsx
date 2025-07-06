@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, DollarSign, Clock, CheckCircle, XCircle, BookOpen } from 'lucide-react';
 import RefundRecord from './RefundRecord'; // Your RefundRecord component
+import LoadingCirc from '../Loading/LoadingCirc';
 
 function RefundsList() {
   const [refunds, setRefunds] = useState([]);
@@ -333,8 +334,7 @@ function RefundsList() {
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-          <span className="mr-3 text-gray-600">جاري تحميل طلبات الاسترداد...</span>
+          <LoadingCirc/>
         </div>
       )}
 

@@ -9,7 +9,7 @@ const paymentGateawayConfig = {
   key_2: process.env.KASHIER_PAYMENT_KEY,
   key_3: process.env.KASHIER_SECRET_KEY,
   status: "active",
-  mode: "test"
+  mode: "live"
 }
 
 

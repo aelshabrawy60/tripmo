@@ -34,7 +34,7 @@ const footerPages = [
 ];
 
 const socialMedia = [
-  { name: "facebook", link: 'https://www.facebook.com/share/1AcqvmjMYw' },
+  { name: "facebook", link: 'https://www.facebook.com/profile.php?id=61577261595965' },
   { name: "instagram", link: 'https://www.instagram.com/rehlanow/profilecard/?igsh=cWl0dm4zMzcxZW1l' }
 ];
 

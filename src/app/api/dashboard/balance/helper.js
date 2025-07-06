@@ -53,3 +53,21 @@ export async function resetBalance(groupId) {
 
     return data
 }
+
+
+export async function calculateAllHostsBalance() {
+    const { data, error } = await supabaseAdmin
+        .from("deposits")
+        .select("net_amount")
+        .eq("withdrawn", false)
+        .eq("status", "confirmed");
+    
+    if (error) {
+        console.error("Error fetching deposits:", error);
+        return 0;
+    }
+    
+    // Sum all net_amount values
+    const total = data.reduce((sum, deposit) => sum + (deposit.net_amount || 0), 0);
+    return total;
+}

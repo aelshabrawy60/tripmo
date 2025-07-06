@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Globe, Lock, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Globe, Lock, Loader2, Ban } from 'lucide-react';
 
 const TripVisibilityToggle = ({ tripId, initialStatus = 'private' }) => {
   const [status, setStatus] = useState(initialStatus);
@@ -7,8 +7,12 @@ const TripVisibilityToggle = ({ tripId, initialStatus = 'private' }) => {
   const [error, setError] = useState(null);
 
   const isPublic = status === 'active';
+  const isBlocked = status === 'blocked';
 
   const toggleVisibility = async () => {
+    // Don't allow toggle if blocked
+    if (isBlocked) return;
+
     setIsLoading(true);
     setError(null);
 
@@ -30,26 +34,35 @@ const TripVisibilityToggle = ({ tripId, initialStatus = 'private' }) => {
     }
   };
 
+  const getButtonStyles = () => {
+    if (isBlocked) {
+      return 'bg-red-100 text-red-700 cursor-not-allowed disabled:opacity-100';
+    }
+    return isPublic 
+      ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 focus:ring-emerald-500' 
+      : 'bg-red-100 text-red-700 hover:bg-gray-200 focus:ring-gray-500';
+  };
+
+  const getStatusText = () => {
+    if (isBlocked) return 'محظورة';
+    return isPublic ? 'عامة' : 'خاصة';
+  };
+
+  const getIcon = () => {
+    if (isLoading) return <Loader2 className="h-4 w-4 animate-spin" />;
+    if (isBlocked) return <Ban className="h-4 w-4" />;
+    return isPublic ? <Globe className="h-4 w-4" /> : <Lock className="h-4 w-4" />;
+  };
+
   return (
     <div>
       <button
         onClick={toggleVisibility}
-        disabled={isLoading}
-        className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-          isPublic 
-            ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 focus:ring-emerald-500' 
-            : 'bg-red-100 text-red-700 hover:bg-gray-200 focus:ring-gray-500'
-        }`}
+        disabled={isLoading || isBlocked}
+        className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${getButtonStyles()}`}
       >
-        {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : isPublic ? (
-          <Globe className="h-4 w-4" />
-        ) : (
-          <Lock className="h-4 w-4" />
-        )}
-        <span>{isPublic ? 'عامة' : 'خاصة'}</span>
-        
+        {getIcon()}
+        <span>{getStatusText()}</span>
       </button>
 
       {error && (

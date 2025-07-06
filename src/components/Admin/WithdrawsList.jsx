@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { TrendingUp, DollarSign, Clock, CheckCircle, XCircle } from 'lucide-react';
 import WithdrawRecord from './WithdrawRecord'; // Assuming you have a WithdrawRecord component
 import { FaMoneyBill } from 'react-icons/fa';
+import LoadingCirc from '../Loading/LoadingCirc';
 
 function WithdrawsList() {
   const [withdraws, setWithdraws] = useState([]);
@@ -356,8 +357,7 @@ function WithdrawsList() {
       {/* Loading State */}
       {loading && (
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="mr-3 text-gray-600">جاري تحميل السحوبات...</span>
+          <LoadingCirc/>
         </div>
       )}
 
