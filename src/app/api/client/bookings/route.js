@@ -120,7 +120,6 @@ export async function DELETE(request){
 
     // Proceed with cancellation
     try {
-        const result = await cancelBooking(bookingId);
         const canRefund = await canBookRefunded(bookingId);
 
         if (canRefund) {
@@ -130,6 +129,8 @@ export async function DELETE(request){
             // downgrade fees from total price to the deposit amount
             await editFees(bookingId);
         }
+
+        const result = await cancelBooking(bookingId);
 
         // If the booking cancellation was successful
         if (result.success) {

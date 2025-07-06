@@ -181,8 +181,7 @@ class KashierRedirect {
       }
 
       const data = await response.json();
-      
-      
+            
       return {
         success: true,
         data: data,
@@ -191,6 +190,7 @@ class KashierRedirect {
       };
 
     } catch (error) {
+      throw error("برجاء التواصل مع فريق الدعم")
       return {
         success: false,
         error: error.message,
