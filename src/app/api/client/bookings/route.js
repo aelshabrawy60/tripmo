@@ -1,5 +1,5 @@
-import { addBooking, checkBookingAvailability, getBookingPrice, cancelBooking, canBookRefunded } from "@/utils/booking_engine/booking_engine";
-import { initDepositPayment, initManualDepositPayment, initRefund } from "@/utils/payments/payments";
+import { addBooking, checkBookingAvailability, getBookingPrice, cancelBooking, canBookRefunded, reactivateBooking } from "@/utils/booking_engine/booking_engine";
+import { initDepositPayment, initManualDepositPayment, initRefund, initManualRefund } from "@/utils/payments/payments";
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
 import { getTrip } from "../../dashboard/trips/helpers";
@@ -7,6 +7,7 @@ import NotificationService from "@/utils/notifications/NotificationService";
 import { calculateNetAmount } from "@/utils/payments/helpers";
 import { requireClient } from "@/utils/middleware/requireClient";
 import { sendMetaIntiateCheckout } from "@/lib/metaCapi";
+
 
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();
@@ -18,7 +19,6 @@ export async function POST(request) {
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
         }
-
 
         // if the booking need deposits
         if(result.data.deposite_price > 0){
@@ -84,7 +84,7 @@ export async function GET(request) {
 }
 
 
-export async function DELETE(request){
+export async function DELETE(request) {
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get("bookingId");
 
@@ -93,63 +93,129 @@ export async function DELETE(request){
     if (!authResult.success) return authResult.response;
     const client = authResult.client;
 
+    // Input validation
     if (!bookingId) {
-        return NextResponse.json({ success: false, message: "Booking ID is required." }, { status: 400 });
+        return NextResponse.json({ 
+            success: false, 
+            message: "Booking ID is required." 
+        }, { status: 400 });
     }
 
-    // check if the booking belongs to the client
-    const { data: booking, error: fetchError } = await supabaseAdmin
-        .from("bookings")
-        .select("id, client_id")
-        .eq("id", bookingId)
-        .single();
-
-    if (fetchError) {
-        console.error("Error fetching booking:", fetchError);
-        return NextResponse.json({ success: false, message: "Error fetching booking." }, { status: 500 });
+    // Validate bookingId format (integer)
+    const bookingIdInt = parseInt(bookingId);
+    if (isNaN(bookingIdInt) || bookingIdInt <= 0) {
+        return NextResponse.json({ 
+            success: false, 
+            message: "Invalid booking ID format." 
+        }, { status: 400 });
     }
 
-    if (!booking) {
-        return NextResponse.json({ success: false, message: "Booking not found." }, { status: 404 });
-    }
-
-    // Check if the booking belongs to the authenticated client
-    if (booking.client_id !== client.id) {
-        return NextResponse.json({ success: false, message: "You are not authorized to cancel this booking." }, { status: 403 });
-    }
-
-    // Proceed with cancellation
     try {
-        const canRefund = await canBookRefunded(bookingId);
+        // Check if the booking belongs to the client
+        const { data: booking, error: fetchError } = await supabaseAdmin
+            .from("bookings")
+            .select("id, client_id, status, deposite_price")
+            .eq("id", bookingIdInt)
+            .single();
 
-        if (canRefund) {
-            // If the booking can be refunded, initiate the refund process
-            await initRefund(bookingId);
-        }else{
-            // downgrade fees from total price to the deposit amount
-            await editFees(bookingId);
+        if (fetchError) {
+            console.error("Error fetching booking:", fetchError);
+            return NextResponse.json({ 
+                success: false, 
+                message: "Error fetching booking." 
+            }, { status: 500 });
         }
 
-        const result = await cancelBooking(bookingId);
+        if (!booking) {
+            return NextResponse.json({ 
+                success: false, 
+                message: "Booking not found." 
+            }, { status: 404 });
+        }
 
-        // If the booking cancellation was successful
-        if (result.success) {
+        // Check if the booking belongs to the authenticated client
+        if (booking.client_id !== client.id) {
+            return NextResponse.json({ 
+                success: false, 
+                message: "You are not authorized to cancel this booking." 
+            }, { status: 403 });
+        }
 
+        // Step 1: Cancel the booking first
+        const cancelResult = await cancelBooking(bookingIdInt, 'client');
+        if (!cancelResult.success) {
+            console.error("Failed to cancel booking:", cancelResult.error);
+            return NextResponse.json({ 
+                success: false, 
+                message: "Failed to cancel booking." 
+            }, { status: 500 });
+        }
+
+        // Step 2: Check if refund is possible
+        const canRefund = await canBookRefunded(bookingIdInt);
+
+        try {
+            if (canRefund) {
+                // Attempt refund process
+                try {
+                    await initRefund(bookingIdInt);
+                } catch (refundError) {
+                    console.error("Auto refund failed, attempting manual refund:", refundError);
+                    try {
+                        await initManualRefund(bookingIdInt, booking.deposite_price);
+                    } catch (manualRefundError) {
+                        console.error("Manual refund also failed:", manualRefundError);
+                        // Rollback: Reactivate the booking
+                        await reactivateBooking(bookingIdInt);
+                        return NextResponse.json({ 
+                            success: false, 
+                            message: "Refund failed. Booking has been restored." 
+                        }, { status: 500 });
+                    }
+                }
+            } else {
+                // Adjust host fees if the booking is not refundable
+                try {
+                    await editFees(bookingIdInt);
+                } catch (feeError) {
+                    console.error("Fee adjustment failed:", feeError);
+                    // Rollback: Reactivate the booking
+                    await reactivateBooking(bookingIdInt);
+                    return NextResponse.json({ 
+                        success: false, 
+                        message: "Fee adjustment failed. Booking has been restored." 
+                    }, { status: 500 });
+                }
+            }
+
+            // Success - send notification (fire and forget)
             const notifications = new NotificationService();
-                notifications.sendBookCancellation("whatsapp", bookingId, canRefund)
-                    .catch(err => console.error("Notification error:", err));
+            notifications.sendBookCancellation("whatsapp", bookingIdInt, canRefund)
+                .catch(err => console.error("Notification error:", err));
 
-            return NextResponse.json({ success: true, message: "Booking cancelled successfully." }, { status: 200 });
-        } else {
-            return NextResponse.json({ success: false, message: result.message }, { status: 400 });
+            return NextResponse.json({ 
+                success: true, 
+                message: "Booking cancelled successfully." 
+            }, { status: 200 });
+
+        } catch (error) {
+            console.error("Unexpected error during refund/fee processing:", error);
+            // Rollback: Reactivate the booking
+            await reactivateBooking(bookingIdInt);
+            return NextResponse.json({ 
+                success: false, 
+                message: "An error occurred. Booking has been restored." 
+            }, { status: 500 });
         }
 
     } catch (error) {
-        console.error("Error in cancelling booking:", error);
-        return NextResponse.json({ success: false, message: "Unexpected error occurred while cancelling booking." }, { status: 500 });
+        console.error("Unexpected error in DELETE booking endpoint:", error);
+        return NextResponse.json({ 
+            success: false, 
+            message: "An unexpected error occurred." 
+        }, { status: 500 });
     }
 }
-
 
 
 //

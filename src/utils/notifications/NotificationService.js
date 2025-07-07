@@ -71,7 +71,7 @@ export default class NotificationService{
                     date: bookData.day,
                     persons: bookData.persons,
                     total_price: bookData.total_price,
-                    refund_amount: bookData.total_price
+                    refund_amount: bookData.deposite_price
                 }
             }
         }else{

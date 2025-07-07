@@ -148,7 +148,7 @@ export async function AddRefund(bookId, status, amount, transactionId){
         transactionId: transactionId
     }]);
 
-    if(status == "SUCCESS"){
+    if(status == "SUCCESS" || status == "PENDING"){
         const {data, error} = await supabaseAdmin
             .from("deposits")
             .update({status: "refunded"})

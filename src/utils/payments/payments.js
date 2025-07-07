@@ -158,6 +158,16 @@ async function initRefund(bookId, amount = null, gatewayConfig = paymentGateaway
   return refundData;
 }
 
+async function initManualRefund(bookId, amount = null) {
+  const refund = await AddRefund(bookId, "PENDING", amount, bookId);
+
+  if (!refund) {
+    throw new Error("Failed to create refund record");
+  }
+
+  return refund
+}
+
 async function initPayout(payoutData, gatewayConfig = paymentGateawayConfig) {
   const paymentService = new PaymentRedirectFlow(gatewayConfig);
   const payoutData_ = paymentService.payout(gatewayConfig.name, payoutData)
@@ -184,6 +194,7 @@ module.exports = {
   initDepositPayment,
   initManualDepositPayment,
   initRefund,
+  initManualRefund,
   initPayout,
   paymentGateawayConfig,
   getWithdrawStatus

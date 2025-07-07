@@ -190,12 +190,7 @@ class KashierRedirect {
       };
 
     } catch (error) {
-      throw error("برجاء التواصل مع فريق الدعم")
-      return {
-        success: false,
-        error: error.message,
-        data: null
-      };
+      throw new error(error.message || 'An error occurred while creating the refund');
     }
   }
 

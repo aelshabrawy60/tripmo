@@ -86,15 +86,16 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, Trip
 }
 
 
-export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, timeZone = 0, client_id = null) {   
-    const TripData = await fetchTripData(tripId);
-    
-    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, TripData);
-    
+export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, timeZone = 0, client_id = null) { 
+
     if(isDayInPast(date)){
         return { success: false, message: "Cannot book a trip in the past." };
 
     }
+
+    const TripData = await fetchTripData(tripId);
+    
+    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, TripData);
     
     if (!availability.success) {
         console.error("Booking not available:", availability.message);
@@ -171,6 +172,23 @@ export async function cancelBooking(booking_id, user_role){
 
     if (error) {
         console.error("Error deleting booking:", error);
+        return null;
+    }
+    return {"success": true, data};
+}
+
+export async function reactivateBooking(booking_id, originalStatus = "active") {
+    const {data, error} = await supabaseAdmin
+        .from('bookings')
+        .update({
+            status: originalStatus,
+        })
+        .eq('id', booking_id)
+        .select('*')
+        .single();
+
+    if (error) {
+        console.error("Error reactivating booking:", error);
         return null;
     }
     return {"success": true, data};
