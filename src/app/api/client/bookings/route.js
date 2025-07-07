@@ -7,6 +7,7 @@ import NotificationService from "@/utils/notifications/NotificationService";
 import { calculateNetAmount } from "@/utils/payments/helpers";
 import { requireClient } from "@/utils/middleware/requireClient";
 import { sendMetaIntiateCheckout } from "@/lib/metaCapi";
+import { calcCancelationFees } from "@/utils/payments/helpers";
 
 
 export async function POST(request) {
@@ -157,12 +158,13 @@ export async function DELETE(request) {
         try {
             if (canRefund) {
                 // Attempt refund process
+                const refundAmount = booking.deposite_price - calcCancelationFees(booking.deposite_price)
                 try {
-                    await initRefund(bookingIdInt);
+                    await initRefund(bookingIdInt, refundAmount);
                 } catch (refundError) {
                     console.error("Auto refund failed, attempting manual refund:", refundError);
                     try {
-                        await initManualRefund(bookingIdInt, booking.deposite_price);
+                        await initManualRefund(bookingIdInt, refundAmount);
                     } catch (manualRefundError) {
                         console.error("Manual refund also failed:", manualRefundError);
                         // Rollback: Reactivate the booking

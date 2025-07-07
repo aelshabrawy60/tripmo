@@ -22,6 +22,7 @@ export async function GET(request) {
       const trip = await getTrip(tripSlug, true, true);
       return NextResponse.json(trip);
     }
+    
     // If tripId is provided, get the specific trip
     if (tripId) {
       const trip = await getTrip(tripId);

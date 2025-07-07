@@ -79,7 +79,7 @@ export async function withdraw(groupId, withdraw_method_id) {
 
     } catch (error) {
         console.error('Error during payout:', error.message);
-        throw error;
+        throw new error;
     }
 }
 
