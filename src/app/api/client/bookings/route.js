@@ -153,7 +153,7 @@ export async function DELETE(request) {
         }
 
         // Step 2: Check if refund is possible
-        const canRefund = await canBookRefunded(bookingIdInt);
+        const { refundable: canRefund, deposit_price } = await canBookRefunded(bookingIdInt);
 
         try {
             if (canRefund) {

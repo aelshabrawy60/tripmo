@@ -165,13 +165,12 @@ async function CancelledOrder({ bookingData, TripData }) {
               <>
                 <div className="flex justify-between">
                   <span className="text-gray-600">رسوم الإلغاء</span>
-                  <span className="font-medium text-red-600">0.00 ج.م</span>
+                  <span className="font-medium text-red-600">{refundData.amount == null ? 0.00 : (bookingData?.deposite_price - refundData?.amount).toFixed(2)} ج.م</span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-gray-200 font-bold">
                   <span>المبلغ المسترد</span>
                   <span className={refundData.status === 'completed' ? 'text-green-700' : 'text-orange-700'}>
                     {refundData.amount == null ? bookingData?.deposite_price?.toFixed(2) + 'ج.م': refundData.amount?.toFixed(2)+ 'ج.م'}
-                    
                   </span>
                 </div>
               </>
@@ -209,7 +208,7 @@ async function CancelledOrder({ bookingData, TripData }) {
             {!refundData && (
               <div className="mt-4 p-3 bg-red-100 rounded-lg">
                 <p className="text-red-800 text-sm font-medium">
-                  🚫 هذا الحجز غير مؤهل للاسترداد وفقاً لسياسة الشركة
+                  هذا الحجز غير مؤهل للاسترداد 
                 </p>
               </div>
             )}

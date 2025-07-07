@@ -187,5 +187,5 @@ export async function fetchPaymentId(bookId){
 
 export function calcCancelationFees(totalPrice) {
     const cancelationFees = 0.03
-    return totalPrice - (totalPrice * cancelationFees)
+    return totalPrice * cancelationFees
 }

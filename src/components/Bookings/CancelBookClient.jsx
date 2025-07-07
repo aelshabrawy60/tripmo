@@ -5,6 +5,7 @@ import ClientAuthFlow from '../auth/ClientAuthFlow';
 function CancelBookClient({bookId, bookData}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRefundable, setIsRefundable] = useState(null);
+  const [refundData, setRefundData] = useState(null); // Store refund details
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingRefund, setIsCheckingRefund] = useState(false);
   const [canCancel, setCanCancel] = useState(false)
@@ -30,7 +31,7 @@ function CancelBookClient({bookId, bookData}) {
       }
 
       const result = await response.json();
-      return result.status;
+      return result;
     } catch (error) {
       console.error("Unexpected error occurred while checking refundability:", error);
       throw error;
@@ -84,8 +85,9 @@ function CancelBookClient({bookId, bookData}) {
     setError(null);
     
     try {
-      const refundStatus = await fetchBookRefundability(bookId);
-      setIsRefundable(refundStatus);
+      const refundResult = await fetchBookRefundability(bookId);
+      setIsRefundable(refundResult.status);
+      setRefundData(refundResult); // Store the complete refund data
       setIsModalOpen(true);
     } catch (error) {
       setError(error.message);
@@ -120,6 +122,7 @@ function CancelBookClient({bookId, bookData}) {
   function closeModal() {
     setIsModalOpen(false);
     setIsRefundable(null);
+    setRefundData(null); // Clear refund data
     setError(null);
   }
 
@@ -234,6 +237,35 @@ function CancelBookClient({bookId, bookData}) {
                     </div>
                   </div>
                 </div>
+
+                {/* Refund Details Section */}
+                {isRefundable && refundData && (
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                    <h4 className="font-medium text-gray-900 mb-3">تفاصيل الاسترداد:</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">رسوم الإلغاء:</span>
+                        <span className="text-sm font-medium text-red-600">
+                          {refundData.cancelationFees?.toFixed(2) || '0.00'} ج.م
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">المبلغ المسترد:</span>
+                        <span className="text-sm font-medium text-green-600">
+                          {refundData.refundableAmount?.toFixed(2) || '0.00'} ج.م
+                        </span>
+                      </div>
+                      <div className="border-t border-gray-200 pt-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-900">صافي المبلغ المسترد:</span>
+                          <span className="text-base font-bold text-green-600">
+                            {refundData.refundableAmount?.toFixed(2) || '0.00'} ج.م
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <p className="text-gray-600 text-center">
                   هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟

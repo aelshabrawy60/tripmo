@@ -277,31 +277,36 @@ async function fetchTripData(tripId){
 }
 
 
-export async function canBookRefunded(bookId){
-    const {data, error} = await supabaseAdmin
+export async function canBookRefunded(bookId) {
+    const { data, error } = await supabaseAdmin
         .from('bookings')
-        .select('can_canceled_until')
+        .select('can_canceled_until, deposite_price')
         .eq('id', bookId)
-        .single()
+        .single();
 
     if (error) {
         console.error("Error fetching booking data:", error);
-        return false;
+        return {
+            refundable: false,
+            deposit_price: null
+        };
     }
 
-    if(data.can_canceled_until == null){
-        return false
+    if (data.can_canceled_until == null) {
+        return {
+            refundable: false,
+            deposit_price: data.deposite_price
+        };
     }
 
     const canCanceledUntil = new Date(data.can_canceled_until);
-    // get the GMT+0 date
+    const nowUTC = new Date(); // Stores time in UTC internally
+    const utcTimestamp = nowUTC.getTime();
 
-    const nowUTC = new Date(); // This is in local time, but internally stores UTC
-    const utcTimestamp = nowUTC.getTime(); // This is a UTC timestamp in milliseconds
+    const refundable = canCanceledUntil.getTime() > utcTimestamp;
 
-    if (canCanceledUntil.getTime() > utcTimestamp) {
-        return true; // Booking can be refunded
-    }
-
-    return false; // Booking cannot be refunded
+    return {
+        refundable,
+        deposit_price: data.deposite_price
+    };
 }
