@@ -1,0 +1,13 @@
+Client
+    Add Booking (no risk if the booking added and intit payment fails beacuse booking status will be pending)
+        1. Add Booking Record with pending status 
+        2. inti Payment
+            create kashier payment -> add deposit record
+
+    Cancel Booking (risk if the booking canceled sucess and intit refund fails and also the rollback fails)
+        1. cancel booking record (status == "canceled")
+        2. initRefund || edit Fees if fails reactive booking status
+
+
+Host
+    

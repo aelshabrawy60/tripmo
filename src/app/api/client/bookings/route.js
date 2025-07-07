@@ -152,10 +152,11 @@ export async function DELETE(request) {
             }, { status: 500 });
         }
 
-        // Step 2: Check if refund is possible
-        const { refundable: canRefund, deposit_price } = await canBookRefunded(bookingIdInt);
-
         try {
+
+            // Step 2: Check if refund is possible
+            const { refundable: canRefund, deposit_price } = await canBookRefunded(bookingIdInt);
+
             if (canRefund) {
                 // Attempt refund process
                 const refundAmount = booking.deposite_price - calcCancelationFees(booking.deposite_price)
@@ -222,7 +223,7 @@ export async function DELETE(request) {
 
 //
 async function editFees(bookId) {
-
+    
     // Get the current deposit and related booking
     const { data: deposit, error: fetchError } = await supabaseAdmin
         .from("deposits")

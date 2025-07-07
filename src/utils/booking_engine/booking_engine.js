@@ -90,7 +90,6 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
 
     if(isDayInPast(date)){
         return { success: false, message: "Cannot book a trip in the past." };
-
     }
 
     const TripData = await fetchTripData(tripId);
@@ -286,10 +285,7 @@ export async function canBookRefunded(bookId) {
 
     if (error) {
         console.error("Error fetching booking data:", error);
-        return {
-            refundable: false,
-            deposit_price: null
-        };
+        throw new error
     }
 
     if (data.can_canceled_until == null) {
