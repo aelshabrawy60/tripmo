@@ -30,7 +30,7 @@ function AdminLayoutContent({ children }) {
 
   return (
     <SharedContext.Provider value={{ user }}>
-      <AdminSidebar/>
+      <AdminSidebar role={user.role}/>
       <div className={'lg:mr-[260px]'}>
         {children}
       </div>

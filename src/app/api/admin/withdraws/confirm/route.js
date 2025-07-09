@@ -3,6 +3,13 @@ import { confirmWithdraw } from "@/utils/withdraw/withdraw";
 
 export async function POST(request) {
   try {
+
+    // Authenticate admin
+    const authResult = await requireAdmin("withdraws");
+    if (!authResult.success) return authResult.response;
+    const admin = authResult.admin;
+
+    
     const body = await request.json();
     const withdrawId = body.withdrawId;
 

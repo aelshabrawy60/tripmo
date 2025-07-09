@@ -36,7 +36,7 @@ export async function verifyToken(token) {
 
         const { data, error } = await supabaseAdmin
             .from("admins")
-            .select("id")
+            .select("id, role")
             .eq("id", decoded.id)
             .maybeSingle();
 

@@ -15,7 +15,7 @@ async function blockTrip(id, action) {
 
 export async function POST(request) {
   try {
-    const authResult = await requireAdmin();
+    const authResult = await requireAdmin("trips");
     if (!authResult.success) return authResult.response;
     const admin = authResult.admin;
 

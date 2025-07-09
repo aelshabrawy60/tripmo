@@ -1,9 +1,15 @@
 // app/api/revenue/route.ts
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/utils/supabase/service';
+import { requireAdmin } from '@/utils/middleware/requireAdmin';
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
+
+  // Authenticate admin
+  const authResult = await requireAdmin("revenue");
+  if (!authResult.success) return authResult.response;
+  const admin = authResult.admin;
 
   const period = searchParams.get('period') || 'today';
   const start_date = searchParams.get('start_date'); // optional

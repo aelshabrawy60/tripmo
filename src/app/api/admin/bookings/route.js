@@ -5,7 +5,7 @@ import { fetchBookings, getBookingStats } from "./helpers";
 export async function GET(request) {
   try {
     // Authenticate admin
-    const authResult = await requireAdmin();
+    const authResult = await requireAdmin("bookings");
     if (!authResult.success) return authResult.response;
     const admin = authResult.admin;
 

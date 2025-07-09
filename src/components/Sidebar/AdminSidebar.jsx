@@ -4,13 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, ChevronRight, ChevronLeft} from 'react-feather';
 import { usePathname } from 'next/navigation';
-import { BanknoteArrowDown, FileText, HomeIcon, MapPlus, Settings, Settings2, SettingsIcon, Ticket, Tickets, TicketSlash, User, Users } from 'lucide-react';
-
+import { BanknoteArrowDown, FileText, HomeIcon, MapPlus, Settings, Settings2, SettingsIcon, Ticket, Tickets, TicketSlash, User, Users, Wallet } from 'lucide-react';
+import { roles } from '@/utils/middleware/AdminRoles';
 
 // Define your sidebar items function that filters based on role
-const getSidebarItems = (isAdmin) => {
+const getSidebarItems = (userRole) => {
   const allItems = [
-    { 
+    {
       title: 'الرئيسية',
       path: '/',
       icon: <HomeIcon size={20} />,
@@ -25,7 +25,7 @@ const getSidebarItems = (isAdmin) => {
       path: '/refunds',
       icon: <TicketSlash size={20}/>
     },
-        { 
+    {
       title: 'عمليات السحب',
       path: '/withdraws',
       icon: <BanknoteArrowDown size={20} />,
@@ -40,14 +40,36 @@ const getSidebarItems = (isAdmin) => {
       path: '/hosts',
       icon: <Users size={20}/>
     },
-    // Show these items only if user is not an admin
-    ...(isAdmin ? [] : [
-      
-    ]),
-    
+    {
+      title: "الإيرادات",
+      path: '/revenue',
+      icon: <Wallet size={20}/>
+    },
   ];
 
-  return allItems;
+  // Find the role configuration
+  const roleConfig = roles.find(role => role.name === userRole);
+  
+  // If role not found, return empty array for security
+  if (!roleConfig) {
+    return [];
+  }
+
+  // Filter items based on disallowed paths
+  const filteredItems = allItems.filter(item => {
+    // Extract the path without leading slash for comparison
+    const pathSegment = item.path.replace('/', '');
+    
+    // Allow home page for all roles
+    if (pathSegment === '') {
+      return true;
+    }
+    
+    // Check if the path is in the disallowed list
+    return !roleConfig.disallowedPaths.includes(pathSegment);
+  });
+
+  return filteredItems;
 };
 
 // Custom logo component
@@ -75,11 +97,10 @@ const AdminSidebar = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expandedItems, setExpandedItems] = useState({}); // Initialize with empty object
   const [mounted, setMounted] = useState(false);  
-  // Get user role - assuming it's available in the user object
-  const isAdmin = role == 'admin';
+
   
   // Get the filtered sidebar items based on user role
-  const items = getSidebarItems(isAdmin);
+  const items = getSidebarItems(role);
 
   // Handle hydration mismatch by only rendering the full component after mounting
   useEffect(() => {

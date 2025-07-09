@@ -4,7 +4,7 @@ import { fetchHosts } from './helpers';
 
 export async function GET(request) {
     // Authenticate admin
-    const authResult = await requireAdmin();
+    const authResult = await requireAdmin("hosts");
     if (!authResult.success) return authResult.response;
     const admin = authResult.admin;
     
