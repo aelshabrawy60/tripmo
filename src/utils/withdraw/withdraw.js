@@ -1,11 +1,11 @@
 import { supabaseAdmin } from "../supabase/service";
-import { calculateAvalBalance, resetBalance } from "@/app/api/dashboard/balance/helper";
+import { calculateAvalBalance, calculateTotalBalance, resetBalance } from "@/app/api/dashboard/balance/helper";
 import {initPayout} from "@/utils/payments/payments"
 
-async function addWithdrawRecord(groupId, withdraw_method_id, amount, status, transferId) {
+async function addWithdrawRecord(groupId, withdraw_method_id, amount, status, transferId, balance_before_withdraw) {
     const {data, error} = await supabaseAdmin
         .from("withdraws")
-        .insert([{"group_id": groupId, withdraw_method_id, amount, status, transfer_id: transferId}])
+        .insert([{"group_id": groupId, withdraw_method_id, amount, status, transfer_id: transferId, balance_before_withdraw}])
         .select("*")
         .single()
     
@@ -34,7 +34,15 @@ export async function withdraw(groupId, withdraw_method_id) {
     //const type = "auto"
 
     // calculate balance 
-    const balance = await calculateAvalBalance(groupId);
+    const currentDate = new Date().toISOString()
+
+    //const balance = await calculateAvalBalance(groupId, currentDate);
+
+    // Calculate both balances concurrently
+    const [total_balance, balance] = await Promise.all([
+        calculateTotalBalance(groupId),
+        calculateAvalBalance(groupId, currentDate)
+    ]);
 
     if (balance < 9) {
         throw new Error("الحد الادني للسحب 50 ج.م");
@@ -67,14 +75,14 @@ export async function withdraw(groupId, withdraw_method_id) {
         if(type == "auto"){
 
             const payout = await initPayout(payoutData);
-            const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", payout.data[0]?.transferId);
+            const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", payout.data[0]?.transferId, total_balance);
 
         }else{
-            const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", "manual");
+            const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", "manual", total_balance);
         }
 
         // Reset balance only after successful payout and record creation
-        const r = await resetBalance(groupId);
+        const r = await resetBalance(groupId, currentDate);
         return r;
 
     } catch (error) {

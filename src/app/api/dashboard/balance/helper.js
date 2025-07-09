@@ -18,12 +18,13 @@ export async function calculateTotalBalance(groupId) {
     return total;
 }
 
-export async function calculateAvalBalance(groupId) {
+export async function calculateAvalBalance(groupId, currentDate = new Date().toISOString()) {
+
     const { data, error } = await supabaseAdmin
         .from("deposits")
         .select("net_amount")
         .eq("group_id", groupId)
-        .lte("release_date", new Date().toISOString())
+        .lte("release_date", currentDate)
         .eq("withdrawn", false)
         .eq("status", "confirmed");
     
@@ -37,13 +38,13 @@ export async function calculateAvalBalance(groupId) {
     return total;
 }
 
-export async function resetBalance(groupId) {
+export async function resetBalance(groupId, currentDate = new Date().toISOString()) {
     const {data, error} = await supabaseAdmin
         .from("deposits")
         .update({withdrawn: true})
         .eq("group_id", groupId)
         .eq("withdrawn", false)
-        .lte("release_date", new Date().toISOString())
+        .lte("release_date", currentDate)
         .eq("status", "confirmed")
         .select("*");
 

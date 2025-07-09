@@ -83,7 +83,6 @@ export async function createDeposit(bookData, url, paymentId, type, tracking_dat
 
 }
 
-
 export async function confirmDeposit(bookId) {
     // Single query to check status and get phone in one go
     const { data: booking, error: fetchError } = await supabaseAdmin
@@ -94,7 +93,7 @@ export async function confirmDeposit(bookId) {
 
     if (fetchError) {
         console.error("Error fetching booking:", fetchError);
-        return null;
+        throw new fetchError
     }
 
     // Check if already confirmed
@@ -121,7 +120,7 @@ export async function confirmDeposit(bookId) {
             deposit: depositResult.error, 
             booking: bookingResult.error 
         });
-        return null;
+        throw new Error("Failed to update booking or deposit status");
     }
 
     // Send notification asynchronously (don't await)

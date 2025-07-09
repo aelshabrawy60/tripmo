@@ -3,6 +3,7 @@ Client
         1. Add Booking Record with pending status 
         2. inti Payment
             create kashier payment -> add deposit record
+        3. confirm deposit
 
     Cancel Booking (risk if the booking canceled sucess and intit refund fails and also the rollback fails)
         1. cancel booking record (status == "canceled")
@@ -10,4 +11,7 @@ Client
 
 
 Host
-    
+    Withdraw
+        1. init payout
+        2. add withdraw record
+        3. rest balance

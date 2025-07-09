@@ -8,7 +8,7 @@ import { confirmDeposit } from '@/utils/payments/helpers';
 import { updateTripScore } from '@/utils/trips_engine/trips_scoring';
 import { sendMetaPurchase } from '@/lib/metaCapi';
 
-const PAYMENT_API_KEY = process.env.KASHIER_PAYMENT_KEY; // Securely store this in your .env
+const PAYMENT_API_KEY = process.env.KASHIER_PAYMENT_KEY;
 
 export async function POST(request) {
   try {

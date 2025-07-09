@@ -1,11 +1,5 @@
 // app/api/payment/confirm/route.js
-import { NextResponse } from 'next/server';
-import {PaymentRedirectFlow} from '../../../../../utils/payments/payments'
-import { fetchPaymentsOptions } from "@/utils/group/group";
 import { supabaseAdmin } from '@/utils/supabase/service';
-import { confirmDeposit } from '@/utils/payments/helpers';
-import { paymentGateawayConfig } from '../../../../../utils/payments/payments';
-
 export async function GET(request) {
     try {
         const { data: downPayments, error: fetchError } = await supabaseAdmin.from('deposits').select('*, bookings(day, created_at)').eq("host_status", "pending")
