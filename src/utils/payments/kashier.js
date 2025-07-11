@@ -198,7 +198,6 @@ class KashierRedirect {
 
     const merchant_id = payoutData.merchantTransferId + "_merchant"
 
-    console.log("secret key", this.secretKey)
     try {
       const response = await fetch(this.kashierPayout, {
         method: 'POST',
@@ -217,7 +216,6 @@ class KashierRedirect {
           serverWebhook: "https://tripmo.vercel.app/api/webhook/payouts"
         })
       });
-
       
       if (!response.ok) {
         const errorData = await response.json();

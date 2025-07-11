@@ -1,22 +1,5 @@
 import { supabaseAdmin } from "../supabase/service";
 import { calculateAvalBalance, calculateTotalBalance, resetBalance } from "@/app/api/dashboard/balance/helper";
-import {initPayout} from "@/utils/payments/payments"
-
-async function addWithdrawRecord(groupId, withdraw_method_id, amount, status, transferId, balance_before_withdraw) {
-    const {data, error} = await supabaseAdmin
-        .from("withdraws")
-        .insert([{"group_id": groupId, withdraw_method_id, amount, status, transfer_id: transferId, balance_before_withdraw}])
-        .select("*")
-        .single()
-    
-    if(error){
-        console.log(error)
-        throw error
-    }
-
-    return data
-}
-
 
 async function fetchWithdrawMethode(id) {
     const {data, error} = await supabaseAdmin.from("withdraw_methodes").select('*, Group(name)').eq("id", id).single()
@@ -33,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 export async function withdraw(groupId, withdraw_method_id) {
-  const type = "auto"; // or "auto"
+  const type = "manual"; // or "auto"
   const currentDate = new Date().toISOString();
 
   // Step 1: Calculate balances

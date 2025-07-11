@@ -5,8 +5,13 @@ import ConfirmWithdraw from './ConfirmWithdraw';
 function WithdrawRecord({ data , onConfirm}) {
   // Status configuration with Arabic labels and colors
   const statusConfig = {
+    pending: {
+      label: 'في انتظار التأكيد',
+      color: 'bg-yellow-100 text-yellow-700',
+      dot: 'bg-yellow-500'
+    },
     INITIATED: {
-      label: 'تم البدء',
+      label: 'في انتظار التأكيد',
       color: 'bg-blue-100 text-blue-700',
       dot: 'bg-blue-500'
     },
