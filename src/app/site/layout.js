@@ -24,6 +24,7 @@ export const metadata = {
 };
 
 const pages = [
+  { name: 'من نحن', link: `/about` },
   { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
 ];
 
@@ -65,8 +66,8 @@ export default function RootLayout({ children }) {
         <MainLayout>
           {!shouldHideNavbar && <MainNavbar pages={pages} />}
           <div>{children}</div>
-          {!shouldHideNavbar && <MainFooter logo={'/logo.png'} pages={footerPages} socialMedia={socialMedia} />}
         </MainLayout>
+        {!shouldHideNavbar && <MainFooter logo={'/logo.png'} pages={footerPages} socialMedia={socialMedia} />}
       </body>
     </html>
   );

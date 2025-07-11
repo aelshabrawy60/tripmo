@@ -16,7 +16,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
 
   // Default contact info if not provided
   const defaultContactInfo = {
-    address: "مصر , دمياط الجديدة",
+    address: "مصطفى النحاس، مدينه نصر",
     phone: "01061455364",
     email: "info@rehlanow.com"
   };
@@ -25,7 +25,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
   const contact = contactInfo || defaultContactInfo;
 
   return (
-    <footer className="text-gray-800 mt-10">
+    <footer className="text-gray-800 mt-10 bg-[#f3f3f3]">
       {/* Main Footer Content */}
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row justify-between gap-x-20 gap-y-8">
@@ -46,7 +46,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
             <p className="text-gray-600 mb-4 text-right">
               نحن نسعى لتقديم أفضل الخدمات لعملائنا الكرام، ونتطلع دائمًا لخلق تجربة مستخدم فريدة ومميزة.
             </p>
-            <div className="flex space-x-4 space-x-reverse">
+            <div className="flex gap-4">
               {socialMedia && socialMedia.map((item, index) => (
                 <a 
                   key={index} 

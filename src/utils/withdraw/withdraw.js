@@ -29,67 +29,70 @@ async function fetchWithdrawMethode(id) {
     return data
 }
 
+import { v4 as uuidv4 } from 'uuid';
+
+
 export async function withdraw(groupId, withdraw_method_id) {
-    const type = "manual"
-    //const type = "auto"
+  const type = "auto"; // or "auto"
+  const currentDate = new Date().toISOString();
 
-    // calculate balance 
-    const currentDate = new Date().toISOString()
+  // Step 1: Calculate balances
+  const [total_balance, balance] = await Promise.all([
+    calculateTotalBalance(groupId),
+    calculateAvalBalance(groupId, currentDate)
+  ]);
 
-    //const balance = await calculateAvalBalance(groupId, currentDate);
+  if (balance < 5) {
+    throw new Error("الحد الادني للسحب 50 ج.م");
+  }
 
-    // Calculate both balances concurrently
-    const [total_balance, balance] = await Promise.all([
-        calculateTotalBalance(groupId),
-        calculateAvalBalance(groupId, currentDate)
-    ]);
+  // Step 2: Fetch withdraw method
+  const withdrawMethod = await fetchWithdrawMethode(withdraw_method_id);
 
-    if (balance < 9) {
-        throw new Error("الحد الادني للسحب 50 ج.م");
-    }
+  // Step 3: Prepare data
+  const outbox_id = uuidv4();
+  const merchantTransferId = outbox_id
 
-    // fetch withdraw method
-    const withdrawMethod = await fetchWithdrawMethode(withdraw_method_id);
+  const payoutData = {
+    amount: balance,
+    method: withdrawMethod.methode,
+    recipientName: withdrawMethod.Group.name || 'John Doe',
+    merchantTransferId,
+    recipientNumber: withdrawMethod.number,
+  };
 
-    try {
-        // Generate a unique merchant transfer ID
-        const merchantTransferId = `withdraw_${groupId}_${Date.now()}`;
+  const method = withdrawMethod.methode?.toLowerCase();
+  if (method !== "wallet" && method !== "instant wallet") {
+    payoutData.recipientBank = withdrawMethod.bank;
+  }
 
-        // Build base payout data
-        const payoutData = {
-            amount: balance,
-            method: withdrawMethod.methode,
-            recipientName: withdrawMethod.Group.name || 'John Doe',
-            merchantTransferId: merchantTransferId,
-            recipientNumber: withdrawMethod.number,
-        };
+  const isManual = type === "manual";
+  const transferId = isManual ? "manual" : "pending";
 
-        // Add recipientBank only if method is not "wallet" or "instant wallet"
-        const method = withdrawMethod.methode?.toLowerCase();
-        if (method !== "wallet" && method !== "instant wallet") {
-            payoutData.recipientBank = withdrawMethod.bank;
-        }
+  // Step 4: Call the Supabase RPC function (atomic DB transaction)
+  const { error } = await supabaseAdmin.rpc("host_withdraw", {
+    group_id: groupId,
+    method_id: withdraw_method_id,
+    amount: balance,
+    total_balance,
+    transfer_id: transferId,
+    outbox_id,
+    payload: isManual ? {} : payoutData,
+    current_date_input: currentDate,
+    manual: isManual,
+  });
 
-        console.log("payload", payoutData);
+  if (error) {
+    console.error("Withdrawal failed:", error);
+    throw new Error("فشل تنفيذ السحب");
+  }
 
-        if(type == "auto"){
-
-            const payout = await initPayout(payoutData);
-            const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", payout.data[0]?.transferId, total_balance);
-
-        }else{
-            const record = await addWithdrawRecord(groupId, withdraw_method_id, balance, "pending", "manual", total_balance);
-        }
-
-        // Reset balance only after successful payout and record creation
-        const r = await resetBalance(groupId, currentDate);
-        return r;
-
-    } catch (error) {
-        console.error('Error during payout:', error.message);
-        throw new error;
-    }
+  return {
+    message: isManual ? "تم تسجيل السحب كيدوي" : "تم استلام طلب السحب",
+    status: "pending",
+  };
 }
+
 
 
 

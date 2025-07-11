@@ -2,14 +2,15 @@ import {createDeposit, AddRefund, fetchPaymentId} from './helpers'
 
 const KashierRedirect = require('./kashier');
 
+const mode = "live"
 const paymentGateawayConfig = {
   name: "kashier",
   type: "auto",
   key_1: process.env.KASHIER_MERCHANT_ID,
   key_2: process.env.KASHIER_PAYMENT_KEY,
-  key_3: process.env.KASHIER_SECRET_KEY,
+  key_3: mode == "live" ? process.env.KASHIER_SECRET_KEY: process.env.KASHIER_SECRET_KEY_TEST,
   status: "active",
-  mode: "live"
+  mode: mode
 }
 
 
