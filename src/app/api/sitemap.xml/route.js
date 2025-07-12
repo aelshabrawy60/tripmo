@@ -39,6 +39,14 @@ async function generateSitemap() {
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+
+  <!-- about -->
+  <url>
+    <loc>https://rehlanow.com/about</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
   
   <!-- Trips listing -->
   <url>
