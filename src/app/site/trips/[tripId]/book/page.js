@@ -7,6 +7,7 @@ import BookSummaryCard from '@/components/website/BookSummaryCard';
 import LoadingCirc from '@/components/Loading/LoadingCirc';
 import Loading from '@/components/Loading';
 import TermsAcceptance from '@/components/website/TermsAcceptance';
+import PaymentWays from '@/components/website/PaymentWays';
 
 function BookingPage() {
   const params = useParams();
@@ -204,6 +205,9 @@ function BookingPage() {
               </>
               
             )}
+            <div className='mt-4'>
+              <PaymentWays type={1}/>
+            </div>
           </div>
 
           {showAuthFlow && (
