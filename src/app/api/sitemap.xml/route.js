@@ -26,7 +26,7 @@ async function generateSitemap() {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
   <url>
-    <loc>https://rehlanow.com/</loc>
+    <loc>https://www.rehlanow.com/</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -34,7 +34,7 @@ async function generateSitemap() {
   
   <!-- Terms -->
   <url>
-    <loc>https://rehlanow.com/terms</loc>
+    <loc>https://www.rehlanow.com/terms</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -42,7 +42,7 @@ async function generateSitemap() {
 
   <!-- about -->
   <url>
-    <loc>https://rehlanow.com/about</loc>
+    <loc>https://www.rehlanow.com/about</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -50,7 +50,7 @@ async function generateSitemap() {
   
   <!-- Trips listing -->
   <url>
-    <loc>https://rehlanow.com/site/trips</loc>
+    <loc>https://www.rehlanow.com/trips</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -67,7 +67,7 @@ async function generateSitemap() {
   <!-- Dynamic Trip Pages -->
   ${trips.map(trip => `
   <url>
-    <loc>https://rehlanow.com/site/trips/${trip.slug || trip.id}</loc>
+    <loc>https://www.rehlanow.com/trips/${trip.slug || trip.id}</loc>
     <lastmod>${trip.updatedAt?.split('T')[0] || currentDate}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
