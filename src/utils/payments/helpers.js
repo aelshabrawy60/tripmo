@@ -29,6 +29,12 @@ async function checkForActiveCoupons(groupId) {
 export async function calculateNetAmount(amount, total_price, group_id){
     let RehlaNowCommision = 0.2
 
+    if(total_price >= 2000 && total_price <= 8000){
+        RehlaNowCommision = 0.15
+    }else if(total_price > 8000){
+        RehlaNowCommision = 0.1
+    }
+
     const coupon = await checkForActiveCoupons(group_id)
 
     console.log("coupun", coupon)
