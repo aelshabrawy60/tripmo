@@ -80,8 +80,19 @@ export default function ServiceProviderTerms() {
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                العمولة المستحقة لصالح منصة "رحلة ناو" هي بنسبة <strong>20%</strong> من قيمة كل حجز.
+                العمولة المستحقة لصالح منصة "رحلة ناو" تختلف حسب قيمة الحجز كالتالي:
               </p>
+              <ul className="list-disc list-inside text-gray-700 leading-relaxed mr-4 space-y-2">
+                <li>
+                  <strong>20%</strong> إذا كانت قيمة الحجز أقل من <strong>2000 جنيه مصري</strong>.
+                </li>
+                <li>
+                  <strong>15%</strong> إذا كانت قيمة الحجز بين <strong>2000</strong> و <strong>8000 جنيه مصري</strong>.
+                </li>
+                <li>
+                  <strong>10%</strong> إذا كانت قيمة الحجز أكثر من <strong>8000 جنيه مصري</strong>.
+                </li>
+              </ul>
               <p className="text-gray-700 leading-relaxed">
                 يتم خصم العمولة تلقائيًا من المبلغ المدفوع من قبل العميل.
               </p>
@@ -101,6 +112,7 @@ export default function ServiceProviderTerms() {
               </p>
             </div>
           </section>
+
 
           {/* Section 5: Intellectual Property */}
           <section className="mb-12">

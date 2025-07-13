@@ -43,6 +43,17 @@ export async function calculateNetAmount(amount, total_price, group_id){
 }
 
 
+/*
+function calcualteMinDateToRelease(){
+    const minDays = 3
+
+    const minDate = new Date();
+    minDate.setUTCDate(minDate.getUTCDate() + minDays); // Minimum date = now + 3 days
+
+    return minDate;
+}
+*/
+
 
 export function calculateReleaseDate(bookDay) {
   // Parse the input date
@@ -54,6 +65,28 @@ export function calculateReleaseDate(bookDay) {
   // Return as ISO string in UTC
   return date.toISOString(); // Example: "2025-05-24T00:00:00.000Z"
 }
+
+
+/*
+
+export function calculateReleaseDate(cancelDeadlineDate) {
+  const minDate = calcualteMinDateToRelease()
+
+  if (!cancelDeadlineDate) {
+    return minDate.toISOString();
+  }
+
+  const parsedCancelDate = new Date(cancelDeadlineDate);
+  if (parsedCancelDate < minDate) {
+    // cancelDeadlineDate is less than 3 days from now
+    return minDate.toISOString();
+  }
+
+  // cancelDeadlineDate is valid and at least 3 days from now
+  return parsedCancelDate.toISOString();
+}
+
+*/
 
 
 export async function createDeposit(bookData, url, paymentId, type, tracking_data = null) {
@@ -82,6 +115,50 @@ export async function createDeposit(bookData, url, paymentId, type, tracking_dat
     return true
 
 }
+
+/*
+export async function createDeposit(bookData, url, paymentId, type, tracking_data = null) {
+    try {
+        const amount = bookData.deposite_price;
+        const status = amount > 0 ? "pending" : "confirmed";
+
+        const netAmount = await calculateNetAmount(amount, bookData.total_price, bookData.group_id);
+
+        // 2. Determine the release schedule using business logic helper.
+        const installments = calculateInstallments(bookData, netAmount);
+
+        // 3. Call the RPC function with a single object containing all parameters.
+        const { data: newDepositId, error } = await supabaseAdmin.rpc('create_deposit_with_installments', {
+            p_group_id: bookData.group_id,
+            p_trip_id: bookData.bookable_id,
+            p_book_id: bookData.id,
+            p_amount: amount,
+            p_net_amount: netAmount,
+            p_status: status,
+            p_url: url,
+            p_payment_id: paymentId,
+            p_type: type,
+            p_tracking_data: tracking_data,
+            p_installments: installments
+        });
+
+        if (error) {
+            // The RPC will raise an error if the installment sum doesn't match netAmount,
+            // which will be caught here.
+            console.error("Failed to create deposit with installments:", error);
+            return null;
+        }
+
+        console.log("Successfully created deposit and its installments. New Deposit ID:", newDepositId);
+        return true;
+
+    } catch (e) {
+        console.error("An unexpected error occurred in createDeposit:", e);
+        return null;
+    }
+}
+*/
+
 
 export async function confirmDeposit(bookId) {
     // Single query to check status and get phone in one go
@@ -188,3 +265,40 @@ export function calcCancelationFees(totalPrice) {
     const cancelationFees = 0.0
     return totalPrice * cancelationFees
 }
+
+
+
+/**
+ * Calculates the release schedule for a new deposit based on business rules.
+
+function calculateInstallments(bookData, totalNetAmount) {
+    const finalReleaseDate = calculateReleaseDate(bookData.can_canceled_until);
+
+    const isPartialPayoutAllowed = bookData.cancellation_fees != 0 && bookData.cancellation_fees != null; 
+
+    if (isPartialPayoutAllowed) {
+        const initialAmount = bookData.cancellation_fees;
+        const finalAmount = totalNetAmount - bookData.cancellation_fees;
+        
+        return [
+            {
+                amount: initialAmount,
+                release_date: calcualteMinDateToRelease().toISOString()
+            },
+            {
+                amount: finalAmount,
+                release_date: finalReleaseDate
+            }
+        ];
+
+    } else {
+        return [
+            {
+                amount: totalNetAmount,
+                release_date: finalReleaseDate
+            }
+        ];
+    }
+}
+
+*/

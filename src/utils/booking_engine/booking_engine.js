@@ -104,6 +104,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
     const {price, deposit} = await getBookingPrice(tripId, date, numberOfSeats, TripData);
 
     const cancel_deadline = calculateCancelDeadline(date, TripData.cancellation_policy, timeZone);
+    //const cancellation_fees = TripData.cancellation_policy ? TripData.cancellation_policy.fees : 0;
     
     const { data, error } = await supabaseAdmin
         .from('bookings')
@@ -118,7 +119,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
             deposite_price: user_role == "admin" ? 0 : deposit,
             can_canceled_until: cancel_deadline,
             status: deposit > 0 && user_role != "admin" ? "pending" : "active",
-            client_id: client_id
+            client_id: client_id,
         }])
         .select('*')
         .single();
