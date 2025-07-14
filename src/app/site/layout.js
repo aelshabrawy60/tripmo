@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import MainLayout from "@/components/Templates/Main/MainLayout";
 import MainNavbar from "@/components/Templates/Main/MainNavbar";
 import MainFooter from "@/components/Templates/Main/MainFooter";
+import { footerPages, pages, socialMedia } from "./data";
 
 export const metadata = {
   title: "رحلة ناو | احجز رحلتك القادمة",
@@ -23,21 +24,7 @@ export const metadata = {
   },
 };
 
-const pages = [
-  { name: 'من نحن', link: `/about` },
-  { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
-];
 
-const footerPages = [
-  { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
-  { name: "الشروط والأحكام", link: "/terms" },
-  { name: "سياسة الاسترداد", link: "/terms#cancellation-policy" },
-];
-
-const socialMedia = [
-  { name: "facebook", link: 'https://www.facebook.com/profile.php?id=61577261595965' },
-  { name: "instagram", link: 'https://www.instagram.com/rehlanow/profilecard/?igsh=cWl0dm4zMzcxZW1l' }
-];
 
 export default function RootLayout({ children }) {
   const headersList = headers();
