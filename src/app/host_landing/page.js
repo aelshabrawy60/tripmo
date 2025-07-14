@@ -387,10 +387,10 @@ const TravelProviderLanding = () => {
                 لا تفوّت فرصتك في الحصول على المزيد من العملاء. انضم لأكبر شبكة لحجز الرحلات في مصر وابدأ في زيادة أرباحك الآن
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <button className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                <a href='/signin' className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
                   سجّل الآن كمزود رحلات
                   <ArrowRight className="w-6 h-6" />
-                </button>
+                </a>
               </div>
               <div className="flex justify-center items-center gap-6">
                 <div className="flex items-center gap-2">

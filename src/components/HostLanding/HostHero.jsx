@@ -118,10 +118,10 @@ function HostHero() {
 
               <FloatingElement delay={400}>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-8">
-                  <button className="group bg-tripmo-500 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                  <a href='/signin' className="group bg-tripmo-500 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
                     سجّل رحلتك مجانًا
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  </a>
                 </div>
               </FloatingElement>
 
