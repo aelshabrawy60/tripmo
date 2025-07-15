@@ -210,7 +210,7 @@ const UserChooser = ({ groupId, onChange }) => {
             
             <div className="mb-4 relative">
                 <label htmlFor="playerName" className="block text-sm font-medium mb-2 text-right">
-                    اسم اللاعب
+                    اسم العميل
                 </label>
                 <div className="relative">
                     <input
@@ -219,7 +219,7 @@ const UserChooser = ({ groupId, onChange }) => {
                         value={typedPlayerName}
                         onChange={handleNameChange}
                         disabled={isNameLocked}
-                        placeholder="أدخل اسم اللاعب"
+                        placeholder="أدخل اسم العميل"
                         className={`w-full p-3 py-2 border rounded-lg ${isNameLocked ? 'bg-gray-50 text-gray-500' : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200'} transition-all duration-200 text-right`}
                         onFocus={() => handleFieldFocus("name")}
                         onBlur={handleFieldBlur}

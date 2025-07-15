@@ -99,7 +99,7 @@ export async function createDeposit(bookData, url, paymentId, type, tracking_dat
     const status = amount > 0 ? "pending": "confirmed"
 
     // for octoboats host the release date is 3 days after book
-    const releaseDate = bookData.group_id != 8 ?  calculateReleaseDate(bookData.day) : calculateReleaseDateAggresive(bookData.can_canceled_until)
+    const releaseDate = bookData.group_id != 900 ?  calculateReleaseDate(bookData.day) : calculateReleaseDateAggresive(bookData.can_canceled_until)
 
     const {data, error} = await supabaseAdmin.from("deposits").insert([{
         group_id: bookData.group_id,
