@@ -49,7 +49,7 @@ export async function calculateNetAmount(amount, total_price, group_id){
 }
 
 
-/*
+
 function calcualteMinDateToRelease(){
     const minDays = 3
 
@@ -58,7 +58,7 @@ function calcualteMinDateToRelease(){
 
     return minDate;
 }
-*/
+
 
 
 export function calculateReleaseDate(bookDay) {
@@ -73,9 +73,8 @@ export function calculateReleaseDate(bookDay) {
 }
 
 
-/*
 
-export function calculateReleaseDate(cancelDeadlineDate) {
+export function calculateReleaseDateAggresive(cancelDeadlineDate) {
   const minDate = calcualteMinDateToRelease()
 
   if (!cancelDeadlineDate) {
@@ -92,13 +91,15 @@ export function calculateReleaseDate(cancelDeadlineDate) {
   return parsedCancelDate.toISOString();
 }
 
-*/
 
 
 export async function createDeposit(bookData, url, paymentId, type, tracking_data = null) {
 
     const amount = bookData.deposite_price
     const status = amount > 0 ? "pending": "confirmed"
+
+    // for octoboats host the release date is 3 days after book
+    const releaseDate = bookData.group_id != 8 ?  calculateReleaseDate(bookData.day) : calculateReleaseDateAggresive(bookData.can_canceled_until)
 
     const {data, error} = await supabaseAdmin.from("deposits").insert([{
         group_id: bookData.group_id,
@@ -110,7 +111,7 @@ export async function createDeposit(bookData, url, paymentId, type, tracking_dat
         payment_id: paymentId,
         type: type,
         net_amount: await calculateNetAmount(amount, bookData.total_price, bookData.group_id),
-        release_date: calculateReleaseDate(bookData.day),
+        release_date: releaseDate,
         tracking_data: tracking_data
     }])
 
