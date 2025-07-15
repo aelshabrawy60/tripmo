@@ -1,5 +1,6 @@
 import React from 'react';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { phoneNumber } from '@/app/site/data';
 
 export default function MainFooter({ logo, pages, socialMedia, contactInfo, theme = "#3B82F6" }) {
   // Function to render the appropriate social media icon
@@ -17,7 +18,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
   // Default contact info if not provided
   const defaultContactInfo = {
     address: "مصطفى النحاس، مدينه نصر",
-    phone: "01061455364",
+    phone: phoneNumber,
     email: "info@rehlanow.com"
   };
 
