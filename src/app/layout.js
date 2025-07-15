@@ -1,43 +1,32 @@
 import { Tajawal } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
-import Head from 'next/head';
-
-export const metadata = {
-  title: "رحلة ناو | احجز رحلتك القادمة",
-  description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now. عروض رائعة، وجهات مميزة، وتجربة سفر لا مثيل لها.",
-  keywords: ["رحلات", "حجوزات", "سياحة", "سفر", "مغامرات", "رحلات مصر", "رحلات شرم الشيخ", "Rehla Now"],
-  openGraph: {
-    title: "رحلات - استكشف، احجز واستمتع بأفضل العروض",
-    description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now.",
-    url: "https://rehlanow.com",
-    siteName: "RehlaNow",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "رحلات - استكشف، احجز واستمتع بأفضل العروض",
-    description: "اكتشف أفضل الرحلات في مصر مع Rehla Now.",
-    images: ["https://rehlanow.com/og-image.jpg"],
-  },
-};
+import Script from "next/script";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
   weight: ['200', '300', '400', '500', '700', '800', '900'],
-  subsets: ['arabic', 'latin']
+  subsets: ['arabic', 'latin'],
 });
+
+export const metadata = {
+  title: "رحلة ناو | احجز رحلتك القادمة",
+  description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now.",
+};
 
 export default function RootLayout({ children }) {
   return (
     <AuthProvider>
       <html lang="en">
-        <Head>
-          <meta name="apple-mobile-web-app-title" content="MyWebSite" />
-
-          {/* Google Analytics */}
-          <script async src="https://www.googletagmanager.com/gtag/js?id=G-WN20P3M769"></script>
-          <script
+        <body className={`${tajawal.variable} antialiased`}>
+          {/* Google Tag */}
+          <Script
+            strategy="afterInteractive"
+            src="https://www.googletagmanager.com/gtag/js?id=G-WN20P3M769"
+          />
+          <Script
+            id="google-analytics"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];
@@ -48,8 +37,10 @@ export default function RootLayout({ children }) {
             }}
           />
 
-          {/* Meta Pixel Code #1 */}
-          <script
+          {/* Meta Pixel #1 */}
+          <Script
+            id="facebook-pixel-1"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
                 !function(f,b,e,v,n,t,s)
@@ -66,35 +57,34 @@ export default function RootLayout({ children }) {
             }}
           />
 
-          {/* Meta Pixel Code #2 */}
-          <script
+          {/* Meta Pixel #2 */}
+          <Script
+            id="facebook-pixel-2"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
-                !function(f,b,e,v,n,t,s)
-                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                n.queue=[];t=b.createElement(e);t.async=!0;
-                t.src=v;s=b.getElementsByTagName(e)[0];
-                s.parentNode.insertBefore(t,s)}(window, document,'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
                 fbq('init', '1266145115303197');
                 fbq('track', 'PageView');
               `,
             }}
           />
 
-          {/* Noscript for both Meta Pixels */}
+          {/* Noscript fallback */}
           <noscript>
-            <img height="1" width="1" style={{ display: 'none' }}
+            <img
+              height="1"
+              width="1"
+              style={{ display: 'none' }}
               src="https://www.facebook.com/tr?id=1408325113648819&ev=PageView&noscript=1"
             />
-            <img height="1" width="1" style={{ display: 'none' }}
+            <img
+              height="1"
+              width="1"
+              style={{ display: 'none' }}
               src="https://www.facebook.com/tr?id=1266145115303197&ev=PageView&noscript=1"
             />
           </noscript>
-        </Head>
-        <body className={`${tajawal.variable} antialiased`}>
+
           {children}
         </body>
       </html>
