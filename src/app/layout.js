@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
         <Head>
           <meta name="apple-mobile-web-app-title" content="MyWebSite" />
 
-          {/* Google tag (gtag.js) */}
+          {/* Google Analytics */}
           <script async src="https://www.googletagmanager.com/gtag/js?id=G-WN20P3M769"></script>
           <script
             dangerouslySetInnerHTML={{
@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
             }}
           />
 
-          {/* Meta Pixel Code */}
+          {/* Meta Pixel Code #1 */}
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -65,12 +65,32 @@ export default function RootLayout({ children }) {
               `,
             }}
           />
+
+          {/* Meta Pixel Code #2 */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '1266145115303197');
+                fbq('track', 'PageView');
+              `,
+            }}
+          />
+
+          {/* Noscript for both Meta Pixels */}
           <noscript>
-            <img
-              height="1"
-              width="1"
-              style={{ display: 'none' }}
+            <img height="1" width="1" style={{ display: 'none' }}
               src="https://www.facebook.com/tr?id=1408325113648819&ev=PageView&noscript=1"
+            />
+            <img height="1" width="1" style={{ display: 'none' }}
+              src="https://www.facebook.com/tr?id=1266145115303197&ev=PageView&noscript=1"
             />
           </noscript>
         </Head>

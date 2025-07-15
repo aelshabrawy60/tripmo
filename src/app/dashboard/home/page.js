@@ -7,10 +7,9 @@ import TripBookingsList from '@/components/Bookings/TripBookingsList'
 import { useSharedContext } from '@/context/ShareAut'
 import { Loader, Calendar, AlertCircle } from 'lucide-react'
 import AddBooking from '@/components/Bookings/AddBooking'
-import AddBookingClient from '@/components/Bookings/AddBookClient'
-import Loading from '@/components/Loading'
 import LoadingCirc from '@/components/Loading/LoadingCirc'
-import ActivateCoupon from '@/components/coupon/ActivateCoupon'
+import Link from 'next/link';
+
 
 function BookingPage() {
   const { groupId, role } = useSharedContext()
@@ -96,13 +95,16 @@ function BookingPage() {
       {!isLoading && !error && (
         <div className="space-y-4">
           {!hasTrips ? (
-            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-6 rounded-md flex flex-col items-center space-y-3">
-              <AlertCircle className="w-10 h-10 text-yellow-500" />
-              <h3 className="text-xl font-medium">لا توجد رحلات متاحة</h3>
-              <p className="text-center">
-                لم يتم إضافة أي رحلات بعد. يرجى إضافة رحلات جديدة أولاً.
-              </p>
-            </div>
+            <>
+              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-6 rounded-md flex flex-col items-center space-y-3">
+                <AlertCircle className="w-10 h-10 text-yellow-500" />
+                <h3 className="text-xl font-medium">لا توجد رحلات متاحة</h3>
+                
+              </div>
+              <Link href="/dashboard/trips/create" className="bg-tripmo-500 w-full md:w-auto text-center text-white py-3 px-4 rounded-lg mb-2 inline-block hover:bg-tripmo-400 transition-colors duration-300">
+                  إضافة رحلة جديدة
+              </Link>
+            </>
           ) : (
             <>
               <div className="bg-white items-center p-6 gap-4 flex flex-wrap rounded-md shadow-sm border border-gray-200">

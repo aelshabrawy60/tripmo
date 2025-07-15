@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {Loader} from 'lucide-react';
 import TripCard from './TripCard';
 import Link from 'next/link';
-import AddCategorie from './AddCategorie';
-import Loading from '../Loading';
 import LoadingCirc from '../Loading/LoadingCirc';
 
 function TripsList({groupId}) {
