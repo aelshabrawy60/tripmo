@@ -27,11 +27,47 @@ import MainFooter from '@/components/Templates/Main/MainFooter';
 import HostHero from '@/components/HostLanding/HostHero';
 
 
+
+const useUTMPreservation = (basePath = '/signin') => {
+  const [urlWithUTM, setUrlWithUTM] = useState(basePath);
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmParams = new URLSearchParams();
+    
+    // UTM parameters to preserve
+    const utmKeys = [
+      'utm_source',
+      'utm_medium', 
+      'utm_campaign',
+      'utm_id',
+      'utm_content',
+      'utm_term'
+    ];
+    
+    // Extract and preserve UTM parameters
+    utmKeys.forEach(key => {
+      const value = urlParams.get(key);
+      if (value) {
+        utmParams.append(key, value);
+      }
+    });
+    
+    // Build final URL with UTM parameters
+    const utmString = utmParams.toString();
+    setUrlWithUTM(`${basePath}${utmString ? `?${utmString}` : ''}`);
+  }, [basePath]);
+  
+  return urlWithUTM;
+};
+
 const TravelProviderLanding = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   
+
+  const signinUrlWithUTM = useUTMPreservation('/signin');
 
   useEffect(() => {
     setIsVisible(true);
@@ -138,7 +174,7 @@ const TravelProviderLanding = () => {
     <>
     <MainLayout>
     <MainNavbar pages={pages} />
-      <HostHero/>
+      <HostHero signinUrl={signinUrlWithUTM}/>
 
       {/* Features Strip */}
       <section className="py-12 bg-white/50 backdrop-blur-sm border-y border-gray-200/50 rounded-2xl">
@@ -387,7 +423,7 @@ const TravelProviderLanding = () => {
                 لا تفوّت فرصتك في الحصول على المزيد من العملاء. انضم لأكبر شبكة لحجز الرحلات في مصر وابدأ في زيادة أرباحك الآن
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <a href='/signin' className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                <a href={signinUrlWithUTM} className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
                   سجّل الآن كمزود رحلات
                   <ArrowRight className="w-6 h-6" />
                 </a>
