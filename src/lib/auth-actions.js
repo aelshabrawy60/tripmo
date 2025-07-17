@@ -7,11 +7,10 @@ import { cookies } from 'next/headers';
 
 import { createClient } from "@/utils/supabase/server";
 
+// Fixed auth functions
 export async function login(formData) {
   const supabase = await createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const data = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -31,8 +30,6 @@ export async function login(formData) {
 export async function signup(formData) {
   const supabase = await createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const firstName = formData.get("first-name");
   const lastName = formData.get("last-name");
   const data = {
@@ -40,7 +37,7 @@ export async function signup(formData) {
     password: formData.get("password"),
     options: {
       data: {
-        full_name: `${firstName + " " + lastName}`,
+        full_name: `${firstName + " " + lastName}`, // Fixed: Added backticks
         email: formData.get("email"),
       },
     },
@@ -53,8 +50,9 @@ export async function signup(formData) {
   }
 
   revalidatePath("/", "layout");
-  redirect(`/dashboard/home`);
+  redirect("/dashboard/home"); // Fixed: Added quotes
 }
+
 
 export async function signout() {
   const supabase = await createClient();

@@ -51,7 +51,6 @@ export default function ServiceProviderTerms() {
             </div>
           </section>
 
-          {/* Section 2: Service Provider Responsibility */}
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">
               2. مسؤولية مقدم الخدمة
@@ -69,9 +68,15 @@ export default function ServiceProviderTerms() {
               <p className="text-gray-700 leading-relaxed">
                 لا يجوز لمقدم الخدمة مطالبة العميل بأي مبالغ إضافية تزيد عن السعر المعلن للتجربة أو الرحلة بعد إتمام الحجز. يكون مقدم الخدمة مسؤولًا عن جميع التكاليف والمصاريف اللازمة لتنفيذ الخدمة، ولا يجوز تحميل العميل أي زيادات على هذه التكاليف. يجب توضيح أي خيارات إضافية تتطلب دفعًا إضافيًا مسبقًا في تفاصيل الرحلة بشكل واضح.
               </p>
+              <p className="text-gray-700 leading-relaxed">
+                يتحمل مقدم الخدمة مسؤولية تحديث توافر الرحلات بشكل دقيق. في حال تم الحجز من خارج منصة "رحلة ناو"، يجب على مقدم الخدمة تسجيل هذا الحجز داخل لوحة التحكم الخاصة به على المنصة لضمان أن عدد المقاعد المتاحة يعكس الوضع الفعلي.
+              </p>
+
+              <p className="text-gray-700 leading-relaxed">
+                يُمنع منعًا باتًا على مقدم الخدمة إدراج رقم هاتفه أو أي وسيلة تواصل مباشرة (مثل البريد الإلكتروني أو روابط التواصل الاجتماعي) داخل وصف الرحلة أو في الصور المرفقة. في حال مخالفة ذلك، تحتفظ المنصة بحق حذف الرحلة أو تعليق الحساب.
+              </p>
             </div>
           </section>
-
 
           {/* Section 3: Payment and Collection Policy */}
           <section className="mb-12">
