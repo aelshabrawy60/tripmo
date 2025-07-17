@@ -26,13 +26,13 @@ const SignInPage = () => {
         try {
             // Since the login function redirects on success, 
             // we won't continue executing this code after a successful login
-            await login(formData);
+            const result = await login(formData);
             
-            setTimeout(() => {
-                // If still on this page after 2 seconds, something went wrong
-                setLoading(false);
-                setErrorMessage("حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.");
-            }, 2000);
+            if(result.status == true){
+                window.location.reload()
+            }else{
+                setErrorMessage(result.error);
+            }
             
         } catch (error) {
             // This will only catch client-side errors
