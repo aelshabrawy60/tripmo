@@ -38,15 +38,14 @@ const SignUpPage = () => {
         
         try {
             // Call the server action
-            await signup(formDataToSend);
+            const result = await signup(formDataToSend);
             
-            // If we reach here, there might be an issue with the redirect
-            // Add a small delay to see if redirect happens
-            setTimeout(() => {
-                // If still on this page after 2 seconds, something went wrong
+            if(result.status == true){
+                window.location.href = "/"
+            }else{
                 setLoading(false);
-                setErrorMessage("حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.");
-            }, 2000);
+                setErrorMessage(`${result.error}`);
+            }
             
         } catch (error) {
             console.error("Signup error:", error);
@@ -105,36 +104,39 @@ const SignUpPage = () => {
                                 </div>
                                 
                                 <form className='text-right' onSubmit={handleSubmit}>
+                                    <div className='flex gap-4'>
                                     {/* First Name */}
-                                    <div className="mb-[20px]">
-                                        <label htmlFor="firstName" className="block mb-[8px] font-medium text-[#444]">الاسم الأول</label>
-                                        <input
-                                            type="text"
-                                            id="firstName"
-                                            name="firstName"
-                                            placeholder="أدخل الاسم الأول"
-                                            required
-                                            className="w-full p-[12px] border-2 border-[#eee] rounded-[10px] text-base font-[Tajawal] transition-all duration-300 focus:border-tripmo-500 focus:outline-none"
-                                            value={formData.firstName}
-                                            onChange={handleInputChange}
-                                            disabled={loading}
-                                        />
-                                    </div>
+                                        <div className="mb-[20px]">
+                                            <label htmlFor="firstName" className="block mb-[8px] font-medium text-[#444]">الاسم الأول</label>
+                                            <input
+                                                type="text"
+                                                id="firstName"
+                                                name="firstName"
+                                                placeholder="احمد"
+                                                required
+                                                className="w-full p-[12px] border-2 border-[#eee] rounded-[10px] text-base font-[Tajawal] transition-all duration-300 focus:border-tripmo-500 focus:outline-none"
+                                                value={formData.firstName}
+                                                onChange={handleInputChange}
+                                                disabled={loading}
+                                            />
+                                        </div>
 
-                                    {/* Last Name */}
-                                    <div className="mb-[20px]">
-                                        <label htmlFor="lastName" className="block mb-[8px] font-medium text-[#444]">الاسم الأخير</label>
-                                        <input
-                                            type="text"
-                                            id="lastName"
-                                            name="lastName"
-                                            placeholder="أدخل الاسم الأخير"
-                                            required
-                                            className="w-full p-[12px] border-2 border-[#eee] rounded-[10px] text-base font-[Tajawal] transition-all duration-300 focus:border-tripmo-500 focus:outline-none"
-                                            value={formData.lastName}
-                                            onChange={handleInputChange}
-                                            disabled={loading}
-                                        />
+                                        {/* Last Name */}
+                                        <div className="mb-[20px]">
+                                            <label htmlFor="lastName" className="block mb-[8px] font-medium text-[#444]">الاسم الأخير</label>
+                                            <input
+                                                type="text"
+                                                id="lastName"
+                                                name="lastName"
+                                                placeholder="محمد"
+                                                required
+                                                className="w-full p-[12px] border-2 border-[#eee] rounded-[10px] text-base font-[Tajawal] transition-all duration-300 focus:border-tripmo-500 focus:outline-none"
+                                                value={formData.lastName}
+                                                onChange={handleInputChange}
+                                                disabled={loading}
+                                            />
+                                        </div>
+
                                     </div>
 
                                     {/* Email */}
@@ -160,7 +162,7 @@ const SignUpPage = () => {
                                             type="password"
                                             id="password"
                                             name="password"
-                                            placeholder="أدخل كلمة المرور"
+                                            placeholder="انشئ كلمة المرور"
                                             required
                                             className="w-full p-[12px] border-2 border-[#eee] rounded-[10px] text-base font-[Tajawal] transition-all duration-300 focus:border-tripmo-500 focus:outline-none"
                                             value={formData.password}

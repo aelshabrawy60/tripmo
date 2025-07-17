@@ -50,11 +50,16 @@ export async function signup(formData) {
   const { error } = await supabase.auth.signUp(data);
 
   if (error) {
-    redirect("/error");
+    return {
+      status: false,
+      error: error
+    }
   }
 
-  revalidatePath("/", "layout");
-  redirect("/dashboard/home"); // Fixed: Added quotes
+  return {
+    status: true,
+    error : null
+  }
 }
 
 

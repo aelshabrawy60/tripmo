@@ -24,14 +24,13 @@ const SignInPage = () => {
         formData.append('password', password);
         
         try {
-            // Since the login function redirects on success, 
-            // we won't continue executing this code after a successful login
             const result = await login(formData);
             
             if(result.status == true){
                 window.location.reload()
             }else{
-                setErrorMessage(result.error);
+                setLoading(false);
+                setErrorMessage(`${result.error}`);
             }
             
         } catch (error) {
@@ -40,9 +39,6 @@ const SignInPage = () => {
             setLoading(false);
             setErrorMessage("حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.");
         }
-        
-        // Note: We're not using finally here since we want to keep loading true
-        // until redirect happens or timeout completes
     };
 
     const handleGoogleSignIn = () => {
