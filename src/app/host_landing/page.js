@@ -25,8 +25,7 @@ import MainNavbar from '@/components/Templates/Main/MainNavbar';
 import { email, footerPages, pages, phoneNumber, socialMedia } from '../site/data';
 import MainFooter from '@/components/Templates/Main/MainFooter';
 import HostHero from '@/components/HostLanding/HostHero';
-
-
+import { signInWithGoogle } from "@/lib/auth-actions";
 
 const useUTMPreservation = (basePath = '/signin') => {
   const [urlWithUTM, setUrlWithUTM] = useState(basePath);
@@ -65,14 +64,24 @@ const TravelProviderLanding = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isGoogleSignInLoading, setIsGoogleSignInLoading] = useState(false);
   
-
   const signinUrlWithUTM = useUTMPreservation('/signin');
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
+  // Google Sign-In Handler
+  const handleGoogleSignIn = async () => {
+    setIsGoogleSignInLoading(true);
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setIsGoogleSignInLoading(false);
+    }
+  };
 
   const benefits = [
     {
@@ -149,7 +158,6 @@ const TravelProviderLanding = () => {
     },
    ];
 
-
   const features = [
     { icon: Shield, title: "أمان مضمون", description: "حماية البيانات والمدفوعات" },
     { icon: Zap, title: "سرعة في الاستجابة", description: "دعم فني على مدار الساعة" },
@@ -168,13 +176,15 @@ const TravelProviderLanding = () => {
     </div>
   );
 
-  
-
   return (
     <>
     <MainLayout>
     <MainNavbar pages={pages} />
-      <HostHero signinUrl={signinUrlWithUTM}/>
+      <HostHero 
+        signinUrl={signinUrlWithUTM}
+        onGoogleSignIn={handleGoogleSignIn}
+        isGoogleSignInLoading={isGoogleSignInLoading}
+      />
 
       {/* Features Strip */}
       <section className="py-12 bg-white/50 backdrop-blur-sm border-y border-gray-200/50 rounded-2xl">
@@ -351,8 +361,6 @@ const TravelProviderLanding = () => {
         </div>
       </section>
 
-      
-
       {/* Contact Section */}
       <section className="py-20 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -410,7 +418,6 @@ const TravelProviderLanding = () => {
         </div>
       </section>
 
-
       {/* Final CTA Section */}
       <section className='bg-white rounded-2xl'>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -423,10 +430,14 @@ const TravelProviderLanding = () => {
                 لا تفوّت فرصتك في الحصول على المزيد من العملاء. انضم لأكبر شبكة لحجز الرحلات في مصر وابدأ في زيادة أرباحك الآن
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <a href={signinUrlWithUTM} className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
-                  سجّل الآن كمزود رحلات
+                <button 
+                  onClick={handleGoogleSignIn}
+                  disabled={isGoogleSignInLoading}
+                  className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isGoogleSignInLoading ? 'جاري التسجيل...' : 'سجّل الآن كمزود رحلات'}
                   <ArrowRight className="w-6 h-6" />
-                </a>
+                </button>
               </div>
               <div className="flex justify-center items-center gap-6">
                 <div className="flex items-center gap-2">

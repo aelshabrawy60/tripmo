@@ -11,7 +11,7 @@ import {
 import Image from 'next/image';
 
 
-function HostHero({signinUrl}) {
+function HostHero({signinUrl, onGoogleSignIn, isGoogleSignInLoading}) {
   const [scrollY, setScrollY] = useState(0);
   const [currentStat, setCurrentStat] = useState(0);
   const heroRef = useRef(null);
@@ -118,10 +118,10 @@ function HostHero({signinUrl}) {
 
               <FloatingElement delay={400}>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-8">
-                  <a href={signinUrl} className="group bg-tripmo-500 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
-                    سجّل رحلتك مجانًا
+                  <button onClick={onGoogleSignIn} disabled={isGoogleSignInLoading} className="group bg-tripmo-500 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isGoogleSignInLoading ? 'جاري التسجيل...' : 'سجّل رحلتك مجانًا'}
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </a>
+                  </button>
                 </div>
               </FloatingElement>
 
