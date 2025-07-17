@@ -146,6 +146,19 @@ const SignInPage = () => {
                                         ) : 'تسجيل الدخول'}
                                     </button>
                                 </form>
+
+                                {/* Sign up link */}
+                                <div className="mt-6 text-center">
+                                    <p className="text-gray-600">
+                                        ليس لديك حساب؟{' '}
+                                        <Link 
+                                            href="/signup" 
+                                            className="text-tripmo-500 hover:text-tripmo-400 font-medium transition-colors duration-200"
+                                        >
+                                            إنشاء حساب جديد
+                                        </Link>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

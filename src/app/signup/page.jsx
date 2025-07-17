@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import SignInWithGoogleButton from '@/components/auth/SignInWithGoogleButton';
 import { signup } from '@/lib/auth-actions';
 
@@ -193,6 +194,19 @@ const SignUpPage = () => {
                                         ) : 'إنشاء حساب'}
                                     </button>
                                 </form>
+
+                                {/* Sign in link */}
+                                <div className="mt-6 text-center">
+                                    <p className="text-gray-600">
+                                        لديك حساب بالفعل؟{' '}
+                                        <Link 
+                                            href="/signin" 
+                                            className="text-tripmo-500 hover:text-tripmo-400 font-medium transition-colors duration-200"
+                                        >
+                                            تسجيل الدخول
+                                        </Link>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

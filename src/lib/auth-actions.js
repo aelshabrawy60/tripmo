@@ -3,8 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from 'next/headers';
-
-
 import { createClient } from "@/utils/supabase/server";
 
 // Fixed auth functions
@@ -71,7 +69,7 @@ export async function signout() {
     redirect("/error");
   }
 
-  redirect("/logout");
+  redirect("/");
 }
 
 export async function signInWithGoogle() {
