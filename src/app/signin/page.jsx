@@ -28,10 +28,12 @@ const SignInPage = () => {
             // we won't continue executing this code after a successful login
             await login(formData);
             
-            // If we reach this point, it means no redirect happened,
-            // which could be considered an error case
-            // We'll set a timeout to prevent the error message from appearing
-            // for successful logins where the redirect is just taking a moment
+            setTimeout(() => {
+                // If still on this page after 2 seconds, something went wrong
+                setLoading(false);
+                setErrorMessage("حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.");
+            }, 2000);
+            
         } catch (error) {
             // This will only catch client-side errors
             console.error("Login error:", error);
