@@ -6,6 +6,7 @@ export const pages = [
 export const footerPages = [
   { name: 'اعرض رحلاتك', link: `https://host.rehlanow.com` },
   { name: "الشروط والأحكام", link: "/terms" },
+  { name: "سياسة الخصوصية", link: "/privacy-policy" },
   { name: "سياسة الاسترداد", link: "/terms#cancellation-policy" },
 ];
 
