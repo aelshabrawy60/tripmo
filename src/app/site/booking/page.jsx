@@ -148,6 +148,15 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
 
         {/* cancel booking */}
         <CancelBookClient bookId={bookingData.id} bookData={bookingData}/>
+
+        {/* Booking reference */}
+        <div className="px-6 pb-6">
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <p className="text-gray-600 text-sm text-center">
+              رقم الحجز: <span className="font-mono font-bold">#{bookingData?.id || 'غير محدد'}</span>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
