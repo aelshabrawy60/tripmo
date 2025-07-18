@@ -8,10 +8,11 @@ import CancelBookClient from '@/components/Bookings/CancelBookClient';
 import CanceldOrder from '@/components/Bookings/CanceldOrder';
 import AddComment from '@/components/Templates/Main/AddComment';
 import ProfileCard from '@/components/website/ProfileCard';
+import QRCode from 'qrcode';
 
 // Fetch booking data from Supabase
 async function fetchBookingData(id) {
-  const { data, error } = await supabaseAdmin.from("bookings").select("*").eq("id", id).single();
+  const { data, error } = await supabaseAdmin.from("bookings").select("*, deposits(payment_id)").eq("id", id).single();
   return data;
 }
 
@@ -43,7 +44,7 @@ async function isBookRated(bookId) {
 } 
 
 // Receipt component for confirmed bookings
-const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
+const ConfirmationReceipt = ({ bookingData, tripData, isBookRated, qrDataUrl  }) => {
   // Format date nicely
 
 
@@ -157,6 +158,13 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated }) => {
             </p>
           </div>
         </div>
+
+        {/* qr code */}
+        
+        <div className="px-6 py-6 flex justify-center">
+          <img src={qrDataUrl} alt="QR Code" width={300}/>
+        </div>
+
       </div>
     </div>
   );
@@ -182,6 +190,7 @@ const ErrorDisplay = ({ message }) => (
 
 // Main page component
 export default async function Page({ searchParams }) {
+  
   // Make sure searchParams exists and has the expected structure
   if (!searchParams || !searchParams.merchantOrderId) {
 
@@ -198,7 +207,11 @@ export default async function Page({ searchParams }) {
       if(bookingData.status == "canceled"){
       return <CanceldOrder bookingData={bookingData} tripData={tripData}/>
       }
-      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_}/>;
+
+      const hostLink = `https://rehlanow.com/hostBooking?paymentId=${paymentId}`;
+      const qrDataUrl = await QRCode.toDataURL(hostLink);
+
+      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_} qrDataUrl={qrDataUrl}/>;
     }
     return <ErrorDisplay message="المعلمات المطلوبة مفقودة" />;
   }
@@ -215,13 +228,16 @@ export default async function Page({ searchParams }) {
     const tripData = await fetchTripData(bookingData.bookable_id);
     const isBookRated_ = await isBookRated(bookingData.id);    
 
+    const paymentId = bookingData.deposits[0]?.payment_id || ''
+    const hostLink = `https://rehlanow.com/hostBooking?paymentId=${paymentId}`;
+    const qrDataUrl = await QRCode.toDataURL(hostLink);
 
     if(bookingData.status == "canceled"){
       return <CanceldOrder bookingData={bookingData} tripData={tripData}/>
     }
 
     if(bookingData.status == "active"){
-      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_} />;
+      return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_}qrDataUrl={qrDataUrl} />;
 
     }else{
       const paymentConfig = paymentGateawayConfig; // Use the default payment gateway config
@@ -233,7 +249,7 @@ export default async function Page({ searchParams }) {
       // If successful, confirm the deposit
       if (verf.success) {
         await confirmDeposit(merchantOrderId);
-        return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_} />;
+        return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_} qrDataUrl={qrDataUrl}/>;
       } else {
         // Payment verification failed
         return <ErrorDisplay message="فشل التحقق من الدفع. يرجى الاتصال بخدمة العملاء." />;
