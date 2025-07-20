@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import MainTripCard from './MainTripCard'
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const MainTripsSection = ({ tripsData, title, theme }) => {
+const MainTripsSection = ({ tripsData, title, theme, locale }) => {
   const sliderRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -81,7 +81,7 @@ const MainTripsSection = ({ tripsData, title, theme }) => {
         >
           {tripsData.map((trip, index) => (
             <div key={index} className="snap-start">
-              <MainTripCard tripData={trip} themeColor={theme} />
+              <MainTripCard tripData={trip} themeColor={theme} locale={locale}/>
             </div>
           ))}
         </div>

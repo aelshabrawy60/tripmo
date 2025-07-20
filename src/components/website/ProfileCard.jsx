@@ -80,7 +80,7 @@ function ProfileCard({ profileData, type = 0, profileId = null, showPhone = fals
   if (type == 1) {
     return (
       <>
-      <a href={`/site/host/${profileDataState.id}`} className={`flex gap-5 items-center w-full ${!showPhone && 'border-t'} border-gray-200 pt-4`}>
+      <a href={`/host/${profileDataState.id}`} className={`flex gap-5 items-center w-full ${!showPhone && 'border-t'} border-gray-200 pt-4`}>
         <div className='w-[72px] h-[72px] rounded-full overflow-hidden mb-1 relative'>
           <Image
             src={imageSrc}

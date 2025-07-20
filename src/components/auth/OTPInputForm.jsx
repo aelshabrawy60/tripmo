@@ -8,11 +8,75 @@ const OTPInputForm = ({
   verificationId,
   primary_color = '#3b82f6',
   onVerified,
+  locale = 'ar'
 }) => {
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [error, setError] = useState('');
+
+  const t = {
+    title: {
+      ar: 'تحقق من رقم الهاتف',
+      en: 'Verify Phone Number'
+    },
+    sentTo: {
+      ar: 'تم إرسال رمز التحقق إلى',
+      en: 'A verification code was sent to'
+    },
+    accountFound: {
+      ar: '✓ تم العثور على حسابك',
+      en: '✓ Your account was found'
+    },
+    codeLabel: {
+      ar: 'رمز التحقق',
+      en: 'Verification Code'
+    },
+    codePlaceholder: {
+      ar: '123456',
+      en: '123456'
+    },
+    verifying: {
+      ar: 'جاري التحقق...',
+      en: 'Verifying...'
+    },
+    login: {
+      ar: 'تسجيل الدخول',
+      en: 'Login'
+    },
+    verify: {
+      ar: 'تحقق من الرمز',
+      en: 'Verify Code'
+    },
+    notReceived: {
+      ar: 'لم تستلم الرمز؟',
+      en: 'Didn’t receive the code?'
+    },
+    resend: {
+      ar: 'إعادة إرسال الرمز',
+      en: 'Resend Code'
+    },
+    waitResend: {
+      ar: 'إعادة الإرسال خلال',
+      en: 'Resend in'
+    },
+    delayNote1: {
+      ar: 'قد تستغرق الرسالة حتى دقيقة للوصول',
+      en: 'The message might take up to a minute to arrive'
+    },
+    delayNote2: {
+      ar: 'تحقق من رسائل WhatsApp',
+      en: 'Check your WhatsApp messages'
+    },
+    serverError: {
+      ar: 'حدث خطأ في الاتصال بالخادم',
+      en: 'A server error occurred'
+    },
+    verifyError: {
+      ar: 'حدث خطأ أثناء التحقق',
+      en: 'Verification failed'
+    }
+  };
 
   useEffect(() => {
     let interval;
@@ -26,8 +90,8 @@ const OTPInputForm = ({
 
   const handleResend = () => {
     if (resendCooldown === 0) {
-      setResendCooldown(60); // 60 seconds cooldown
-      // Call your OTP resend logic (probably a separate API)
+      setResendCooldown(60);
+      // Implement resend API logic here
     }
   };
 
@@ -47,25 +111,20 @@ const OTPInputForm = ({
       const response = await fetch('/api/client/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: phoneNumber, otp, verificationId }),
+        body: JSON.stringify({ phone: phoneNumber, otp, verificationId })
       });
 
       const data = await response.json();
-      console.log('OTP Response:', data); // Debug log
 
       if (response.ok && data.success) {
         Cookies.set('client_token', data.clientToken, { expires: 1000 });
-
-        if (onVerified) onVerified(data); // Callback after success (e.g., redirect)
+        if (onVerified) onVerified(data);
       } else {
-        console.log('OTP Failed:', data); // Debug log
-
-        setError(data.message || 'حدث خطأ أثناء التحقق');
+        setError(data.message || t.verifyError[locale]);
       }
     } catch (err) {
-      
       console.error(err);
-      setError('حدث خطأ في الاتصال بالخادم');
+      setError(t.serverError[locale]);
     }
 
     setIsLoading(false);
@@ -74,18 +133,18 @@ const OTPInputForm = ({
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">تحقق من رقم الهاتف</h2>
-        <p className="text-gray-600">تم إرسال رمز التحقق إلى</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.title[locale]}</h2>
+        <p className="text-gray-600">{t.sentTo[locale]}</p>
         <p className="text-lg font-semibold text-gray-900 mt-1">{phoneNumber}</p>
         {isExistingUser && (
-          <p className="text-sm text-green-600 mt-2">✓ تم العثور على حسابك</p>
+          <p className="text-sm text-green-600 mt-2">{t.accountFound[locale]}</p>
         )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-2">
-            رمز التحقق
+            {t.codeLabel[locale]}
           </label>
           <input
             type="text"
@@ -93,7 +152,7 @@ const OTPInputForm = ({
             value={otp}
             onChange={handleOtpInput}
             className="w-full px-4 py-3 text-center text-2xl font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent tracking-widest"
-            placeholder="123456"
+            placeholder={t.codePlaceholder[locale]}
             maxLength={6}
             disabled={isLoading}
             style={{ '--tw-ring-color': primary_color }}
@@ -114,17 +173,17 @@ const OTPInputForm = ({
           {isLoading ? (
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              جاري التحقق...
+              {t.verifying[locale]}
             </div>
           ) : isExistingUser ? (
-            'تسجيل الدخول'
+            t.login[locale]
           ) : (
-            'تحقق من الرمز'
+            t.verify[locale]
           )}
         </button>
 
         <div className="text-center">
-          <p className="text-sm text-gray-600 mb-2">لم تستلم الرمز؟</p>
+          <p className="text-sm text-gray-600 mb-2">{t.notReceived[locale]}</p>
           <button
             type="button"
             onClick={handleResend}
@@ -135,15 +194,15 @@ const OTPInputForm = ({
             }}
           >
             {resendCooldown > 0
-              ? `إعادة الإرسال خلال ${resendCooldown} ثانية`
-              : 'إعادة إرسال الرمز'}
+              ? `${t.waitResend[locale]} ${resendCooldown} ${locale === 'ar' ? 'ثانية' : 's'}`
+              : t.resend[locale]}
           </button>
         </div>
       </form>
 
       <div className="mt-6 text-xs text-gray-500 text-center">
-        <p>قد تستغرق الرسالة حتى دقيقة للوصول</p>
-        <p>تحقق من رسائل WhatsApp</p>
+        <p>{t.delayNote1[locale]}</p>
+        <p>{t.delayNote2[locale]}</p>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import TripsMainFilter from '@/components/website/TripsMainFilter'
 import Image from 'next/image'
 import React, { useState } from 'react'
 
-function MainHero({img, title, subtitle = null}) {
+function MainHero({img, title, subtitle = null, locale}) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -70,7 +70,7 @@ function MainHero({img, title, subtitle = null}) {
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-8'
         }`}>
-          <TripsMainFilter/>
+          <TripsMainFilter locale={locale}/>
         </div>
         
         {/* Preload next likely images */}

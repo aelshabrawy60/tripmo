@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
 
-function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6" }) {
+function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -34,30 +35,16 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6" }) {
                     ':hover': { color: theme }
                   }}
                 >
-                  {page.name}
+                  {locale == "ar" ? page.name.ar: page.name.en}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:opacity-80 focus:outline-none"
-              style={{
-                ':hover': { color: theme }
-              }}
-              aria-expanded="false"
-            >
-              <span className="sr-only">فتح القائمة الرئيسية</span>
-              {isOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
-              )}
-            </button>
-          </div>
+          <LanguageSwitcher/>
+
+
+         
         </div>
       </div>
 
@@ -73,7 +60,7 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6" }) {
                 ':hover': { color: theme }
               }}
             >
-              {page.name}
+              {locale == "ar" ? page.name.ar: page.name.en}
             </a>
           ))}
         </div>

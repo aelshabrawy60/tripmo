@@ -1,20 +1,32 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Users } from 'lucide-react';
 
-function PersonsNumChooser({ onChange, initialValue = 1 }) {
+function PersonsNumChooser({ onChange, initialValue = 1, locale }) {
   const [count, setCount] = useState(initialValue);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [tempCount, setTempCount] = useState(initialValue);
-  const [popupPosition, setPopupPosition] = useState({ top: true, right: false });
+  const [popupPosition, setPopupPosition] = useState({ 
+    vertical: 'bottom', 
+    horizontal: 'left',
+    transform: { x: 0, y: 0 }
+  });
   const popupRef = useRef(null);
   const buttonRef = useRef(null);
+
+  // Translation helper
+  const t = {
+    title: locale === 'ar' ? 'عدد الأفراد' : 'Number of persons',
+    save: locale === 'ar' ? 'حفظ' : 'Save',
+    cancel: locale === 'ar' ? 'اغلاق' : 'Cancel'
+  };
 
   const handleDecrement = () => {
     if (tempCount > 1) {
       setTempCount(tempCount - 1);
     }
   };
-  
+
   const handleIncrement = () => {
     setTempCount(tempCount + 1);
   };
@@ -26,35 +38,107 @@ function PersonsNumChooser({ onChange, initialValue = 1 }) {
   };
 
   const handleCancel = () => {
-    setTempCount(count); // Reset to original value
+    setTempCount(count);
     setIsPopupOpen(false);
   };
 
-  // Handle popup positioning
+  const calculateOptimalPosition = () => {
+    if (!buttonRef.current || !popupRef.current) return;
+
+    const buttonRect = buttonRef.current.getBoundingClientRect();
+    const popupRect = popupRef.current.getBoundingClientRect();
+    
+    const viewport = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    };
+
+    const margin = 8; // Minimum margin from viewport edges
+    const popupWidth = 256; // w-64 = 16rem = 256px
+    const popupHeight = popupRect.height || 160; // Estimated height
+
+    let vertical = 'bottom';
+    let horizontal = 'left';
+    let transformX = 0;
+    let transformY = 0;
+
+    // Determine vertical position
+    const spaceBelow = viewport.height - buttonRect.bottom - margin;
+    const spaceAbove = buttonRect.top - margin;
+
+    if (spaceBelow >= popupHeight) {
+      vertical = 'bottom';
+      transformY = margin;
+    } else if (spaceAbove >= popupHeight) {
+      vertical = 'top';
+      transformY = -margin;
+    } else {
+      // Not enough space above or below, choose the side with more space
+      vertical = spaceBelow > spaceAbove ? 'bottom' : 'top';
+      transformY = vertical === 'bottom' ? margin : -margin;
+    }
+
+    // Determine horizontal position
+    const spaceRight = viewport.width - buttonRect.left - margin;
+    const spaceLeft = buttonRect.right - margin;
+
+    if (spaceRight >= popupWidth) {
+      horizontal = 'left';
+      transformX = 0;
+    } else if (spaceLeft >= popupWidth) {
+      horizontal = 'right';
+      transformX = 0;
+    } else {
+      // Not enough space on either side, center it as best as possible
+      const buttonCenter = buttonRect.left + buttonRect.width / 2;
+      const idealLeft = buttonCenter - popupWidth / 2;
+      
+      if (idealLeft < margin) {
+        horizontal = 'left';
+        transformX = margin - buttonRect.left;
+      } else if (idealLeft + popupWidth > viewport.width - margin) {
+        horizontal = 'right';
+        transformX = (viewport.width - margin) - buttonRect.right;
+      } else {
+        horizontal = 'left';
+        transformX = idealLeft - buttonRect.left;
+      }
+    }
+
+    setPopupPosition({
+      vertical,
+      horizontal,
+      transform: { x: transformX, y: transformY }
+    });
+  };
+
   useEffect(() => {
-    if (isPopupOpen && buttonRef.current && popupRef.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect();
-      const popupRect = popupRef.current.getBoundingClientRect();
+    if (isPopupOpen) {
+      // Small delay to ensure popup is rendered before calculating position
+      const timer = setTimeout(calculateOptimalPosition, 0);
       
-      // Check vertical position
-      const viewportHeight = window.innerHeight;
-      const spaceBelow = viewportHeight - buttonRect.bottom;
-      const showBelow = spaceBelow >= popupRect.height;
+      const handleResize = () => calculateOptimalPosition();
+      const handleScroll = () => calculateOptimalPosition();
       
-      // Check horizontal position
-      const viewportWidth = window.innerWidth;
-      const spaceRight = viewportWidth - buttonRect.left;
-      const alignRight = spaceRight < popupRect.width;
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('scroll', handleScroll);
       
-      setPopupPosition({ top: showBelow, right: alignRight });
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('scroll', handleScroll);
+      };
     }
   }, [isPopupOpen]);
 
-  // Close popup when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
-      if (popupRef.current && !popupRef.current.contains(event.target) && 
-          buttonRef.current && !buttonRef.current.contains(event.target)) {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
         handleCancel();
       }
     }
@@ -66,6 +150,35 @@ function PersonsNumChooser({ onChange, initialValue = 1 }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isPopupOpen, count]);
+
+  const getPositionClasses = () => {
+    const { vertical, horizontal } = popupPosition;
+    
+    let classes = 'absolute ';
+    
+    // Vertical positioning
+    if (vertical === 'bottom') {
+      classes += 'top-full ';
+    } else {
+      classes += 'bottom-full ';
+    }
+    
+    // Horizontal positioning
+    if (horizontal === 'left') {
+      classes += 'left-0 ';
+    } else {
+      classes += 'right-0 ';
+    }
+    
+    return classes;
+  };
+
+  const getTransformStyle = () => {
+    const { transform } = popupPosition;
+    return {
+      transform: `translate(${transform.x}px, ${transform.y}px)`,
+    };
+  };
 
   return (
     <div className="relative">
@@ -83,17 +196,16 @@ function PersonsNumChooser({ onChange, initialValue = 1 }) {
       </button>
 
       {isPopupOpen && (
-        <div 
+        <div
           ref={popupRef}
-          className={`absolute ${popupPosition.top ? 'top-full mt-2' : 'bottom-full mb-2'} 
-                     ${popupPosition.right ? 'right-0' : 'left-0'} 
-                     bg-white shadow-lg rounded-lg p-4 border border-gray-200 z-10 w-64`}
+          className={`${getPositionClasses()} bg-white shadow-lg rounded-lg p-4 border border-gray-200 z-50 w-64`}
+          style={getTransformStyle()}
         >
           <div className="flex flex-col space-y-4">
-            <div className="text-sm font-medium text-gray-700">عدد الأفراد</div>
-            
+            <div className="text-sm font-medium text-gray-700">{t.title}</div>
+
             <div className="flex items-center justify-between border border-gray-200 rounded-lg p-2 bg-gray-50">
-              <button 
+              <button
                 type="button"
                 onClick={handleDecrement}
                 disabled={tempCount <= 1}
@@ -103,12 +215,10 @@ function PersonsNumChooser({ onChange, initialValue = 1 }) {
               >
                 -
               </button>
-              
-              <div className="mx-3 font-medium text-center min-w-[24px]">
-                {tempCount}
-              </div>
-              
-              <button 
+
+              <div className="mx-3 font-medium text-center min-w-[24px]">{tempCount}</div>
+
+              <button
                 type="button"
                 onClick={handleIncrement}
                 aria-label="Increase number of persons"
@@ -124,14 +234,14 @@ function PersonsNumChooser({ onChange, initialValue = 1 }) {
                 onClick={handleSave}
                 className="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
-                حفظ
+                {t.save}
               </button>
               <button
                 type="button"
                 onClick={handleCancel}
                 className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
               >
-                اغلاق
+                {t.cancel}
               </button>
             </div>
           </div>
@@ -140,5 +250,4 @@ function PersonsNumChooser({ onChange, initialValue = 1 }) {
     </div>
   );
 }
-
 export default PersonsNumChooser;

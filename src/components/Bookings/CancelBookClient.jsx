@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import ClientAuthFlow from '../auth/ClientAuthFlow';
 
-function CancelBookClient({bookId, bookData}) {
+function CancelBookClient({ bookId, bookData, locale = "ar" }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRefundable, setIsRefundable] = useState(null);
   const [refundData, setRefundData] = useState(null); // Store refund details
@@ -13,36 +13,45 @@ function CancelBookClient({bookId, bookData}) {
   const [showAuthFlow, setShowAuthFlow] = useState(false);
   const [retryAfterAuth, setRetryAfterAuth] = useState(false);
 
+  const t = {
+    cancelBooking: locale === "ar" ? "إلغاء الحجز" : "Cancel Booking",
+    checking: locale === "ar" ? "جاري التحقق..." : "Checking...",
+    loginRequired: locale === "ar" ? "تسجيل الدخول مطلوب" : "Login Required",
+    loginMessage: locale === "ar" ? "يجب تسجيل الدخول أولاً لإلغاء الحجز" : "You must log in first to cancel the booking",
+    confirmCancel: locale === "ar" ? "تأكيد إلغاء الحجز" : "Confirm Booking Cancellation",
+    refundable: locale === "ar" ? "قابل للاسترداد" : "Refundable",
+    nonRefundable: locale === "ar" ? "غير قابل للاسترداد" : "Non-refundable",
+    refundMsg: locale === "ar" ? "سيتم استرداد المبلغ إلى حسابك" : "The amount will be refunded to your account",
+    noRefundMsg: locale === "ar" ? "لن يتم استرداد أي مبلغ عند إلغاء هذا الحجز" : "No refund will be issued when canceling this booking",
+    refundDetails: locale === "ar" ? "تفاصيل الاسترداد:" : "Refund Details:",
+    cancelFees: locale === "ar" ? "رسوم الإلغاء:" : "Cancellation Fees:",
+    refundAmount: locale === "ar" ? "المبلغ المسترد:" : "Refund Amount:",
+    netRefund: locale === "ar" ? "صافي المبلغ المسترد:" : "Net Refundable Amount:",
+    confirmQuestion: locale === "ar" ? "هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟" : "Are you sure you want to cancel this booking?",
+    cancel: locale === "ar" ? "إلغاء" : "Cancel",
+    confirm: locale === "ar" ? "تأكيد الإلغاء" : "Confirm Cancellation",
+    canceling: locale === "ar" ? "جاري الإلغاء..." : "Cancelling...",
+    authFailed: locale === "ar" ? "فشل في المصادقة. يرجى المحاولة مرة أخرى." : "Authentication failed. Please try again.",
+    refundError: locale === "ar" ? "حدث خطأ في التحقق من إمكانية الاسترداد. يرجى المحاولة مرة أخرى." : "An error occurred while checking refund eligibility. Please try again.",
+  }
+
   async function fetchBookRefundability(bookId) {
-    if (!bookId) {
-      console.error("Booking ID is required for refundability check.");
-      return false;
-    }
+    if (!bookId) return false;
 
     try {
-      const response = await fetch(`/api/client/bookings/refund?bookId=${bookId}`, {
-        method: 'GET',
-      });
-
+      const response = await fetch(`/api/client/bookings/refund?bookId=${bookId}`);
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Error checking refundability:", errorData.message);
         throw new Error(errorData.message || 'Failed to check refundability');
       }
-
-      const result = await response.json();
-      return result;
+      return await response.json();
     } catch (error) {
-      console.error("Unexpected error occurred while checking refundability:", error);
       throw error;
     }
   }
 
   async function cancelBooking(bookId) {
-    if (!bookId) {
-      console.error("Booking ID is required for cancellation.");
-      return;
-    }
+    if (!bookId) return;
 
     setIsLoading(true);
     setError(null);
@@ -52,28 +61,23 @@ function CancelBookClient({bookId, bookData}) {
         method: 'DELETE',
       });
 
-      // Check for authentication errors
       if (response.status === 401 || response.status === 403) {
         setIsLoading(false);
         setRetryAfterAuth(true);
         setShowAuthFlow(true);
-        setIsModalOpen(false); // Close confirmation modal when showing auth flow
+        setIsModalOpen(false);
         return;
       }
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Error canceling booking:", errorData.message);
         throw new Error(errorData.message || 'Failed to cancel booking');
       }
 
-      const result = await response.json();
-      console.log("Booking canceled successfully:", result);
-      
-      window.location.reload()
-      
+      await response.json();
+      window.location.reload();
+
     } catch (error) {
-      console.error("Unexpected error occurred while canceling booking:", error);
       setError(error.message);
     } finally {
       setIsLoading(false);
@@ -83,46 +87,42 @@ function CancelBookClient({bookId, bookData}) {
   async function handleCancelClick() {
     setIsCheckingRefund(true);
     setError(null);
-    
+
     try {
       const refundResult = await fetchBookRefundability(bookId);
       setIsRefundable(refundResult.status);
-      setRefundData(refundResult); // Store the complete refund data
+      setRefundData(refundResult);
       setIsModalOpen(true);
     } catch (error) {
       setError(error.message);
-      alert('حدث خطأ في التحقق من إمكانية الاسترداد. يرجى المحاولة مرة أخرى.');
+      alert(t.refundError);
     } finally {
       setIsCheckingRefund(false);
     }
   }
 
-  const handleAuthSuccess = (clientData) => {
-    console.log('Authentication successful:', clientData);
+  const handleAuthSuccess = () => {
     setShowAuthFlow(false);
-    
-    // If we were retrying after auth, call the cancel API again
     if (retryAfterAuth) {
       setRetryAfterAuth(false);
       cancelBooking(bookId);
     }
   };
 
-  const handleAuthFail = (error) => {
-    console.error('Authentication failed:', error);
+  const handleAuthFail = () => {
     setShowAuthFlow(false);
     setRetryAfterAuth(false);
-    setError('فشل في المصادقة. يرجى المحاولة مرة أخرى.');
+    setError(t.authFailed);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setCanCancel(showCancelButton(bookData))
   }, [])
 
   function closeModal() {
     setIsModalOpen(false);
     setIsRefundable(null);
-    setRefundData(null); // Clear refund data
+    setRefundData(null);
     setError(null);
   }
 
@@ -131,9 +131,7 @@ function CancelBookClient({bookId, bookData}) {
     setRetryAfterAuth(false);
   }
 
-  if(!canCancel){
-    return null
-  }
+  if (!canCancel) return null;
 
   return (
     <div>
@@ -146,22 +144,21 @@ function CancelBookClient({bookId, bookData}) {
           {isCheckingRefund ? (
             <div className="flex items-center justify-center gap-2">
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              جاري التحقق...
+              {t.checking}
             </div>
           ) : (
-            'إلغاء الحجز'
+            t.cancelBooking
           )}
         </button>
       </div>
 
-      {/* Authentication Flow Modal */}
       {showAuthFlow && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60] p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 animate-in fade-in zoom-in duration-200">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  تسجيل الدخول مطلوب
+                  {t.loginRequired}
                 </h3>
                 <button
                   onClick={closeAuthFlow}
@@ -172,31 +169,30 @@ function CancelBookClient({bookId, bookData}) {
                   </svg>
                 </button>
               </div>
-              
+
               <div className="mb-4">
                 <p className="text-gray-600 text-center text-sm">
-                  يجب تسجيل الدخول أولاً لإلغاء الحجز
+                  {t.loginMessage}
                 </p>
               </div>
 
               <ClientAuthFlow
                 onSuccess={handleAuthSuccess}
                 onFail={handleAuthFail}
-                primary_color="#EF4444" // Red color to match the cancel theme
+                primary_color="#EF4444"
               />
             </div>
           </div>
         </div>
       )}
 
-      {/* Confirmation Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 animate-in fade-in zoom-in duration-200">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  تأكيد إلغاء الحجز
+                  {t.confirmCancel}
                 </h3>
                 <button
                   onClick={closeModal}
@@ -226,38 +222,34 @@ function CancelBookClient({bookId, bookData}) {
                     )}
                     <div>
                       <p className={`font-medium ${isRefundable ? 'text-green-800' : 'text-red-800'}`}>
-                        {isRefundable ? 'قابل للاسترداد' : 'غير قابل للاسترداد'}
+                        {isRefundable ? t.refundable : t.nonRefundable}
                       </p>
                       <p className={`text-sm ${isRefundable ? 'text-green-600' : 'text-red-600'}`}>
-                        {isRefundable 
-                          ? 'سيتم استرداد المبلغ إلى حسابك'
-                          : 'لن يتم استرداد أي مبلغ عند إلغاء هذا الحجز'
-                        }
+                        {isRefundable ? t.refundMsg : t.noRefundMsg}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Refund Details Section */}
                 {isRefundable && refundData && (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                    <h4 className="font-medium text-gray-900 mb-3">تفاصيل الاسترداد:</h4>
+                    <h4 className="font-medium text-gray-900 mb-3">{t.refundDetails}</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">رسوم الإلغاء:</span>
+                        <span className="text-sm text-gray-600">{t.cancelFees}</span>
                         <span className="text-sm font-medium text-red-600">
                           {refundData.cancelationFees?.toFixed(2) || '0.00'} ج.م
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">المبلغ المسترد:</span>
+                        <span className="text-sm text-gray-600">{t.refundAmount}</span>
                         <span className="text-sm font-medium text-green-600">
                           {refundData.refundableAmount?.toFixed(2) || '0.00'} ج.م
                         </span>
                       </div>
                       <div className="border-t border-gray-200 pt-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium text-gray-900">صافي المبلغ المسترد:</span>
+                          <span className="text-sm font-medium text-gray-900">{t.netRefund}</span>
                           <span className="text-base font-bold text-green-600">
                             {refundData.refundableAmount?.toFixed(2) || '0.00'} ج.م
                           </span>
@@ -268,7 +260,7 @@ function CancelBookClient({bookId, bookData}) {
                 )}
 
                 <p className="text-gray-600 text-center">
-                  هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟
+                  {t.confirmQuestion}
                 </p>
               </div>
 
@@ -283,7 +275,7 @@ function CancelBookClient({bookId, bookData}) {
                   onClick={closeModal}
                   className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
                 >
-                  إلغاء
+                  {t.cancel}
                 </button>
                 <button
                   onClick={() => cancelBooking(bookId)}
@@ -293,10 +285,10 @@ function CancelBookClient({bookId, bookData}) {
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      جاري الإلغاء...
+                      {t.canceling}
                     </div>
                   ) : (
-                    'تأكيد الإلغاء'
+                    t.confirm
                   )}
                 </button>
               </div>
@@ -313,14 +305,8 @@ export default CancelBookClient
 function showCancelButton(bookData) {
   const day = bookData.day;
   const currentDate = new Date();
-  
-  // Parse the trip date (format: "2025-05-03")
   const tripDate = new Date(day);
-  
-  // Set both dates to start of day to compare only dates, not times
   const currentDateOnly = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
   const tripDateOnly = new Date(tripDate.getFullYear(), tripDate.getMonth(), tripDate.getDate());
-  
-  // Return false if current date is >= trip date, true otherwise
   return currentDateOnly < tripDateOnly;
 }

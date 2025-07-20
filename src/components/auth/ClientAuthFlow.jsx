@@ -8,7 +8,7 @@ import LoadingCirc from '../Loading/LoadingCirc';
 import TermsAcceptance from '../website/TermsAcceptance';
 
 
-const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
+const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB', locale }) => {
   const [currentStep, setCurrentStep] = useState('loading'); // loading, phone, otp, name
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedCountryCode, setSelectedCountryCode] = useState({ code: '+20', name: 'Egypt', flag: '🇪🇬' });
@@ -38,6 +38,7 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
   useEffect(() => {
     const checkExistingToken = async () => {
       const token = Cookies.get('client_token');
+      console.log("token", token)
       
       if (token) {
         try {
@@ -49,6 +50,7 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
               'Content-Type': 'application/json'
             }
           });
+
 
           if (response.ok) {
             const data = await response.json();
@@ -129,9 +131,10 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
               countryCodes={countryCodes}
               onSuccess={handlePhoneSuccess}
               primary_color={primary_color}
+              locale={locale}
             />
             <div className='mt-4'>
-            <TermsAcceptance link={`/terms`}/>
+            <TermsAcceptance link={`/terms`} locale={locale}/>
             </div>
           </div>
         )}
@@ -143,6 +146,7 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
             primary_color={primary_color}
             onVerified={handleOTPVerified}
             verificationId={verificationId}
+            locale={locale}
           />
         )}
 
@@ -155,6 +159,7 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB' }) => {
             <NameInputForm
               onSuccess={handleNameSuccess}
               primary_color={primary_color}
+              locale={locale}
             />
           </div>
         )}

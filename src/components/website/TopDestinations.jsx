@@ -1,13 +1,13 @@
 import DestintaionCard from "./DestintaionCard"
 
-function TopDestinations({ destinations }) {
+function TopDestinations({ destinations, title }) {
   if (!destinations || destinations.length === 0) {
     return <div className="text-center text-gray-500">No destinations available</div>;
   }
 
   return (
     <div className="max-w-6xl mx-auto">
-      <h2 className="text-2xl font-bold mb-8 text-gray-800">وجهات رائجة</h2>
+      <h2 className="text-2xl font-bold mb-8 text-gray-800">{title}</h2>
 
       {/* Grid container */}
       <div className="grid gap-4">

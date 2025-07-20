@@ -1,7 +1,7 @@
-import { LocationEdit, MapPin, MoveLeft } from 'lucide-react'
+import { LocationEdit, MapPin, MoveLeft, MoveRight } from 'lucide-react'
 import React from 'react'
 
-function FromTo({from, to}) {
+function FromTo({from, to, locale}) {
 
   if(from == to){
     return (
@@ -17,7 +17,8 @@ function FromTo({from, to}) {
     <div className='flex gap-2 text-sm text-gray-700 items-center'>
         <div>{from}</div>
         <div>
-            <MoveLeft size={18}/>
+            {locale == "en"? <MoveRight size={18}/> : <MoveLeft size={18}/>}
+            
         </div>
         <div>{to}</div>
     </div>

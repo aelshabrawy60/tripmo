@@ -95,7 +95,7 @@ export default class NotificationService{
                 date: bookData.day,
                 persons: bookData.persons,
                 total_price: bookData.total_price,
-                refund_amount: canRefund == true ? bookData.total_price : 0
+                refund_amount: canRefund == true ? bookData.deposite_price : 0
             }
         };
 
@@ -108,6 +108,21 @@ export default class NotificationService{
         ]);
 
         return { clientResult, hostResult };
+    }
+
+    async sendTripRating(channelName, to, bookData){
+
+        console.log("sending notf rate", bookData)
+        const rateTemplate = { 
+            name: "84c33dd0-c465-4b5c-a76c-25ab9ef5a78e" ,
+            variables: {
+                booking_link: `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${bookData.deposits[0].payment_id}` 
+            }
+        };
+
+        const result = await this.dispatcher.sendMessage(channelName, { to: to, template: rateTemplate })
+
+        return result
     }
 
 }

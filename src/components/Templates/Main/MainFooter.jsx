@@ -1,8 +1,9 @@
 import React from 'react';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
-import { phoneNumber } from '@/app/site/data';
+import { phoneNumber , addressEn, addressAr} from '../../../app/[locale]/site/data'
+import locales from '../../../../messages/locales';
 
-export default function MainFooter({ logo, pages, socialMedia, contactInfo, theme = "#3B82F6" }) {
+export default function MainFooter({ logo, pages, socialMedia, contactInfo, theme = "#3B82F6", locale }) {
   // Function to render the appropriate social media icon
   const getSocialIcon = (name) => {
     const iconProps = { size: 20, style: { color: theme } };
@@ -17,7 +18,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
 
   // Default contact info if not provided
   const defaultContactInfo = {
-    address: "مصطفى النحاس، مدينه نصر",
+    address: locale == "en" ? addressEn : addressAr,
     phone: phoneNumber,
     email: "info@rehlanow.com"
   };
@@ -44,8 +45,8 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
                 <div className="text-2xl font-bold" style={{ color: theme }}>شعاري</div>
               )}
             </div>
-            <p className="text-gray-600 mb-4 text-right">
-              نحن نسعى لتقديم أفضل الخدمات لعملائنا الكرام، ونتطلع دائمًا لخلق تجربة مستخدم فريدة ومميزة.
+            <p className="text-gray-600 mb-4">
+              {locale == "en"? locales.Footer.title.en: locales.Footer.title.ar}
             </p>
             <div className="flex gap-4">
               {socialMedia && socialMedia.map((item, index) => (
@@ -67,8 +68,8 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
           
           {/* Quick Links */}
           <div className="mb-6 md:mb-0 md:w-1/4">
-            <h3 className="text-lg font-bold mb-4 text-right" style={{ color: theme }}>روابط سريعة</h3>
-            <ul className="space-y-2 text-right">
+            <h3 className="text-lg font-bold mb-4" style={{ color: theme }}>{locale == "en"? locales.Footer.links.en: locales.Footer.links.ar}</h3>
+            <ul className="space-y-2">
               {pages && pages.map((page, index) => (
                 <li key={index}>
                   <a 
@@ -78,7 +79,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
                       ':hover': { color: theme } 
                     }}
                   >
-                    {page.name}
+                    {locale == "en" ? page.name.en : page.name.ar}
                   </a>
                 </li>
               ))}
@@ -87,7 +88,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
           
           {/* Contact Info */}
           <div className="md:w-1/3">
-            <h3 className="text-lg font-bold mb-4 text-right" style={{ color: theme }}>اتصل بنا</h3>
+            <h3 className="text-lg font-bold mb-4" style={{ color: theme }}>{locale == "en"? locales.Footer.contactUs.en: locales.Footer.contactUs.ar}</h3>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <MapPin size={20} style={{ color: theme }} className="flex-shrink-0" />

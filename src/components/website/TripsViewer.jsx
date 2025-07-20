@@ -51,6 +51,7 @@ function TripsViewer({ trips, isLoading = false, language = 'ar' }) {
                 tripData={trip} 
                 language={language}
                 isRTL={isRTL}
+                locale={language}
               />
             </div>
           )

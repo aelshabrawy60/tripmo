@@ -14,6 +14,7 @@ async function page() {
   const topTrips =  (await popularTrips())
 
 
+
   return (
     <>
         <MainHero 

@@ -30,7 +30,7 @@ class KashierRedirect {
     return hash;
   }
 
-  async createPaymentRedirect(orderDetails) {
+  async createPaymentRedirect(orderDetails, lang = 'ar') {
     this.validateOrderDetails(orderDetails);
 
     const amount = parseFloat(orderDetails.deposite_price).toFixed(2);
@@ -44,7 +44,7 @@ class KashierRedirect {
       currency: "EGP",
       order: orderId,
       merchantRedirect: encodeURI(this.successUrl),
-      display: "ar",
+      display: lang,
       type: "one-time",
       merchantId: this.merchantId,
       failureRedirect: false,

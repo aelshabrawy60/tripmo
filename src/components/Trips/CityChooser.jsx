@@ -7,7 +7,6 @@ import React, {
 } from 'react'
 import { createPortal } from 'react-dom'
 
-const citiesApi = '/api/cities'
 
 // Enhanced Arabic text normalization function
 const normalizeArabicText = (text) => {
@@ -45,7 +44,7 @@ const smartSearch = (searchTerm, targetText) => {
          originalTarget.includes(originalSearch);
 };
 
-const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "ادخل اسم المدينة", type = 0 }, ref) => {
+const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "ادخل اسم المدينة", type = 0, locale = "ar" }, ref) => {
   const [cities, setCities] = useState([])
   const [selectedCity, setSelectedCity] = useState(null)
   const [inputValue, setInputValue] = useState('')
@@ -55,6 +54,8 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "�
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
   const inputRef = useRef(null)
   const dropdownRef = useRef(null)
+
+  const citiesApi = `/api/cities?locale=${locale}`
 
   useImperativeHandle(ref, () => ({
     focus: () => {
@@ -348,7 +349,7 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "�
           className="w-full focus:outline-none focus:border-transparent"
         />
         {selectedCity && (
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <div className={`absolute ${locale == "en" ? "right-3" : "left-3"} top-1/2 transform -translate-y-1/2 pointer-events-none`}>
             <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>

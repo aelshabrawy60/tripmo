@@ -4,12 +4,10 @@ import GalleryViewer from './GalleryViewer'
 import MainTripDetails from './MainTripDetails'
 import MainBookingCard from './MainBookingCard'
 import MainRatingsSection from './MainRatingsSection'
-import ProfileCard from '@/components/website/ProfileCard'
 import StarsRates from '@/components/website/StarsRates'
 import InlineCancelationPolicy from '@/components/Trips/InlineCancelationPolicy'
-import FromTo from '@/components/Trips/FromTo'
 
-function MainTrip({tripData}) {
+function MainTrip({tripData, locale}) {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -35,7 +33,7 @@ function MainTrip({tripData}) {
           null
           }
           <div className='mb-2'>
-              <InlineCancelationPolicy policy={tripData.cancellation_policy}/>
+              <InlineCancelationPolicy policy={tripData.cancellation_policy} locale={locale}/>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
@@ -45,8 +43,9 @@ function MainTrip({tripData}) {
               name={tripData.name}
               about={tripData.about}
               groupId={tripData.group_id}
-              depature_city={tripData.depature_city.name}
-              dest_city={tripData.dest_city.name}
+              depature_city={locale == "en"? tripData.depature_city.name_en : tripData.depature_city.name}
+              dest_city={locale == "en"? tripData.dest_city.name_en : tripData.dest_city.name}
+              locale={locale}
             />
           </div>
           
@@ -57,6 +56,7 @@ function MainTrip({tripData}) {
                 tripData={tripData}
                 isLoading={isLoading}
                 onBookingRequest={() => setIsLoading(true)}
+                locale={locale}
               />
             </div>
           </div>

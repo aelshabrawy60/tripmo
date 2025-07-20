@@ -1,14 +1,15 @@
 import StarsRates from '@/components/website/StarsRates';
 import Link from 'next/link';
-import Image from 'next/image'; // ✅ Import Next.js Image
+import Image from 'next/image';
 import React from 'react';
-import FromTo from '@/components/Trips/FromTo';
 
-function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
-  const { 
-    name, 
-    images, 
+function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
+  const {
+    name,
+    name_en,
+    images,
     availability_type,
+    available_day,
     pricing,
     id,
     slug,
@@ -21,7 +22,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
   const firstImage = images && images.length > 0 ? images[0] : null;
   const ratingAverage = rates_sum / rates_count;
   const formattedPrice = pricing
-    ? new Intl.NumberFormat('en-EG', {
+    ? new Intl.NumberFormat(locale === 'ar' ? 'en-EG' : 'en-EG', {
         style: 'currency',
         currency: 'EGP',
         minimumFractionDigits: 0,
@@ -43,19 +44,23 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
             />
           ) : (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-b-lg">
-              <span className="text-gray-400 text-sm">No image</span>
+              <span className="text-gray-400 text-sm">{locale === 'ar' ? 'لا توجد صورة' : 'No image'}</span>
             </div>
           )}
 
           {availability_type && (
             <div className="absolute top-2 right-2 bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-medium shadow-sm">
-              {availability_type === 'fixed' ? tripData.available_day : availability_type === 'daily' ? 'يوميا' : 'مواعيد متعددة'}
+              {availability_type === 'fixed'
+                ? available_day
+                : availability_type === 'daily'
+                ? (locale === 'ar' ? 'يوميا' : 'Daily')
+                : (locale === 'ar' ? 'مواعيد متعددة' : 'Multiple dates')}
             </div>
           )}
 
           {pricing && (
             <div className="absolute bottom-2 left-2 bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm">
-              {formattedPrice} للفرد
+              {formattedPrice} {locale === 'ar' ? 'للفرد' : 'per person'}
             </div>
           )}
         </div>
@@ -64,7 +69,9 @@ function MainTripCard({ tripData, themeColor = "#4F46E5" }) {
         <div className="p-3 flex-1 flex flex-col">
           <div className="flex flex-col justify-between items-start">
             <div>
-              <h2 className="text-md font-bold text-gray-800 mb-2">{name}</h2>
+              <h2 className="text-md font-bold text-gray-800 mb-2">
+                {name}
+              </h2>
             </div>
             {ratingAverage ? (
               <div className='flex gap-1 items-center text-gray-600'>

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 import MainTripCard from "../Templates/Main/MainTripCard"
 import { ChevronRight, ChevronLeft } from "lucide-react"
 
-function TripsStrip({ tripsData }) {
+function TripsStrip({ tripsData , locale}) {
   const [showLeftArrow, setShowLeftArrow] = useState(false)
   const [showRightArrow, setShowRightArrow] = useState(false)
   const [isScrolling, setIsScrolling] = useState(false)
@@ -132,7 +132,7 @@ function TripsStrip({ tripsData }) {
             key={trip.id || index}
             className="flex-shrink-0 w-64 md:w-68 "
           >
-            <MainTripCard tripData={trip} />
+            <MainTripCard tripData={trip} locale={locale} />
           </div>
         ))}
       </div>

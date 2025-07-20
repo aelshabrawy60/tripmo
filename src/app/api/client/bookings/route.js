@@ -11,7 +11,7 @@ import { calcCancelationFees } from "@/utils/payments/helpers";
 
 
 export async function POST(request) {
-    const { name, tripId, date, phone, numberOfSeats, offset, client_id} = await request.json();
+    const { name, tripId, date, phone, numberOfSeats, offset, client_id, lang} = await request.json();
 
     //
     try {
@@ -26,7 +26,7 @@ export async function POST(request) {
             const type = "auto"
 
             if(type == "auto"){
-                const payment = await initDepositPayment(result.data, getTrackingData(request))
+                const payment = await initDepositPayment(result.data, getTrackingData(request), lang || 'ar')
 
                 // 🟢 Send Meta Conversions API Event (InitiateCheckout)
                 await sendMetaIntiateCheckout(request, result, phone, numberOfSeats)

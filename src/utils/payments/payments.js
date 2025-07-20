@@ -29,7 +29,7 @@ class PaymentRedirectFlow {
    * @param {Object} orderDetails - The order details
    * @returns {Object} - The redirect information
    */
-  async createRedirect(gatewayName, orderDetails) {
+  async createRedirect(gatewayName, orderDetails, lang = "ar") {
     // Check if the requested gateway exists
     if (!this.gateways[gatewayName]) {
       throw new Error(`Gateway ${gatewayName} not configured`);
@@ -38,7 +38,7 @@ class PaymentRedirectFlow {
     console.log(`Creating ${gatewayName} redirect for order:`, orderDetails);
           
     // Call the gateway's createPaymentRedirect method
-    return await this.gateways[gatewayName].createPaymentRedirect(orderDetails);
+    return await this.gateways[gatewayName].createPaymentRedirect(orderDetails, lang);
   }
       
   /**
@@ -108,7 +108,7 @@ class PaymentRedirectFlow {
  * @param {String} type - The type of payment (unused currently)
  * @returns {Object} - The redirect information
  */
-async function initDepositPayment(bookData, tracking_data = null, gatewayConfig = paymentGateawayConfig) {
+async function initDepositPayment(bookData, tracking_data = null, lang = 'ar', gatewayConfig = paymentGateawayConfig) {
   // Ensure bookData has all required fields
   if (!bookData || !bookData.id || !bookData.deposite_price) {
     throw new Error("Invalid booking data. Missing required fields.");
@@ -128,7 +128,7 @@ async function initDepositPayment(bookData, tracking_data = null, gatewayConfig 
     
   try {
     const paymentService = new PaymentRedirectFlow(gatewayConfig);
-    const redirectData = await paymentService.createRedirect(gatewayConfig.name, paymentData);
+    const redirectData = await paymentService.createRedirect(gatewayConfig.name, paymentData, lang);
     const deposit = await createDeposit(bookData, redirectData.redirectUrl, redirectData.paymentId, gatewayConfig.name, tracking_data)
 
     return redirectData;

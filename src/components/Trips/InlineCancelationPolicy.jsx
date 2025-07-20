@@ -1,13 +1,13 @@
 import { CheckCircle, Clock, Shield, XCircle } from "lucide-react";
 
 // Compact inline version
-const InlineCancelationPolicy = ({ policy }) => {
+const InlineCancelationPolicy = ({ policy, locale }) => {
   const getPolicyContent = () => {
     switch (policy?.type) {
       case 'no_refund':
         return {
           icon: <XCircle className="w-3 h-3 text-red-600" />,
-          text: 'غير قابل للإلغاء',
+          text: locale === 'ar' ? 'غير قابل للإلغاء' : 'Non-refundable',
           textColor: 'text-red-700',
           bgColor: 'bg-red-50',
           borderColor: 'border-red-200'
@@ -16,7 +16,9 @@ const InlineCancelationPolicy = ({ policy }) => {
       case 'refund_until':
         return {
           icon: <Clock className="w-3 h-3 text-green-600" />,
-          text: `إلغاء مجاني قبل ${policy.until} س من يوم الرحلة`,
+          text: locale === 'ar'
+            ? `إلغاء مجاني قبل ${policy.until} س من يوم الرحلة`
+            : `Free cancellation until ${policy.until}h before the trip`,
           textColor: 'text-green-700',
           bgColor: 'bg-green-50',
           borderColor: 'border-green-200'
@@ -25,7 +27,9 @@ const InlineCancelationPolicy = ({ policy }) => {
       case 'refund':
         return {
           icon: <CheckCircle className="w-3 h-3 text-green-600" />,
-          text: 'الغاء مجاني قبل يوم الرحلة',
+          text: locale === 'ar'
+            ? 'إلغاء مجاني قبل يوم الرحلة'
+            : 'Free cancellation before the trip day',
           textColor: 'text-green-700',
           bgColor: 'bg-green-50',
           borderColor: 'border-green-200'
@@ -34,7 +38,7 @@ const InlineCancelationPolicy = ({ policy }) => {
       default:
         return {
           icon: <Shield className="w-3 h-3 text-gray-600" />,
-          text: 'سياسة غير محددة',
+          text: locale === 'ar' ? 'سياسة غير محددة' : 'Unspecified policy',
           textColor: 'text-gray-700',
           bgColor: 'bg-gray-50',
           borderColor: 'border-gray-200'
@@ -54,4 +58,4 @@ const InlineCancelationPolicy = ({ policy }) => {
   );
 };
 
-export default InlineCancelationPolicy
+export default InlineCancelationPolicy;

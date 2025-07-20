@@ -6,14 +6,42 @@ const PhoneInputForm = ({
   selectedCountryCode,
   onCountryCodeChange,
   countryCodes,
-  onSuccess, // callback when OTP is successfully sent
-  primary_color = '#1db954'
+  onSuccess,
+  primary_color = '#1db954',
+  locale = "ar"
 }) => {
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
 
-  // Function to get full phone number like in UserAuthenticationFlow
+  const t = {
+    phoneLabel: {
+      ar: "رقم الهاتف",
+      en: "Phone number"
+    },
+    phonePlaceholder: {
+      ar: "أدخل رقم الهاتف",
+      en: "Enter your phone number"
+    },
+    sendError: {
+      ar: "فشل في إرسال رمز التحقق",
+      en: "Failed to send OTP"
+    },
+    invalidFormat: {
+      ar: "صيغة رقم الهاتف غير صحيحة",
+      en: "Invalid phone number format"
+    },
+    submit: {
+      ar: "متابعة",
+      en: "Continue"
+    },
+    loading: {
+      ar: "جاري التحقق...",
+      en: "Verifying..."
+    }
+  };
+
   const getFullPhoneNumber = (inputPhone = phone, country = selectedCountryCode) => {
     if (!inputPhone) return "";
     return `${country.code.substring(1)}${inputPhone.startsWith("0") ? inputPhone.substring(1) : inputPhone}`;
@@ -23,12 +51,10 @@ const PhoneInputForm = ({
     e.preventDefault();
     setError('');
 
-    // Use the same logic as UserAuthenticationFlow to get full phone
     const fullPhone = getFullPhoneNumber();
 
-    // Validate the full phone number
     if (!/^\d{10,15}$/.test(fullPhone)) {
-      setError('صيغة رقم الهاتف غير صحيحة');
+      setError(t.invalidFormat[locale]);
       return;
     }
 
@@ -44,10 +70,10 @@ const PhoneInputForm = ({
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        throw new Error(data.message || 'فشل في إرسال رمز التحقق');
+        throw new Error(data.message || t.sendError[locale]);
       }
 
-      Cookies.set('client_phone', fullPhone, { expires: 1 }); // save phone in cookie
+      Cookies.set('client_phone', fullPhone, { expires: 1 });
       if (onSuccess) onSuccess(fullPhone, data.verificationId);
     } catch (err) {
       setError(err.message);
@@ -56,22 +82,20 @@ const PhoneInputForm = ({
     setIsLoading(false);
   };
 
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
         <label htmlFor="phone" className="block text-sm font-medium mb-2">
-          رقم الهاتف
+          {t.phoneLabel[locale]}
         </label>
-        <div className="relative flex">
+        <div className={`relative flex ${locale == "en"? 'flex-row-reverse': null}`}>
           <input
             id="phone"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="(بالإنجليزية) أدخل رقم الهاتف"
-            className="flex-grow p-3 py-2 border rounded-r-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-left placeholder:text-right border-l-0"
+            placeholder={t.phonePlaceholder[locale]}
+            className={`flex-grow p-3 py-2 border rounded-r-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-left ${locale == "ar"? "placeholder:text-right": "placeholder:text-left"} border-l-0`}
             disabled={isLoading}
           />
           <div className="relative">
@@ -111,7 +135,7 @@ const PhoneInputForm = ({
         className="w-full text-white py-2 bg-tripmo-500 px-4 rounded-md font-medium text-base transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
         disabled={isLoading || !phone.trim()}
       >
-        {isLoading ? 'جاري التحقق...' : 'متابعة'}
+        {isLoading ? t.loading[locale] : t.submit[locale]}
       </button>
     </form>
   );

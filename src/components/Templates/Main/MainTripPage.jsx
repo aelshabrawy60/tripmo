@@ -1,13 +1,10 @@
 import React from 'react'
-import MainNavbar from './MainNavbar'
-import MainTripCard from './MainTripCard'
 import MainTrip from './MainTrip'
-import MainFooter from './MainFooter'
 
-function MainTripPage({config, tripData}) {
+function MainTripPage({config, tripData, locale}) {
   return (
     <div>
-        <MainTrip tripData={tripData}/>
+        <MainTrip tripData={tripData} locale={locale}/>
     </div>
   )
 }

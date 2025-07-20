@@ -17,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <AuthProvider>
-      <html lang="en">
+      <html>
         <body className={`${tajawal.variable} antialiased`}>
           {/* Google Tag */}
           <Script

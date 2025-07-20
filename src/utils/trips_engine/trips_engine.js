@@ -44,19 +44,27 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
 }
 
 
-export async function TrendingDestinations() {
-    const {data, error} = await supabaseAdmin
+export async function TrendingDestinations(locale = "ar") {
+    const { data, error } = await supabaseAdmin
         .from("cities")
         .select("*")
         .order("score", { ascending: false })
-        .limit(5)
+        .limit(5);
 
-    if(error){
-        console.log(error)
-        return null
+    if (error) {
+        console.log(error);
+        return null;
     }
 
-    return data
+    if (locale === "en") {
+        return data.map(city => ({
+            ...city,
+            name: city.name_en,
+            country: city.country_en
+        }));
+    }
+
+    return data;
 }
 
 

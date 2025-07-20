@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, X, MessageCircle, Send } from 'lucide-react';
 
-const AddComment = ({ tripId, senderName, groupId, bookId, bookData }) => {
+const AddComment = ({ tripId, senderName, groupId, bookId, bookData, locale= "ar" }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState(0);

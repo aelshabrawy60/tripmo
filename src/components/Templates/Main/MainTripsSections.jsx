@@ -4,7 +4,7 @@
 import MainTripsSection from "./MainTripsSection";
 
 
-const MainTripsSections = ({ tripsData }) => {
+const MainTripsSections = ({ tripsData , locale}) => {
   // Categorize trips based on category.name (no hooks needed)
   const categorizedTrips = {};
 
@@ -29,6 +29,7 @@ const MainTripsSections = ({ tripsData }) => {
             <MainTripsSection 
               tripsData={trips} 
               title={categoryName} 
+              locale={locale}
             />
           </div>
         ))}
