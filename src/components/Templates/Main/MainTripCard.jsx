@@ -2,6 +2,8 @@ import StarsRates from '@/components/website/StarsRates';
 import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
+import formatPrice from '@/utils/currency/PriceFormate';
+import Cookies from 'js-cookie';
 
 function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
   const {
@@ -19,15 +21,10 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
     depature,
   } = tripData;
 
+  const Currency = Cookies.get('currency');
   const firstImage = images && images.length > 0 ? images[0] : null;
   const ratingAverage = rates_sum / rates_count;
-  const formattedPrice = pricing
-    ? new Intl.NumberFormat(locale === 'ar' ? 'en-EG' : 'en-EG', {
-        style: 'currency',
-        currency: 'EGP',
-        minimumFractionDigits: 0,
-      }).format(pricing.PersonPrice)
-    : '';
+  const formattedPrice = formatPrice(pricing.PersonPrice, Currency)
 
   return (
     <Link href={`/trips/${slug}`} className="block">

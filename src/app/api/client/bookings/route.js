@@ -8,10 +8,13 @@ import { calculateNetAmount } from "@/utils/payments/helpers";
 import { requireClient } from "@/utils/middleware/requireClient";
 import { sendMetaIntiateCheckout } from "@/lib/metaCapi";
 import { calcCancelationFees } from "@/utils/payments/helpers";
-
+import { cookies } from 'next/headers';
 
 export async function POST(request) {
     const { name, tripId, date, phone, numberOfSeats, offset, client_id, lang} = await request.json();
+
+    const cookieStore = cookies();
+    const currency = cookieStore.get('currency')?.value;
 
     //
     try {
@@ -26,7 +29,7 @@ export async function POST(request) {
             const type = "auto"
 
             if(type == "auto"){
-                const payment = await initDepositPayment(result.data, getTrackingData(request), lang || 'ar')
+                const payment = await initDepositPayment(result.data, getTrackingData(request), lang || 'ar', currency)
 
                 // 🟢 Send Meta Conversions API Event (InitiateCheckout)
                 await sendMetaIntiateCheckout(request, result, phone, numberOfSeats)

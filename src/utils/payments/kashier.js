@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { exchangeRates } = require('../currency/exhangeRates');
 
 class KashierRedirect {
   constructor(config) {
@@ -30,10 +31,17 @@ class KashierRedirect {
     return hash;
   }
 
-  async createPaymentRedirect(orderDetails, lang = 'ar') {
+  async createPaymentRedirect(orderDetails, lang = 'ar', currency = "EGP") {
     this.validateOrderDetails(orderDetails);
 
-    const amount = parseFloat(orderDetails.deposite_price).toFixed(2);
+    // Validate currency, fallback to EGP
+    if (currency !== "EGP" && currency !== "USD") {
+      currency = "EGP";
+    }
+    const priceInCurrency = orderDetails.deposite_price * (exchangeRates[currency] || 1);
+
+
+    const amount = parseFloat(priceInCurrency).toFixed(2);
     const orderId = String(orderDetails.id);
 
     const payload = {
@@ -41,7 +49,7 @@ class KashierRedirect {
       maxFailureAttempts: 3,
       paymentType: "credit",
       amount,
-      currency: "EGP",
+      currency: currency,
       order: orderId,
       merchantRedirect: encodeURI(this.successUrl),
       display: lang,
@@ -66,6 +74,9 @@ class KashierRedirect {
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
+        console.log("error data", errorData)
+
         throw new Error(`Kashier API error: ${response.statusText}`);
       }
 

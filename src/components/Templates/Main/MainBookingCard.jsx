@@ -3,7 +3,10 @@
 import DateChooser from '@/components/Bookings/DateChooser'
 import PersonsNumChooser from '@/components/Bookings/PersonsNumChooser'
 import React, { useState, useEffect } from 'react'
-import { Calendar, Users, Check, X, Loader, ArrowRight } from 'lucide-react'
+import { Check, X, Loader, ArrowRight } from 'lucide-react'
+import Cookies from 'js-cookie';
+import formatPrice from '@/utils/currency/PriceFormate';
+
 
 function MainBookingCard({ tripData, locale }) {
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -22,6 +25,8 @@ function MainBookingCard({ tripData, locale }) {
     notAvailableMsg: locale === 'ar' ? 'غير متوفر في هذا التاريخ' : 'Not available on this date',
     unavailable: locale === 'ar' ? 'غير متاح' : 'Unavailable'
   }
+
+  const Currency = Cookies.get('currency');
 
   async function checkAvailAndPricing() {
     if (!selectedDate || !selectedSeatsNum) return
@@ -113,22 +118,14 @@ function MainBookingCard({ tripData, locale }) {
               <div className="flex justify-between">
                 <span className="font-bold">{t.totalPrice}</span>
                 <span className="font-bold text-blue-600">
-                  {new Intl.NumberFormat('en-EG', {
-                    style: 'currency',
-                    currency: 'EGP',
-                    minimumFractionDigits: 0
-                  }).format(totalPrice)}
+                  {formatPrice(totalPrice, Currency)}
                 </span>
               </div>
 
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">{t.deposit}</span>
                 <span className="font-medium">
-                  {new Intl.NumberFormat('en-EG', {
-                    style: 'currency',
-                    currency: 'EGP',
-                    minimumFractionDigits: 0
-                  }).format(depositPrice)}
+                  {formatPrice(depositPrice, Currency)}
                 </span>
               </div>
             </div>

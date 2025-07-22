@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
+import CurrencySwitcher from '@/components/LanguageSwitcher/CurrencySwitcher';
 
 function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,6 +42,7 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale }) {
             </div>
           </div>
 
+          <CurrencySwitcher/>
           <LanguageSwitcher/>
 
 

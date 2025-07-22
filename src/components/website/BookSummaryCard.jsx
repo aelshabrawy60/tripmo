@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Calendar, Users, CreditCard } from 'lucide-react';
 import StarsRates from './StarsRates';
+import Cookies from 'js-cookie';
+import formatPrice from '@/utils/currency/PriceFormate';
+
 
 function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -26,11 +29,9 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
       ar: "مقدم الدفع",
       en: "Deposit"
     },
-    currency: {
-      ar: "ج.م",
-      en: "EGP"
-    }
   };
+
+  const Currency = Cookies.get('currency');
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-50 overflow-hidden w-full">
@@ -87,7 +88,7 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
               {t.totalPrice[locale]}
             </div>
             <div className="font-bold">
-              {pricing?.price ? `${pricing.price} ${t.currency[locale]}` : `0 ${t.currency[locale]}`}
+              {pricing?.price ? `${formatPrice(pricing.price, Currency)}` : `0 ${t.currency[locale]}`}
             </div>
           </div>
         </div>
@@ -100,7 +101,7 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
                 {t.deposit[locale]}
               </span>
               <span className="font-semibold text-gray-800">
-                {pricing.deposit} {t.currency[locale]}
+                {formatPrice(pricing.deposit, Currency)}
               </span>
             </div>
           </div>
