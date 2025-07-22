@@ -42,9 +42,11 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale }) {
             </div>
           </div>
 
-          <CurrencySwitcher/>
-          <LanguageSwitcher/>
 
+          <div>
+            <LanguageSwitcher/>
+            <CurrencySwitcher/>
+          </div>
 
          
         </div>
