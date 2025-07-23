@@ -1,7 +1,7 @@
 'use client'
 
 // components/CurrencySwitcher.js
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 const currencies = {
   EGP: { name: 'Egyptian Pound', code: 'EGP', symbol: '£' },
@@ -11,10 +11,14 @@ const currencies = {
 export default function CurrencySwitcher({ className = '', onCurrencyChange }) {
   const [currentCurrency, setCurrentCurrency] = useState('EGP')
   const [isOpen, setIsOpen] = useState(false)
+  const [dropdownStyle, setDropdownStyle] = useState({})
+  const buttonRef = useRef(null)
+  const dropdownRef = useRef(null)
 
   useEffect(() => {
     // Get currency from cookie on component mount
     const getCurrencyFromCookie = () => {
+      if (typeof document === 'undefined') return 'EGP' // Guard for SSR
       const cookies = document.cookie.split(';')
       const currencyCookie = cookies.find(cookie => 
         cookie.trim().startsWith('currency=')
@@ -38,6 +42,44 @@ export default function CurrencySwitcher({ className = '', onCurrencyChange }) {
     }
   }, [onCurrencyChange])
 
+  // --- REVISED POSITIONING LOGIC ---
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect()
+      
+      // We can get the width dynamically from the ref if the dropdown has rendered,
+      // but a fixed value is simpler and often sufficient if the width is static.
+      const dropdownWidth = dropdownRef.current?.offsetWidth || 176 // 176px for w-44
+      const dropdownHeight = dropdownRef.current?.offsetHeight || 120 // Approximate height
+      
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+      const margin = 8 // Small gap from viewport edges
+
+      let topPosition = buttonRect.height + 8 // Default position below button (mt-2)
+      let leftPosition = 0 // Default: align left edge of dropdown with left edge of button
+
+      // Check for vertical space and flip if needed
+      const spaceBelow = viewportHeight - buttonRect.bottom
+      if (spaceBelow < dropdownHeight + margin && buttonRect.top > dropdownHeight + margin) {
+        // Not enough space below, show above
+        topPosition = -(dropdownHeight + 8)
+      }
+
+      // Check if dropdown would overflow the right side of the viewport
+      if (buttonRect.left + dropdownWidth > viewportWidth - margin) {
+        // If it overflows, align the right edge of the dropdown 
+        // with the right edge of the button instead.
+        leftPosition = buttonRect.width - dropdownWidth
+      }
+
+      setDropdownStyle({
+        top: `${topPosition}px`,
+        left: `${leftPosition}px`,
+      })
+    }
+  }, [isOpen])
+
   const switchCurrency = (newCurrency) => {
     // Save preference to cookie
     document.cookie = `currency=${newCurrency}; path=/; max-age=${365 * 24 * 60 * 60}` // 1 year
@@ -55,6 +97,7 @@ export default function CurrencySwitcher({ className = '', onCurrencyChange }) {
   return (
     <div className={`relative inline-block ${className}`}>
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="group flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200"
         aria-haspopup="true"
@@ -108,7 +151,11 @@ export default function CurrencySwitcher({ className = '', onCurrencyChange }) {
           />
           
           {/* Dropdown menu */}
-          <div className="absolute right-0 mt-2 py-1.5 w-44 bg-white rounded-xl shadow-lg border border-gray-200 z-20 animate-in slide-in-from-top-2 duration-200">
+          <div 
+            ref={dropdownRef}
+            className="absolute py-1.5 w-44 bg-white rounded-xl shadow-lg border border-gray-200 z-20 animate-in slide-in-from-top-2 duration-200"
+            style={dropdownStyle}
+          >
             {Object.entries(currencies).map(([currency, { name, code, symbol }]) => (
               <button
                 key={currency}

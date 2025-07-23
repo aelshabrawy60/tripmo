@@ -130,15 +130,15 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated, qrDataUrl, lo
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">{t.depositAmount[locale]}</span>
-              <span className="font-medium">{bookingData.deposite_price.toFixed(2)}</span>
+              <span className="font-medium">{bookingData.deposite_price.toFixed(0)} EGP</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">{t.remainingAmount[locale]}</span>
-              <span className="font-medium">{(bookingData.total_price - bookingData.deposite_price).toFixed(2)}</span>
+              <span className="font-medium">{(bookingData.total_price - bookingData.deposite_price).toFixed(0)} EGP</span>
             </div>
             <div className="flex justify-between pt-3 border-t border-gray-200 font-bold text-gray-800">
               <span>{t.totalAmount[locale]}</span>
-              <span>{bookingData.total_price.toFixed(2)}</span>
+              <span>{bookingData.total_price.toFixed(0)} EGP</span>
             </div>
           </div>
         </div>

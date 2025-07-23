@@ -238,20 +238,20 @@ function CancelBookClient({ bookId, bookData, locale = "ar" }) {
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">{t.cancelFees}</span>
                         <span className="text-sm font-medium text-red-600">
-                          {refundData.cancelationFees?.toFixed(2) || '0.00'} ج.م
+                          {refundData.cancelationFees?.toFixed(0) || '0.00'} EGP
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">{t.refundAmount}</span>
                         <span className="text-sm font-medium text-green-600">
-                          {refundData.refundableAmount?.toFixed(2) || '0.00'} ج.م
+                          {refundData.refundableAmount?.toFixed(0) || '0.00'} EGP
                         </span>
                       </div>
                       <div className="border-t border-gray-200 pt-2">
                         <div className="flex justify-between items-center">
                           <span className="text-sm font-medium text-gray-900">{t.netRefund}</span>
                           <span className="text-base font-bold text-green-600">
-                            {refundData.refundableAmount?.toFixed(2) || '0.00'} ج.م
+                            {refundData.refundableAmount?.toFixed(0) || '0.00'} EGP
                           </span>
                         </div>
                       </div>

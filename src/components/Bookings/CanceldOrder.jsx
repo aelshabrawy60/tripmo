@@ -178,26 +178,26 @@ async function CancelledOrder({ bookingData, TripData, locale = "ar" }) {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">{labels.paidAmount}</span>
-              <span className="font-medium">{bookingData?.deposite_price?.toFixed(2) || '0.00'} ج.م</span>
+              <span className="font-medium">{bookingData?.deposite_price?.toFixed(0) || '0.00'} EGP</span>
             </div>
 
             {refundData ? (
               <>
                 <div className="flex justify-between">
                   <span className="text-gray-600">{labels.cancelFees}</span>
-                  <span className="font-medium text-red-600">{refundData.amount == null ? 0.00 : (bookingData?.deposite_price - refundData?.amount).toFixed(2)} ج.م</span>
+                  <span className="font-medium text-red-600">{refundData.amount == null ? 0.00 : (bookingData?.deposite_price - refundData?.amount).toFixed(0)} EGP</span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-gray-200 font-bold">
                   <span>{labels.refundLabel}</span>
                   <span className={refundData.status === 'completed' ? 'text-green-700' : 'text-orange-700'}>
-                    {refundData.amount == null ? bookingData?.deposite_price?.toFixed(2) + 'ج.م' : refundData.amount?.toFixed(2) + 'ج.م'}
+                    {refundData.amount == null ? bookingData?.deposite_price?.toFixed(0) + ' EGP' : refundData.amount?.toFixed(0) + ' EGP'}
                   </span>
                 </div>
               </>
             ) : (
               <div className="flex justify-between pt-3 border-t border-gray-200 font-bold text-red-700">
                 <span>{labels.refundLabel}</span>
-                <span>0.00 ج.م</span>
+                <span>0.00 EGP</span>
               </div>
             )}
 

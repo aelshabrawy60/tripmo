@@ -16,7 +16,7 @@ export default class NotificationService{
         console.log("sending confirmation", bookData , hostNumber);
 
         // Define both templates
-        const clientTemplate = { 
+        const clientTemplate = {
             name: "c68824fb-6ea8-404c-bb38-f770f5eb2c56" ,
             variables: {
                 name: bookData.client_name,
@@ -28,7 +28,8 @@ export default class NotificationService{
                 host_name: bookData.Group.name,
                 host_phone: bookData.Group.clients_contact_phone,
                 booking_link: `${process.env.NEXT_PUBLIC_SITE_URL}/booking?paymentId=${bookData.deposits[0].payment_id}` 
-            }
+            },
+            language: bookData.lang || "ar"
         };
 
         const hostTemplate = { 
@@ -72,7 +73,8 @@ export default class NotificationService{
                     persons: bookData.persons,
                     total_price: bookData.total_price,
                     refund_amount: bookData.deposite_price
-                }
+                },
+                language: bookData.lang || "ar"
             }
         }else{
             clientTemplate = {
@@ -82,7 +84,8 @@ export default class NotificationService{
                     trip_name: bookData.trips.name,
                     date: bookData.day,
                     persons: bookData.persons,
-                }
+                },
+                language: bookData.lang || "ar"
             }
         }
         

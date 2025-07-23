@@ -6,14 +6,14 @@ export default function formatPrice(amount, currency = "EGP") {
     currency = "EGP";
   }
 
-  console.log("Currency", currency, "Amount", amount)
-  // Convert amount using exchange rate
-  const priceInCurrency = amount * (exchangeRates[currency] || 1);
+  // Convert amount using exchange rate and round it
+  const priceInCurrency = Math.round(amount * (exchangeRates[currency] || 1));
 
   // Format the currency string
   return new Intl.NumberFormat(currency === "USD" ? "en-US" : "en-EG", {
     style: "currency",
     currency,
     minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(priceInCurrency);
 }

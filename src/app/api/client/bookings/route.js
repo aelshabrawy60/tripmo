@@ -18,7 +18,7 @@ export async function POST(request) {
 
     //
     try {
-        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user", offset, client_id);
+        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user", offset, client_id, lang);
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
@@ -162,7 +162,13 @@ export async function DELETE(request) {
 
             if (canRefund) {
                 // Attempt refund process
-                const refundAmount = booking.deposite_price - calcCancelationFees(booking.deposite_price)
+                let refundAmount = booking.deposite_price - calcCancelationFees(booking.deposite_price)
+
+                if(refundAmount == booking.deposite_price){
+                    // the refund amount is the same as deposite price /// we will refund the full order
+                    refundAmount = null
+                }
+
                 try {
                     await initRefund(bookingIdInt, refundAmount);
                 } catch (refundError) {

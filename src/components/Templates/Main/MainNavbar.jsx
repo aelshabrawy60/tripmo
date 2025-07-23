@@ -48,7 +48,6 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale }) {
             <CurrencySwitcher/>
           </div>
 
-         
         </div>
       </div>
 

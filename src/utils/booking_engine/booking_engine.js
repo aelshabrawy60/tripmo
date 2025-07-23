@@ -86,7 +86,7 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, Trip
 }
 
 
-export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, timeZone = 0, client_id = null) { 
+export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, timeZone = 0, client_id = null, lang = "ar") { 
 
     if(isDayInPast(date)){
         return { success: false, message: "Cannot book a trip in the past." };
@@ -120,6 +120,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
             can_canceled_until: cancel_deadline,
             status: deposit > 0 && user_role != "admin" ? "pending" : "active",
             client_id: client_id,
+            lang
         }])
         .select('*')
         .single();
