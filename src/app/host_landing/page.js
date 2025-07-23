@@ -145,13 +145,10 @@ const TravelProviderLanding = () => {
         answer: "نقبل الأفراد والشركات."
     },
     {
-        question: "كم تبلغ العمولة؟",
-        answer: `العمولة تعتمد على قيمة الحجز:
-    - 20٪ إذا كانت قيمة الحجز أقل من 2000 جنيه.
-    - 15٪ إذا كانت بين 2000 و8000 جنيه.
-    - 10٪ إذا تجاوزت 8000 جنيه.
-    يتم خصم العمولة تلقائيًا من المبلغ المدفوع.`
+      question: "كم تبلغ العمولة؟",
+      answer: `العمولة تعتمد على قيمة الحجز:\n- 20٪ إذا كانت قيمة الحجز أقل من 2000 جنيه.\n- 15٪ إذا كانت بين 2000 و8000 جنيه.\n- 10٪ إذا تجاوزت 8000 جنيه.\nيتم خصم العمولة تلقائيًا من المبلغ المدفوع.`
     },
+
     {
         question: "هل يمكنني تعديل الرحلات بعد النشر؟",
         answer: "نعم، يمكنك تعديل أي تفاصيل مثل السعر، التاريخ، والوصف من لوحة التحكم في أي وقت."
@@ -179,8 +176,8 @@ const TravelProviderLanding = () => {
   return (
     <>
     <MainLayout>
-    <MainNavbar pages={pages} />
-      <HostHero 
+    <MainNavbar pages={pages} type={1}/>
+      <HostHero
         signinUrl={signinUrlWithUTM}
         onGoogleSignIn={handleGoogleSignIn}
         isGoogleSignInLoading={isGoogleSignInLoading}
@@ -350,7 +347,7 @@ const TravelProviderLanding = () => {
                   <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
                     openFaq === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                   }`}>
-                    <div className="px-6 pb-6 text-gray-600 leading-relaxed text-lg">
+                    <div className="px-6 pb-6 text-gray-600 leading-relaxed text-lg whitespace-pre-line">
                       {faq.answer}
                     </div>
                   </div>
