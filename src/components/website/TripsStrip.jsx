@@ -116,7 +116,7 @@ function TripsStrip({ tripsData , locale}) {
   }
 
   return (
-    <div className="relative w-full py-6" dir="rtl">
+    <div className="relative w-full py-6">
       {/* Scrollable Container */}
       <div 
         ref={scrollContainerRef}
