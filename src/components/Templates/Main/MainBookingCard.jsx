@@ -117,14 +117,14 @@ function MainBookingCard({ tripData, locale }) {
             <div className="space-y-2 mt-3">
               <div className="flex justify-between">
                 <span className="font-bold">{t.totalPrice}</span>
-                <span className="font-bold text-blue-600">
+                <span className="font-bold text-blue-600 text-xl">
                   {formatPrice(totalPrice, Currency)}
                 </span>
               </div>
 
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">{t.deposit}</span>
-                <span className="font-medium">
+                <span className="font-bold text-lg">
                   {formatPrice(depositPrice, Currency)}
                 </span>
               </div>

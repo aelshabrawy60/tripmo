@@ -8,7 +8,7 @@ export const pages = [
   { 
     name: {
       "ar":'انضم كمقدم خدمات', 
-      "en": 'become a supplier'
+      "en": 'Become a supplier'
     },
     link: `https://host.rehlanow.com` 
   },
@@ -18,7 +18,7 @@ export const footerPages = [
   { 
     name: {
       "ar":'انضم كمقدم خدمات', 
-      "en": 'become a supplier'
+      "en": 'Become a supplier'
     }
     , link: `https://host.rehlanow.com` 
   },
