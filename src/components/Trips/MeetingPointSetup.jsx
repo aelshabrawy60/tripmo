@@ -2,8 +2,8 @@ import { useEffect, useState, useCallback } from "react"
 import MapPointSelector from "./MapPointSelector"
 import { Check, Info, MapPin } from "lucide-react"
 
-function MeetingPointSetup({ onEdit }) {
-  const [data, setData] = useState({
+function MeetingPointSetup({ onEdit, initialData }) {
+  const [data, setData] = useState(initialData || {
     "type": "meeting-point",
     "location": {},
     "notes": ""
@@ -53,6 +53,7 @@ function MeetingPointSetup({ onEdit }) {
         {/* Toggle Map Selector */}
         <div className="mb-4">
           <button
+            type="button"
             onClick={() => setShowMapSelector(!showMapSelector)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
@@ -70,7 +71,7 @@ function MeetingPointSetup({ onEdit }) {
             <MapPointSelector 
               onLocationSelect={handleLocationSelect}
               initialLocation={
-                data.location.latitude && data.location.longitude 
+                data.location?.latitude && data.location?.longitude 
                   ? { lat: parseFloat(data.location.latitude), lng: parseFloat(data.location.longitude) }
                   : null
               }

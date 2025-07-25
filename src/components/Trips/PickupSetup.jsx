@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { MapPin, Info } from 'lucide-react'
 
-function PickupSetup({onEdit}) {
-  const [data, setData] = useState({
+function PickupSetup({onEdit, initialData}) {
+  const [data, setData] = useState(initialData || {
     "type": "pickup",
     "description": null
   })

@@ -78,14 +78,6 @@ export default function MapPointSelector({ onLocationSelect, initialLocation = n
     setIsSearching(false)
     }
 
-  const copyCoordinates = () => {
-    const coords = `${selectedPoint.lat.toFixed(6)}, ${selectedPoint.lng.toFixed(6)}`
-    navigator.clipboard.writeText(coords).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
-
   return (
     <div className="w-full max-w-2xl mx-auto">
       {/* Search */}

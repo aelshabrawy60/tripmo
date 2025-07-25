@@ -12,6 +12,7 @@ import TripCancellationPolicyEditor from "@/components/Trips/TripCancellationPol
 import ImgUploader from "@/components/Trips/ImgUploader";
 import LoadingCirc from "@/components/Loading/LoadingCirc";
 import TripVisibilityToggle from "@/components/Trips/TripVisibilityToggle";
+import StartLocationStep from "@/components/Trips/TripCreation/StartLocationStep";
 
 export default function TripDetailPage({ params }) {
     const { id: tripId } = React.use(params);
@@ -148,6 +149,10 @@ export default function TripDetailPage({ params }) {
     }
   }
 
+  function handleStartLocationChange(location){
+    setEditData((prev) => ({ ...prev, start_location: location.start_location }));
+  }
+
   const handleImageChange = (imgs) => {
     setImages(imgs)
   };
@@ -218,6 +223,7 @@ export default function TripDetailPage({ params }) {
         cancellation_policy: editData.cancellation_policy || "",
         depature_city: editData.depature_city.id,
         dest_city: editData.dest_city.id,
+        start_location: editData.start_location,
       };
       
       // Add specific fields based on availability type
@@ -419,6 +425,14 @@ export default function TripDetailPage({ params }) {
               وجهة الرحلة*
             </label>
             <CityChooser  defaultCity={editData.dest_city} onChange={handleDestCityChange}/>
+          </div>
+
+          {/* Start Location */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              موقع بدأ الرحلة*
+            </label>
+            <StartLocationStep tripData={editData} onUpdateTripData={handleStartLocationChange} errors={errors} onClearErrors={() => {}} />
           </div>
 
           {/* Max Clients */}

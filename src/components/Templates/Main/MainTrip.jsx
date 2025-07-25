@@ -45,6 +45,7 @@ function MainTrip({tripData, locale}) {
               groupId={tripData.group_id}
               depature_city={locale == "en"? tripData.depature_city.name_en : tripData.depature_city.name}
               dest_city={locale == "en"? tripData.dest_city.name_en : tripData.dest_city.name}
+              startLocation={tripData?.start_location}
               locale={locale}
             />
           </div>
