@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import BasicInfoStep from "./TripCreation/BasicInfoStep";
 import LocationStep from "./TripCreation/LocationStep";
+import StartLocationStep from "./TripCreation/StartLocationStep";
 import AvailabilityStep from "./TripCreation/AvailabilityStep";
 import PricingStep from "./TripCreation/PricingStep";
 import ImagesStep from "./TripCreation/ImagesStep";
@@ -13,10 +14,11 @@ import ReviewStep from "./TripCreation/ReviewStep";
 const STEPS = [
   { id: 1, title: "المعلومات الأساسية", component: BasicInfoStep },
   { id: 2, title: "المواقع", component: LocationStep },
-  { id: 3, title: "التواريخ المتاحة", component: AvailabilityStep },
-  { id: 4, title: "الأسعار والإلغاء", component: PricingStep },
-  { id: 5, title: "صور الرحلة", component: ImagesStep },
-  { id: 6, title: "مراجعة وإنشاء", component: ReviewStep },
+  { id: 3, title: "نقطة البدء", component: StartLocationStep },
+  { id: 4, title: "التواريخ المتاحة", component: AvailabilityStep },
+  { id: 5, title: "الأسعار والإلغاء", component: PricingStep },
+  { id: 6, title: "صور الرحلة", component: ImagesStep },
+  { id: 7, title: "مراجعة وإنشاء", component: ReviewStep },
 ];
 
 export default function TripCreationWizard({ groupId }) {
@@ -37,6 +39,7 @@ export default function TripCreationWizard({ groupId }) {
     group_id: groupId || "",
     depature_city: null,
     dest_city: null,
+    start_location: null,
   });
   const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
@@ -78,7 +81,13 @@ export default function TripCreationWizard({ groupId }) {
         if (!tripData.dest_city) newErrors.dest_city = "وجهة الرحلة مطلوبة";
         break;
 
-      case 3: // Availability
+      case 3: // Start Location
+        if (!tripData.start_location || !tripData.start_location.type) {
+          newErrors.start_location = "من فضلك اختر نوع موقع الأنطلاق";
+        }
+        break;
+
+      case 4: // Availability
         if (tripData.availability_type === "fixed" && !tripData.available_day) {
           newErrors.available_day = "من فضلك اختر يوم الرحلة";
         }
@@ -98,7 +107,7 @@ export default function TripCreationWizard({ groupId }) {
         }
         break;
 
-      case 4: // Pricing
+      case 5: // Pricing
         if (!tripData.pricing || Object.keys(tripData.pricing).length === 0) {
           newErrors.pricing = "معلومات الأسعار مطلوبة";
         }
@@ -107,7 +116,7 @@ export default function TripCreationWizard({ groupId }) {
         }
         break;
 
-      case 5: // Images
+      case 6: // Images
         if (!images || images.length === 0) {
           newErrors.images = "يجب إضافة صورة واحدة على الأقل";
         }
@@ -148,6 +157,7 @@ export default function TripCreationWizard({ groupId }) {
         cancellation_policy: tripData.cancellation_policy,
         depature_city: tripData.depature_city,
         dest_city: tripData.dest_city,
+        start_location: tripData.start_location,
       };
 
       if (tripData.availability_type === "fixed") {
@@ -200,7 +210,7 @@ export default function TripCreationWizard({ groupId }) {
     <div className="max-w-2xl mx-auto p-3 sm:p-4">
       {/* Progress Bar */}
       <div className="mb-6 md:mb-8">
-        <div className="flex items-start justify-between mb-3 space-x-1 sm:space-x-2">
+        <div className="md:flex hidden items-start justify-between mb-3 space-x-1 sm:space-x-2">
           {STEPS.map((step) => (
             <div key={step.id} className="flex flex-col items-center flex-1 min-w-0">
               <div
@@ -261,7 +271,7 @@ export default function TripCreationWizard({ groupId }) {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-4">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 sm:gap-4">
         <button
           type="button"
           onClick={handlePrevious}
@@ -269,7 +279,7 @@ export default function TripCreationWizard({ groupId }) {
           className={`w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-2 rounded-md text-sm sm:text-base font-medium transition-colors duration-150 ${
             currentStep === 1
               ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-gray-600 text-white hover:bg-gray-700"
+              : "bg-gray-400 text-white hover:bg-gray-700"
           }`}
         >
           السابق
