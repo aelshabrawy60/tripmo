@@ -90,6 +90,11 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
     setErrors(newErrors)
 
     // Process and upload valid files
+    const uploadPromises = []
+    const uploadedUrls = []
+
+    onUploading(true)
+
     for (const file of validFiles) {
       const fileId = uuidv4()
       
@@ -111,9 +116,13 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
         const formData = new FormData()
         formData.append('file', compressedFile)
 
-        onUploading(true)
-        await uploadImageWithProgress(fileId, filePath, formData)
-        onUploading(false)
+        // Create upload promise
+        const uploadPromise = uploadImageWithProgress(fileId, filePath, formData)
+        uploadPromises.push(uploadPromise)
+        
+        // Wait for this upload to complete and collect the URL
+        const uploadedUrl = await uploadPromise
+        uploadedUrls.push(uploadedUrl)
 
       } catch (error) {
         console.error('Error processing file:', error)
@@ -123,9 +132,19 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
           delete newCompressing[fileId]
           return newCompressing
         })
-        onUploading(false)
       }
     }
+
+    // Update state with all uploaded images at once
+    if (uploadedUrls.length > 0) {
+      setImgs(prev => {
+        const newImgs = [...prev, ...uploadedUrls]
+        onUpload(newImgs) // Call onUpload with the complete array
+        return newImgs
+      })
+    }
+
+    onUploading(false)
 
     // Clear file input
     if (fileInputRef.current) {
@@ -155,19 +174,17 @@ function ImgUploader({ intitImgs = [], onUpload, groupId, onUploading }) {
           if (xhr.status === 200) {
             try {
               const response = JSON.parse(xhr.responseText)
-              const newImgs = [...imgs, response.url]
-              setImgs(newImgs)
-              onUpload(newImgs)
-              resolve()
+              // Return the URL instead of updating state here
+              resolve(response.url)
             } catch (err) {
               console.error('Invalid JSON response', err)
               setErrors(prev => [...prev, 'فشل الرفع: استجابة غير صحيحة'])
-              reject()
+              reject(err)
             }
           } else {
             console.error('Upload failed:', xhr.responseText)
             setErrors(prev => [...prev, 'فشل الرفع: خطأ في الخادم'])
-            reject()
+            reject(new Error('Upload failed'))
           }
         }
       }
