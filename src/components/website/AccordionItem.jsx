@@ -54,9 +54,9 @@ const AccordionItem = ({
   return (
     <div
       className={`
-        group relative overflow-hidden rounded-md border transition-all duration-300 ease-out
+        group relative overflow-hidden rounded-md border-b transition-all duration-300 ease-out
         ${isOpen ? currentVariant.containerOpen : currentVariant.container}
-        ${isHovered && !isOpen ? 'transform scale-[1.02]' : ''}
+        ${isHovered && !isOpen ? 'transform scale-[1]' : ''}
         ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
         ${className}
       `}

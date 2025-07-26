@@ -47,6 +47,8 @@ function MainTrip({tripData, locale}) {
               dest_city={locale == "en"? tripData.dest_city.name_en : tripData.dest_city.name}
               startLocation={tripData?.start_location}
               locale={locale}
+              policy={tripData.cancellation_policy}
+              duration={tripData.duration}
             />
           </div>
           

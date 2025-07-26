@@ -13,6 +13,7 @@ import ImgUploader from "@/components/Trips/ImgUploader";
 import LoadingCirc from "@/components/Loading/LoadingCirc";
 import TripVisibilityToggle from "@/components/Trips/TripVisibilityToggle";
 import StartLocationStep from "@/components/Trips/TripCreation/StartLocationStep";
+import TripDurationSetter from "@/components/Trips/TripDurationSetter";
 
 export default function TripDetailPage({ params }) {
     const { id: tripId } = React.use(params);
@@ -153,6 +154,10 @@ export default function TripDetailPage({ params }) {
     setEditData((prev) => ({ ...prev, start_location: location.start_location }));
   }
 
+  function handleDurationChange(duration){
+    setEditData((prev) => ({ ...prev, duration: duration }));
+  }
+
   const handleImageChange = (imgs) => {
     setImages(imgs)
   };
@@ -224,6 +229,7 @@ export default function TripDetailPage({ params }) {
         depature_city: editData.depature_city.id,
         dest_city: editData.dest_city.id,
         start_location: editData.start_location,
+        duration: editData.duration,
       };
       
       // Add specific fields based on availability type
@@ -434,6 +440,8 @@ export default function TripDetailPage({ params }) {
             </label>
             <StartLocationStep tripData={editData} onUpdateTripData={handleStartLocationChange} errors={errors} onClearErrors={() => {}} />
           </div>
+
+          <TripDurationSetter onEdit={handleDurationChange} initialValue={editData.duration} />
 
           {/* Max Clients */}
           <div>
@@ -673,6 +681,17 @@ export default function TripDetailPage({ params }) {
                         ) : null;
                       })}
                     </div>
+                  </div>
+                )}
+
+                {tripData.duration && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-1">مدة الرحلة</h3>
+                    <p className="text-gray-600">
+                      {tripData.duration >= 24
+                        ? `${tripData.duration / 24} يوم`
+                        : `${tripData.duration} ساعة`}
+                    </p>
                   </div>
                 )}
               </div>

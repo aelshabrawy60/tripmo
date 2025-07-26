@@ -1,3 +1,5 @@
+import TripDurationSetter from "../TripDurationSetter";
+
 // components/steps/AvailabilityStep.jsx
 export default function AvailabilityStep({ tripData, errors, onUpdateTripData, onClearErrors }) {
   const weekDays = [
@@ -68,6 +70,7 @@ export default function AvailabilityStep({ tripData, errors, onUpdateTripData, o
     has_specific_time_period: tripData.has_specific_time_period || false,
     start_date: tripData.start_date || null,
     end_date: tripData.end_date || null,
+    duration: tripData.duration || null
   };
 
 
@@ -215,6 +218,15 @@ export default function AvailabilityStep({ tripData, errors, onUpdateTripData, o
           </div>
         </div>
       )}
+      <TripDurationSetter 
+        onEdit={(hours) => {
+          onUpdateTripData({ duration: hours });
+          if (errors.duration) {
+            onClearErrors("duration");
+          }
+        }} 
+        initialValue={currentTripData.duration}
+      />
     </div>
   );
 }

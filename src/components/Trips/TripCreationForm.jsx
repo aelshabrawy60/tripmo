@@ -158,6 +158,7 @@ export default function TripCreationWizard({ groupId }) {
         depature_city: tripData.depature_city,
         dest_city: tripData.dest_city,
         start_location: tripData.start_location,
+        duration: tripData.duration
       };
 
       if (tripData.availability_type === "fixed") {

@@ -48,6 +48,9 @@ const InlineCancelationPolicy = ({ policy, locale }) => {
 
   const content = getPolicyContent();
 
+  if(policy?.type == 'no_refund'){
+    return null
+  }
   return (
     <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md border ${content.borderColor} ${content.bgColor}`}>
       {content.icon}
