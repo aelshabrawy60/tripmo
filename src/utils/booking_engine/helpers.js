@@ -32,7 +32,7 @@ export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, ed
         .select('*')
         .eq('bookable_id', tripId)
         .eq('day', date)
-        .or(`status.eq.active,and(status.eq.pending,created_at.gte.${tenMinutesAgo})`)
+        .or(`status.eq.active,and(status.eq.pending,created_at.gte.${tenMinutesAgo})`) // active booking and holded spots in the payment process yet
 
     if (error) {
         console.error("Error fetching booking data:", error);

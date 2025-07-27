@@ -6,14 +6,21 @@ import ProfileCard from '@/components/website/ProfileCard'
 import { Bus, BusFront, Clock } from 'lucide-react'
 import React, { useState } from 'react'
 
-function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration}) {
+function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration, translation}) {
   const [isExpanded, setIsExpanded] = useState(false)
   const MAX_LENGTH = 300 // Adjust this value as needed
   
+
+  about = getTranslatedAbout(about, translation, locale) 
+  name = getTranslatedName(name, translation, locale)
+  const pickupNote = getTranslatedPickUpNote(startLocation?.description, translation, locale)
+  const meetingPointNote = getTranslatedMeetPointNotes(startLocation?.notes, translation, locale)
+
   const shouldShowReadMore = about && about.length > MAX_LENGTH
   const displayText = shouldShowReadMore && !isExpanded 
     ? about.substring(0, MAX_LENGTH) + '...'
     : about
+
 
   return (
     <div>
@@ -46,7 +53,7 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
             <BusFront size={25}/>
             <div>
               <div className='font-medium mb-2'> {locale == "en"? "Pickup included" : "متاح استقبالك من مكان اقامتك"}</div>
-              <div className='text-sm text-gray-600'>{startLocation.description}</div>
+              <div className='text-sm text-gray-600'>{pickupNote}</div>
             </div>
           </div>
         :
@@ -76,7 +83,7 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
               >
                 <PointMap meetingPoint={startLocation.location}/>
                 {
-                  startLocation?.notes ? <div className='mt-4'>{startLocation.notes}</div> : null
+                  startLocation?.notes ? <div className='mt-4'>{meetingPointNote}</div> : null
                 }
               </AccordionItem>
             :
@@ -95,3 +102,45 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
 }
 
 export default MainTripDetails
+
+
+function getTranslatedAbout(about, translation, locale) {
+  try {
+    if (translation.description.main_lang !== locale) {
+      return translation.description.translation?.[locale] || about
+    }
+  } catch (e) {
+  }
+  return about
+}
+
+function getTranslatedPickUpNote(note, translation, locale) {
+  try {
+    if (translation.pickup_note.main_lang !== locale) {
+      return translation.pickup_note.translation?.[locale] || note
+    }
+  } catch (e) {
+  }
+  return note
+}
+
+export function getTranslatedName(name, translation, locale) {
+  try {
+    if (translation.name.main_lang !== locale) {
+      return translation.name.translation?.[locale] || name
+    }
+  } catch (e) {
+  }
+  return name
+}
+
+function getTranslatedMeetPointNotes(note, translation, locale) {
+  try {
+    if (translation.meeting_point_note.main_lang !== locale) {
+      return translation.meeting_point_note.translation?.[locale] || note
+    }
+  } catch (e) {
+  }
+  return note
+}
+

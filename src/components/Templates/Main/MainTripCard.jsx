@@ -4,6 +4,7 @@ import Image from 'next/image';
 import React from 'react';
 import formatPrice from '@/utils/currency/PriceFormate';
 import Cookies from 'js-cookie';
+import { getTranslatedName } from './MainTripDetails';
 
 function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
   const {
@@ -19,12 +20,14 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
     rates_count,
     dest,
     depature,
+    translation
   } = tripData;
 
   const Currency = Cookies.get('currency');
   const firstImage = images && images.length > 0 ? images[0] : null;
   const ratingAverage = rates_sum / rates_count;
   const formattedPrice = formatPrice(pricing.PersonPrice, Currency)
+  const name_ = getTranslatedName(name, translation, locale)
 
   return (
     <Link href={`/trips/${slug}`} className="block">
@@ -34,7 +37,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
           {firstImage ? (
             <Image
               src={firstImage}
-              alt={name}
+              alt={name_}
               fill
               sizes="(max-width: 768px) 100vw, 400px"
               className="object-cover transition-transform duration-500 hover:scale-105"
@@ -67,7 +70,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
           <div className="flex flex-col justify-between items-start">
             <div>
               <h2 className="text-md font-bold text-gray-800 mb-2">
-                {name}
+                {name_}
               </h2>
             </div>
             {ratingAverage ? (

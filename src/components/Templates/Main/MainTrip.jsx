@@ -49,6 +49,7 @@ function MainTrip({tripData, locale}) {
               locale={locale}
               policy={tripData.cancellation_policy}
               duration={tripData.duration}
+              translation={tripData.translation}
             />
           </div>
           

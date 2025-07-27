@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@/utils/supabase/service";
+import { translateTrip } from "@/utils/translation/translateTrip";
 
 function fallbackArabicSlug(text) {
   if (!text) return '';
@@ -30,10 +31,18 @@ async function generateSlug(title) {
 export async function createTrip(trip) {
   console.log("Creating trip with data:", trip);
   
+  let translation = null
+
+  try{
+    translation = await translateTrip(trip)
+  }catch(error){
+    console.error("error translating trip", error)
+  }
+
   // Step 1: Insert the trip (without slug)
   const { data: createdTrip, error: insertError } = await supabaseAdmin
     .from("trips")
-    .insert([{ ...trip }])
+    .insert([{ ...trip, translation }])
     .select("*")
     .single();
 
@@ -79,9 +88,17 @@ export async function deleteTrip(tripId) {
 }
 
 export async function updateTrip(tripId, updatedTrip, groupId) {
+  let translation = null;
+
+  try {
+    translation = await translateTrip(updatedTrip);
+  } catch (error) {
+    console.error("Error translating trip", error);
+  }
+
   const { data, error } = await supabaseAdmin
     .from("trips")
-    .update(updatedTrip)
+    .update({ ...updatedTrip, translation })
     .eq("id", tripId)
     .eq("group_id", groupId)
     .select(`
