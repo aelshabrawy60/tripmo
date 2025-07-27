@@ -1,3 +1,5 @@
+"use client"
+
 import DetailedCancelationPolicy from '@/components/Trips/DetaildCancellationPolicy'
 import FromTo from '@/components/Trips/FromTo'
 import AccordionItem from '@/components/website/AccordionItem'
