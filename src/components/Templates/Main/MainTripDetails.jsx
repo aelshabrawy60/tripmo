@@ -8,16 +8,13 @@ import ProfileCard from '@/components/website/ProfileCard'
 import { Bus, BusFront, Clock, Languages, Eye, EyeOff } from 'lucide-react'
 import React, { useState } from 'react'
 
-function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration, translation}) {
+function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration, translation, guideLangs}) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [showOriginalName, setShowOriginalName] = useState(false)
-  const [showOriginalAbout, setShowOriginalAbout] = useState(false)
-  const [showOriginalPickup, setShowOriginalPickup] = useState(false)
-  const [showOriginalMeetingPoint, setShowOriginalMeetingPoint] = useState(false)
+  const [showOriginal, setShowOriginal] = useState(false)
   
   const MAX_LENGTH = 300 // Adjust this value as needed
   
-  // Get translated content and check if translation occurred
+  // Get translated content and check if any translation occurred
   const translatedAbout = getTranslatedAbout(about, translation, locale)
   const isAboutTranslated = translatedAbout !== about && translation?.description?.main_lang !== locale
   
@@ -30,52 +27,58 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
   const meetingPointNote = getTranslatedMeetPointNotes(startLocation?.notes, translation, locale)
   const isMeetingPointTranslated = meetingPointNote !== startLocation?.notes && translation?.meeting_point_note?.main_lang !== locale
 
+  // Check if any content is translated
+  const hasTranslatedContent = isNameTranslated || isAboutTranslated || isPickupTranslated || isMeetingPointTranslated
+
   // Determine what text to show based on translation state
-  const displayName = showOriginalName ? name : translatedName
-  const displayAbout = showOriginalAbout ? about : translatedAbout
-  const displayPickupNote = showOriginalPickup ? startLocation?.description : pickupNote
-  const displayMeetingPointNote = showOriginalMeetingPoint ? startLocation?.notes : meetingPointNote
+  const displayName = showOriginal ? name : translatedName
+  const displayAbout = showOriginal ? about : translatedAbout
+  const displayPickupNote = showOriginal ? startLocation?.description : pickupNote
+  const displayMeetingPointNote = showOriginal ? startLocation?.notes : meetingPointNote
 
   const shouldShowReadMore = displayAbout && displayAbout.length > MAX_LENGTH
   const displayText = shouldShowReadMore && !isExpanded 
     ? displayAbout.substring(0, MAX_LENGTH) + '...'
     : displayAbout
 
-  // Translation indicator component
-  const TranslationIndicator = ({ isTranslated, showOriginal, onToggle, originalLang }) => {
-    if (!isTranslated) return null
+  // Single translation indicator component
+  const TranslationIndicator = () => {
+    if (!hasTranslatedContent) return null
     
     return (
-      <div className="inline-flex items-center gap-1 ml-2">
-        <Languages size={16} className="text-blue-500" />
-        <button
-          onClick={onToggle}
-          className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 underline underline-offset-2 cursor-pointer focus:outline-none"
-          title={showOriginal 
-            ? (locale === "en" ? "Show translation" : "عرض الترجمة")
-            : (locale === "en" ? "Show original" : "عرض النص الأصلي")
-          }
-        >
-          {showOriginal ? <EyeOff size={12} /> : <Eye size={12} />}
-          {showOriginal 
-            ? (locale === "en" ? "Hide original" : "إخفاء الأصلي")
-            : (locale === "en" ? "Show original" : "عرض الأصلي")
-          }
-        </button>
+      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Languages size={16} className="text-blue-400" />
+            <span className="text-sm text-blue-500 font-medium">
+              {locale === "en" ? "Content has been translated" : "تم ترجمة المحتوى"}
+            </span>
+          </div>
+          <button
+            onClick={() => setShowOriginal(!showOriginal)}
+            className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-600 underline underline-offset-2 cursor-pointer focus:outline-none px-2 py-1 rounded hover:bg-blue-100"
+            title={showOriginal 
+              ? (locale === "en" ? "Show translation" : "عرض الترجمة")
+              : (locale === "en" ? "Show original" : "عرض النص الأصلي")
+            }
+          >
+            {showOriginal ? <EyeOff size={12} /> : <Eye size={12} />}
+            {showOriginal 
+              ? (locale === "en" ? "Show translation" : "عرض الترجمة")
+              : (locale === "en" ? "Show original" : "عرض الأصلي")
+            }
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
     <div>
+        <TranslationIndicator />
+        
         <div className='text-2xl md:text-3xl font-bold gap-2 mb-2 mt-0 flex items-center flex-wrap'>
           {displayName}
-          <TranslationIndicator 
-            isTranslated={isNameTranslated}
-            showOriginal={showOriginalName}
-            onToggle={() => setShowOriginalName(!showOriginalName)}
-            originalLang={translation?.name?.main_lang}
-          />
         </div>
         
         <div className='mb-2'>
@@ -110,16 +113,31 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
               </div>
               <div className='text-sm text-gray-600 flex gap-2 items-start flex-wrap'>
                 {displayPickupNote}
-                <TranslationIndicator 
-                  isTranslated={isPickupTranslated}
-                  showOriginal={showOriginalPickup}
-                  onToggle={() => setShowOriginalPickup(!showOriginalPickup)}
-                  originalLang={translation?.pickup_note?.main_lang}
-                />
               </div>
             </div>
           </div>
         :
+          null
+        }
+
+        {
+          guideLangs && guideLangs.length > 0 ?
+          <div className='flex gap-3 mt-4'>
+            <Languages size={25}/>
+            <div>
+              <div className='font-medium mb-2 flex items-center flex-wrap'>
+                {locale == "en"? "Guide languages" : "لغات المرشدين"}
+              </div>
+              <div className='text-sm text-gray-600 flex gap-2 items-start flex-wrap'>
+                {guideLangs.map((lang, index) => (
+                  <span key={index} className='bg-gray-100 text-blue-500 px-2 py-1 text-xs'>
+                    {lang}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+          :
           null
         }
 
@@ -137,12 +155,6 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
                 }
               </button>
             )}
-            <TranslationIndicator 
-              isTranslated={isAboutTranslated}
-              showOriginal={showOriginalAbout}
-              onToggle={() => setShowOriginalAbout(!showOriginalAbout)}
-              originalLang={translation?.description?.main_lang}
-            />
           </div>
         </div>
         
@@ -157,12 +169,6 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
                   startLocation?.notes ? 
                     <div className='mt-4 flex items-start flex-wrap'>
                       {displayMeetingPointNote}
-                      <TranslationIndicator 
-                        isTranslated={isMeetingPointTranslated}
-                        showOriginal={showOriginalMeetingPoint}
-                        onToggle={() => setShowOriginalMeetingPoint(!showOriginalMeetingPoint)}
-                        originalLang={translation?.meeting_point_note?.main_lang}
-                      />
                     </div>
                   : null
                 }

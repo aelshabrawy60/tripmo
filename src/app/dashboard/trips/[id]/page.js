@@ -14,6 +14,7 @@ import LoadingCirc from "@/components/Loading/LoadingCirc";
 import TripVisibilityToggle from "@/components/Trips/TripVisibilityToggle";
 import StartLocationStep from "@/components/Trips/TripCreation/StartLocationStep";
 import TripDurationSetter from "@/components/Trips/TripDurationSetter";
+import GuideLangsSelector from "@/components/Trips/GuideLangsSelector";
 
 export default function TripDetailPage({ params }) {
     const { id: tripId } = React.use(params);
@@ -158,6 +159,10 @@ export default function TripDetailPage({ params }) {
     setEditData((prev) => ({ ...prev, duration: duration }));
   }
 
+  function handleGuideLangsChange(langs){
+    setEditData((prev) => ({ ...prev, guide_langs: langs }));
+  }
+
   const handleImageChange = (imgs) => {
     setImages(imgs)
   };
@@ -230,6 +235,7 @@ export default function TripDetailPage({ params }) {
         dest_city: editData.dest_city.id,
         start_location: editData.start_location,
         duration: editData.duration,
+        guide_langs: editData.guide_langs
       };
       
       // Add specific fields based on availability type
@@ -463,6 +469,8 @@ export default function TripDetailPage({ params }) {
               <p className="mt-1 text-sm text-red-600">{errors.max_clients}</p>
             )}
           </div>
+
+          <GuideLangsSelector initLangs={tripData.guide_langs || []} onEdit={handleGuideLangsChange}/>
           
           {/* Availability Type */}
           <div>

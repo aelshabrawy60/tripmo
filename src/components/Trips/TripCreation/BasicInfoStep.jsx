@@ -1,5 +1,6 @@
 // components/steps/BasicInfoStep.jsx
 import { useState } from "react"; // useState is not used in this component.
+import GuideLangsSelector from "../GuideLangsSelector";
 
 
 
@@ -13,12 +14,20 @@ export default function BasicInfoStep({ tripData, errors, onUpdateTripData, onCl
     }
   };
 
+  function handleLangsChange(newLangs) {
+    onUpdateTripData({ guide_langs: newLangs });
+
+    if (errors.guide_langs) {
+      onClearErrors("guide_langs");
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Trip Name */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-          العنوان*
+          الاسم*
         </label>
         <input
           type="text"
@@ -29,7 +38,7 @@ export default function BasicInfoStep({ tripData, errors, onUpdateTripData, onCl
           className={`w-full px-4 py-2 border rounded-md ${
             errors.name ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder="ادخل عنوان للرحلة"
+          placeholder="ادخل اسم للرحلة"
         />
         {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
       </div>
@@ -73,6 +82,8 @@ export default function BasicInfoStep({ tripData, errors, onUpdateTripData, onCl
           <p className="mt-1 text-sm text-red-600">{errors.max_clients}</p>
         )}
       </div>
+
+      <GuideLangsSelector onEdit={handleLangsChange}/>
     </div>
   );
 }

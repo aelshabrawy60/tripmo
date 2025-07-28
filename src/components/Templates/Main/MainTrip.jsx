@@ -50,6 +50,7 @@ function MainTrip({tripData, locale}) {
               policy={tripData.cancellation_policy}
               duration={tripData.duration}
               translation={tripData.translation}
+              guideLangs={tripData.guide_langs}
             />
           </div>
           
