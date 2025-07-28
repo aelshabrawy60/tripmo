@@ -4,7 +4,6 @@ import Image from 'next/image';
 import React from 'react';
 import formatPrice from '@/utils/currency/PriceFormate';
 import Cookies from 'js-cookie';
-import { getTranslatedName } from './MainTripDetails';
 
 function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
   const {
@@ -88,3 +87,14 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
 }
 
 export default MainTripCard;
+
+
+function getTranslatedName(name, translation, locale) {
+  try {
+    if (translation.name.main_lang !== locale) {
+      return translation.name.translation?.[locale] || name
+    }
+  } catch (e) {
+  }
+  return name
+}
