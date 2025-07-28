@@ -183,27 +183,6 @@ const TravelProviderLanding = () => {
         isGoogleSignInLoading={isGoogleSignInLoading}
       />
 
-      {/* Features Strip */}
-      <section className="py-12 bg-white/50 backdrop-blur-sm border-y border-gray-200/50 rounded-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <FloatingElement key={index} delay={index * 100}>
-                <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/50 transition-all duration-300">
-                  <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-12 h-12 rounded-lg flex items-center justify-center">
-                    <feature.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900">{feature.title}</h3>
-                    <p className="text-sm text-gray-600">{feature.description}</p>
-                  </div>
-                </div>
-              </FloatingElement>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Benefits Section */}
       <section id="benefits" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
