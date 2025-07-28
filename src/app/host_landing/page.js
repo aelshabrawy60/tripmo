@@ -432,7 +432,7 @@ const TravelProviderLanding = () => {
                   disabled={isGoogleSignInLoading}
                   className="bg-gradient-to-r from-blue-600 to-blue-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isGoogleSignInLoading ? 'جاري التسجيل...' : 'سجّل الآن كمزود رحلات'}
+                  {isGoogleSignInLoading ? 'جاري التسجيل...' : 'ابدأ مجانا'}
                   <ArrowRight className="w-6 h-6" />
                 </button>
               </div>

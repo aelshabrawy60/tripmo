@@ -119,16 +119,9 @@ function HostHero({signinUrl, onGoogleSignIn, isGoogleSignInLoading}) {
               <FloatingElement delay={400}>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-8">
                   <button onClick={onGoogleSignIn} disabled={isGoogleSignInLoading} className="group bg-tripmo-500 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isGoogleSignInLoading ? 'جاري التسجيل...' : 'سجّل رحلتك مجانًا'}
+                    {isGoogleSignInLoading ? 'جاري التسجيل...' : 'ابدأ الآن'}
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
-                </div>
-              </FloatingElement>
-
-              <FloatingElement delay={600}>
-                <div className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium">
-                  <CheckCircle className="w-4 h-4" />
-                    التسجيل مجاني 100%
                 </div>
               </FloatingElement>
             </div>
