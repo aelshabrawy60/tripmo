@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import TripVisibilityToggle from './TripVisibilityToggle';
+import { Eye } from 'lucide-react';
 
 function TripCard({ tripData }) {
   const { 
@@ -49,10 +50,14 @@ function TripCard({ tripData }) {
         <p className="text-gray-600 text-sm leading-relaxed mb-5">{shortAbout}</p>
         
         {/* Footer */}
-        <div className="mt-auto flex text-center">
+        <div className="mt-auto flex text-center items-center gap-2">
           <Link href={`/dashboard/trips/${tripData.id}`} className="bg-tripmo-500 justify-center w-full hover:bg-tripmo-400 text-white py-2 px-4 rounded-lg font-semibold flex items-center gap-2 transition-colors duration-300 text-sm group">
             عرض التفاصيل
             <span className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
+          </Link>
+          <Link href={`https://rehlanow.com/trips/${tripData.slug}`} className='text-tripmo-500 flex gap-2 items-center border py-2 text-sm px-4 rounded-lg'  target='_blank'>
+            معاينة
+            <Eye size={16} className=''/>
           </Link>
         </div>
       </div>
