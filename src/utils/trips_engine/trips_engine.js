@@ -121,3 +121,16 @@ export async function popularTrips() {
     categories: categories
   };
 }
+
+export async function getSimilarTrips(tripId) {
+  const { data, error } = await supabaseAdmin.rpc('get_similar_trips_optimized', {
+    input_trip_id: tripId
+  });
+
+  if (error) {
+    console.log("Error fetching similar trips:", error);
+    console.error("Error fetching similar trips:", error);
+    return []
+  }
+  return data || [];
+}

@@ -1,4 +1,6 @@
 import MainTripPage from "@/components/Templates/Main/MainTripPage";
+import TripsStripSection from "@/components/website/TripsStripSection";
+import { getSimilarTrips } from "@/utils/trips_engine/trips_engine";
 import { notFound } from 'next/navigation';
 
 async function fetchTripData(slug) {
@@ -95,9 +97,11 @@ export default async function Page({ params }) {
 
   const locale = params.locale
   let tripData;
+  let similarTripsData;
   
   try {
     tripData = await fetchTripData(params.tripId);
+    similarTripsData = await getSimilarTrips(tripData.id);
   } catch (error) {
     console.error('Error fetching trip data:', error);
     notFound();
@@ -121,6 +125,14 @@ export default async function Page({ params }) {
       
       {/* Main Content */}
       <MainTripPage tripData={tripData} locale={locale}/>
+      {
+        similarTripsData && similarTripsData.length > 0 && (
+          <div className="mt-10">
+            <TripsStripSection tripsData={similarTripsData} title={locale == "en"? "You might also like..." : "قد يعجبك ايضا..."} locale={locale}/>
+          </div>
+        )
+      }
+      
     </div>
   );
 }
