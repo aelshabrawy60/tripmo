@@ -29,6 +29,8 @@ import { signInWithGoogle } from "@/lib/auth-actions";
 
 const useUTMPreservation = (basePath = '/signin') => {
   const [urlWithUTM, setUrlWithUTM] = useState(basePath);
+
+
   
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -65,6 +67,8 @@ const TravelProviderLanding = () => {
   const [openFaq, setOpenFaq] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isGoogleSignInLoading, setIsGoogleSignInLoading] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
   
   const signinUrlWithUTM = useUTMPreservation('/signin');
 
@@ -155,13 +159,6 @@ const TravelProviderLanding = () => {
     },
    ];
 
-  const features = [
-    { icon: Shield, title: "أمان مضمون", description: "حماية البيانات والمدفوعات" },
-    { icon: Zap, title: "سرعة في الاستجابة", description: "دعم فني على مدار الساعة" },
-    { icon: Target, title: "استهداف دقيق", description: "وصول للعملاء المناسبين" },
-    { icon: Award, title: "جودة عالية", description: "معايير صارمة لضمان الجودة" }
-  ];
-
   const FloatingElement = ({ children, delay = 0 }) => (
     <div 
       className={`transform transition-all duration-1000 ${
@@ -172,6 +169,16 @@ const TravelProviderLanding = () => {
       {children}
     </div>
   );
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 100); // Show button if scrolled down more than 100px
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
@@ -430,15 +437,17 @@ const TravelProviderLanding = () => {
         </div>
       </section>
 
-      {/* Scroll to Top Button */}
-      <div className="fixed bottom-8 right-8 z-50">
-        <button 
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300"
-        >
-          <ArrowRight className="w-5 h-5 rotate-90" />
-        </button>
-      </div>
+      {showScrollTop && (
+        <div className="fixed bottom-8 right-8 z-50">
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300"
+          >
+            <ArrowRight className="w-5 h-5 -rotate-90" />
+          </button>
+        </div>
+      )}
+
     </MainLayout>
     <MainFooter logo={'/logo.png'} pages={footerPages} socialMedia={socialMedia} />
     </>
