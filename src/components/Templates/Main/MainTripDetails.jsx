@@ -160,11 +160,16 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
         
         <div className='mb-6 mt-10'>
           {
-            startLocation?.type == "meeting_point" && startLocation?.location?.latitude && startLocation?.location?.longitude ?
+            startLocation?.type == "meeting_point" ?
               <AccordionItem
                 title={locale == "en"? "Meeting Point" : "نقطة التجمع"}
               >
-                <PointMap meetingPoint={startLocation.location}/>
+                {
+                  startLocation?.location?.latitude && startLocation?.location?.longitude ?
+                    <PointMap meetingPoint={startLocation.location}/>
+                    :
+                    null
+                }
                 {
                   startLocation?.notes ? 
                     <div className='mt-4 flex items-start flex-wrap'>

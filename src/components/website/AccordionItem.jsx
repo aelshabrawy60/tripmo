@@ -25,7 +25,7 @@ const AccordionItem = ({
     },
     minimal: {
       container: 'bg-transparent border-slate-200 hover:border-slate-300',
-      containerOpen: 'bg-slate-50/50 border-slate-300',
+      containerOpen: '',
       title: 'text-slate-900 group-hover:text-slate-700',
       titleOpen: 'text-slate-900',
       gradient: 'from-slate-50/30 to-slate-100/30'
@@ -54,7 +54,7 @@ const AccordionItem = ({
   return (
     <div
       className={`
-        group relative overflow-hidden rounded-md border-b transition-all duration-300 ease-out
+        group relative overflow-hidden rounded-md transition-all duration-300 ease-out
         ${isOpen ? currentVariant.containerOpen : currentVariant.container}
         ${isHovered && !isOpen ? 'transform scale-[1]' : ''}
         ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
