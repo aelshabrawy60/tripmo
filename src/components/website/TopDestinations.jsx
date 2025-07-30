@@ -13,7 +13,7 @@ function TopDestinations({ destinations, title }) {
       <div className="grid gap-4">
         {/* Show only first 3 on small screens */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:hidden">
-          {destinations.slice(0, 3).map((destination, index) => (
+          {destinations.slice(0, 5).map((destination, index) => (
             <DestintaionCard key={index} data={destination} />
           ))}
         </div>

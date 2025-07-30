@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react"
 import MainTripCard from "../Templates/Main/MainTripCard"
-import { ChevronRight, ChevronLeft } from "lucide-react"
 
 function TripsStrip({ tripsData , locale}) {
   const [showLeftArrow, setShowLeftArrow] = useState(false)
@@ -132,7 +131,7 @@ function TripsStrip({ tripsData , locale}) {
             key={trip.id || index}
             className="flex-shrink-0 w-64 md:w-68 "
           >
-            <MainTripCard tripData={trip} locale={locale} />
+            <MainTripCard tripData={trip} locale={locale}/>
           </div>
         ))}
       </div>

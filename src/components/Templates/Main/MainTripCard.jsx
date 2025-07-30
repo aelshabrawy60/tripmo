@@ -90,6 +90,7 @@ export default MainTripCard;
 
 
 function getTranslatedName(name, translation, locale) {
+  
   try {
     if (translation.name.main_lang !== locale) {
       return translation.name.translation?.[locale] || name
