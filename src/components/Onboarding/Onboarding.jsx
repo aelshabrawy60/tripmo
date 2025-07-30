@@ -689,7 +689,7 @@ const ProfileOnboarding = ({profileId}) => {
                   </>
                 ) : (
                   <>
-                    {currentStep === steps.length - 2 ? 'إنهاء' : 'التالي'}
+                    {'التالي'}
                     <ChevronLeft className="w-5 h-5" />
                   </>
                 )}
