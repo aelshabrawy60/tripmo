@@ -149,7 +149,7 @@ const ProfileOnboarding = ({profileId}) => {
     {
       id: 'name',
       title: 'ما اسمك؟',
-      subtitle: 'أدخل اسمك الكامل كما تريد أن يراه العملاء',
+      subtitle: 'أدخل اسمك كما تريد أن يراه العملاء',
       icon: User,
       color: 'from-blue-500 to-cyan-500'
     },
@@ -456,7 +456,7 @@ const ProfileOnboarding = ({profileId}) => {
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="أدخل اسمك الكامل"
+                placeholder="أدخل اسمك"
                 className="w-full p-4 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all duration-200"
                 dir="rtl"
               />
