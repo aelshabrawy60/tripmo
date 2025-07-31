@@ -171,12 +171,18 @@ function HostHero({ signinUrl, onGoogleSignIn, isGoogleSignInLoading }) {
           <h3 className="text-center text-base font-semibold text-gray-500 tracking-wider">
             ينضم إلينا أفضل مزودي الخدمات السياحية في مصر
           </h3>
-          <div className="mt-8 grid grid-cols-2 gap-8 md:grid-cols-2 lg:grid-cols-2">
+          <div className="mt-8 grid grid-cols-2 gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="col-span-1 flex justify-center items-center py-2">
               <img src='/nuvago.png' width={100} className='max-w-[200px]'></img>
             </div>
             <div className="col-span-1 flex justify-center items-center py-2">
                <img src='/octoboats-logo-2.png' width={100} className='max-w-[200px] '></img>
+            </div>
+            <div className="col-span-1 flex justify-center items-center py-2">
+               <img src='/duck.png' width={100} className='max-w-[200px] '></img>
+            </div>
+            <div className="col-span-1 flex justify-center items-center py-2">
+               <img src='/pushkin.png' width={120} className='max-w-[200px] '></img>
             </div>
           </div>
         </div>
