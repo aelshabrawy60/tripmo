@@ -115,6 +115,9 @@ export default function TripCreationWizard({ groupId }) {
         if (!tripData.cancellation_policy || Object.keys(tripData.cancellation_policy).length === 0) {
           newErrors.cancellation_policy = "سياسة الإلغاء مطلوبة";
         }
+        if(tripData.pricing.PersonPrice < 10){
+          newErrors.pricing = "سعر الفرد يجب أن يكون 10 ج.م أو أكثر";
+        }
         break;
 
       case 6: // Images

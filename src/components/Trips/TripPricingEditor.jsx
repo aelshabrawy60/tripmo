@@ -203,17 +203,20 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
       <div className="mb-4">
         <div className="flex items-center mb-1">
           <PiMoney size={16} className="ml-1 text-blue-600" />
-          <label className="text-gray-700 text-xs font-medium">
+          <label className="text-gray-700 text-xs mb-1 font-medium">
             السعر للفرد
           </label>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <input
             type="text"
             className="border border-gray-200 rounded py-1 px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-right"
             value={personPrice}
             onChange={(e) => setPersonPrice(e.target.value)}
           />
+          <div className='text-sm'>
+            ج.م
+          </div>
         </div>
       </div>
       
@@ -245,7 +248,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
         </div>
         <div className="flex justify-between text-xs text-gray-500 mt-1">
           <span>{MIN_ADVANCE_PERCENTAGE}%</span> {/* Update label to 20% */}
-          <span>50%</span> {/* Consider if this middle label needs adjustment, e.g., to 60% */}
+          <span>60%</span> {/* Consider if this middle label needs adjustment, e.g., to 60% */}
           <span>100%</span>
         </div>
       </div>

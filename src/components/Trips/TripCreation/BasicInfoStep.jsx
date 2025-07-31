@@ -1,8 +1,5 @@
 // components/steps/BasicInfoStep.jsx
-import { useState } from "react"; // useState is not used in this component.
 import GuideLangsSelector from "../GuideLangsSelector";
-
-
 
 export default function BasicInfoStep({ tripData, errors, onUpdateTripData, onClearErrors }) {
   const handleInputChange = (e) => {
@@ -24,6 +21,7 @@ export default function BasicInfoStep({ tripData, errors, onUpdateTripData, onCl
 
   return (
     <div className="space-y-6">
+
       {/* Trip Name */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -57,9 +55,25 @@ export default function BasicInfoStep({ tripData, errors, onUpdateTripData, onCl
           className={`w-full px-4 py-2 border rounded-md ${
             errors.about ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder="ادخل وصف مفصل للرحلة"
+          placeholder="ادخل وصف مفصل للرحلة (تجنب إضافة معلومات الاتصال الشخصية)"
         />
         {errors.about && <p className="mt-1 text-sm text-red-600">{errors.about}</p>}
+      </div>
+
+      {/* Warning Message */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-yellow-800">
+              <strong>تحذير: </strong>لا تقم بإضافة أرقام هواتف أو معلومات اتصال شخصية في الوصف أو الصور
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Max Clients */}
