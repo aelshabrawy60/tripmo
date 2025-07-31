@@ -40,7 +40,7 @@ export default function TripCreationWizard({ groupId }) {
     depature_city: null,
     dest_city: null,
     start_location: null,
-
+    start_times: null
   });
   const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
@@ -161,6 +161,7 @@ export default function TripCreationWizard({ groupId }) {
         start_location: tripData.start_location,
         duration: tripData.duration,
         guide_langs: tripData.guide_langs || [],
+        start_times: tripData.start_times || []
       };
 
       if (tripData.availability_type === "fixed") {

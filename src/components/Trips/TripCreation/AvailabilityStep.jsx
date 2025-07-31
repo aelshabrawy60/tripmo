@@ -1,4 +1,5 @@
 import TripDurationSetter from "../TripDurationSetter";
+import TripStartTimesSelector from "../TripStartTimesSelector";
 
 // components/steps/AvailabilityStep.jsx
 export default function AvailabilityStep({ tripData, errors, onUpdateTripData, onClearErrors }) {
@@ -218,6 +219,15 @@ export default function AvailabilityStep({ tripData, errors, onUpdateTripData, o
           </div>
         </div>
       )}
+      <TripStartTimesSelector 
+        initValues={currentTripData.start_times || []} 
+        onAdd={(times) => {
+          onUpdateTripData({start_times: times})
+          if(errors.start_times){
+            onClearErrors("start_times")
+          }
+        }}
+      />
       <TripDurationSetter 
         onEdit={(hours) => {
           onUpdateTripData({ duration: hours });

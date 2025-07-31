@@ -15,6 +15,7 @@ import TripVisibilityToggle from "@/components/Trips/TripVisibilityToggle";
 import StartLocationStep from "@/components/Trips/TripCreation/StartLocationStep";
 import TripDurationSetter from "@/components/Trips/TripDurationSetter";
 import GuideLangsSelector from "@/components/Trips/GuideLangsSelector";
+import TripStartTimesSelector from "@/components/Trips/TripStartTimesSelector";
 
 export default function TripDetailPage({ params }) {
     const { id: tripId } = React.use(params);
@@ -163,6 +164,10 @@ export default function TripDetailPage({ params }) {
     setEditData((prev) => ({ ...prev, guide_langs: langs }));
   }
 
+  function handleStartTimesChange(startTimes){
+    setEditData((prev) => ({...prev, start_times: startTimes}));
+  }
+
   const handleImageChange = (imgs) => {
     setImages(imgs)
   };
@@ -235,8 +240,10 @@ export default function TripDetailPage({ params }) {
         dest_city: editData.dest_city.id,
         start_location: editData.start_location,
         duration: editData.duration,
-        guide_langs: editData.guide_langs
+        guide_langs: editData.guide_langs,
+        start_times: editData.start_times
       };
+
       
       // Add specific fields based on availability type
       if (editData.availability_type === "fixed") {
@@ -590,6 +597,11 @@ export default function TripDetailPage({ params }) {
               )}
             </div>
           )}
+
+          <TripStartTimesSelector
+            initValues={editData?.start_times || []}
+            onAdd={handleStartTimesChange}
+          />
           
           <TripPricingEditor 
             fixedDate={editData?.availability_type === "fixed"} 
