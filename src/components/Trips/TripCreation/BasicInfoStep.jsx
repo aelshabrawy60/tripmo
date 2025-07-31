@@ -27,7 +27,7 @@ export default function BasicInfoStep({ tripData, errors, onUpdateTripData, onCl
       {/* Trip Name */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-          الاسم*
+          اسم الرحلة*
         </label>
         <input
           type="text"
