@@ -11,14 +11,14 @@ import { calcCancelationFees } from "@/utils/payments/helpers";
 import { cookies } from 'next/headers';
 
 export async function POST(request) {
-    const { name, tripId, date, phone, numberOfSeats, offset, client_id, lang} = await request.json();
+    const { name, tripId, date, phone, numberOfSeats, time, offset, client_id, lang} = await request.json();
 
     const cookieStore = cookies();
     const currency = cookieStore.get('currency')?.value;
 
     //
     try {
-        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user", offset, client_id, lang);
+        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user", time , offset, client_id, lang);
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
@@ -60,6 +60,7 @@ export async function GET(request) {
     const tripId = searchParams.get("tripId");
     const date = searchParams.get("date");
     const numberOfSeats = searchParams.get("numberOfSeats");
+    const time = searchParams.get("time");
     const fetchTrip = searchParams.get("getTrip");
 
     try {
@@ -71,7 +72,7 @@ export async function GET(request) {
             console.log("data", tripData)
         }
 
-        const result = await checkBookingAvailability(tripId, date, numberOfSeats);
+        const result = await checkBookingAvailability(tripId, date, numberOfSeats, time);
 
         // calc trip price
 

@@ -7,10 +7,10 @@ import { withAuth } from "@/lib/auth";
 export const POST = withAuth(async (request) => {
     const { groupId } = request.auth;
 
-    const { name, tripId, date, phone, numberOfSeats } = await request.json();
+    const { name, tripId, date, phone, numberOfSeats, time } = await request.json();
 
     try {
-        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "admin");
+        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "admin", time);
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
@@ -26,10 +26,10 @@ export const POST = withAuth(async (request) => {
 export const PUT = withAuth(async (request) => {
     const { groupId } = request.auth;
 
-    const { bookingId, tripId, date, numberOfSeats } = await request.json();
+    const { bookingId, tripId, date, numberOfSeats, time } = await request.json();
 
     try {
-        const result = await editBooking(bookingId, tripId, date, numberOfSeats, "admin");
+        const result = await editBooking(bookingId, tripId, date, numberOfSeats, "admin", time);
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });

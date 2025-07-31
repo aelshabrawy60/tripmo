@@ -23,7 +23,7 @@ export function isDayInPast(date) {
     return targetDate < today;
 }
 
-export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, edit = false, editingBookingId = null) {
+export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, edit = false, editingBookingId = null, time = null) {
     // Calculate the timestamp for 10 minutes ago
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
     

@@ -7,7 +7,6 @@ import React from 'react'
 function page() {
   return (
     <div className='max-w-md'>
-      <TripStartTimesSelector onAdd={()=> null}/>
     </div>
   )
 }

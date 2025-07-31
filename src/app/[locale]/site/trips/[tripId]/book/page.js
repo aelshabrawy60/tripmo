@@ -16,6 +16,7 @@ function BookingPage() {
   const searchParams = useSearchParams();
   const date = searchParams.get('date');
   const numberOfSeats = searchParams.get('seats') || '1';
+  const time = searchParams.get('time') || null;
 
   const [pricing, setPricing] = useState(null);
   const [tripData, setTripData] = useState(null);
@@ -74,7 +75,7 @@ function BookingPage() {
       const formattedDate = date;
 
       const response = await fetch(
-        `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${numberOfSeats}&getTrip=true`
+        `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${numberOfSeats}&getTrip=true&time=${time}`
       );
 
       if (!response.ok) {
@@ -160,6 +161,7 @@ function BookingPage() {
       phone: clientData.clientPhone,
       numberOfSeats: numberOfSeats,
       date: date || new Date().toISOString().split('T')[0],
+      time: time || null,
       tripId: tripId,
       offset: offset,
       client_id: clientData.clientId,

@@ -51,11 +51,12 @@ export async function getBookingPrice(tripId, date, numberOfSeats, TripData = nu
     };
 }
 
-export async function checkBookingAvailability(tripId, date, numberOfSeats, TripData = null, edit = false, editingBookingId = null) {
+export async function checkBookingAvailability(tripId, date, numberOfSeats, time = null, TripData = null, edit = false, editingBookingId = null) {
     if (!TripData) {
         TripData = await fetchTripData(tripId);
     }
 
+    console.log("cheking for time", time)
     if (!TripData) {
         return { success: false, message: "Trip not found." };
     }
@@ -77,7 +78,7 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, Trip
         }
     }
 
-    const seatsAvailable = await isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, edit, editingBookingId);
+    const seatsAvailable = await isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, edit, editingBookingId, time);
     if (!seatsAvailable) {
         return { success: false, message: "Not enough seats available." };
     }
@@ -86,7 +87,7 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, Trip
 }
 
 
-export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, timeZone = 0, client_id = null, lang = "ar") { 
+export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, time = null, timeZone = 0, client_id = null, lang = "ar") { 
 
     if(isDayInPast(date)){
         return { success: false, message: "Cannot book a trip in the past." };
@@ -94,7 +95,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
 
     const TripData = await fetchTripData(tripId);
     
-    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, TripData);
+    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, time, TripData);
     
     if (!availability.success) {
         console.error("Booking not available:", availability.message);
@@ -115,6 +116,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
             day: date,
             client_phone: phone,
             persons: numberOfSeats,
+            start_time: time,
             total_price: price,
             deposite_price: user_role == "admin" ? 0 : deposit,
             can_canceled_until: cancel_deadline,
@@ -135,9 +137,9 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
 
 
 
-export async function editBooking(booking_id, tripId, date, numberOfSeats, user_role) {
+export async function editBooking(booking_id, tripId, date, numberOfSeats, user_role, time = null) {
     // check avalibility first
-    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, null , true, booking_id);
+    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, time , null , true, booking_id);
 
     if (!availability.success) {
         console.error("Booking not available:", availability.message);
@@ -149,6 +151,7 @@ export async function editBooking(booking_id, tripId, date, numberOfSeats, user_
         .update({
             day: date,
             persons: numberOfSeats,
+            start_time: time
         })
         .eq('id', booking_id)
         .select('*')

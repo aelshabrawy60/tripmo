@@ -4,6 +4,7 @@ import 'react-phone-number-input/style.css';
 import UserChooser from '../Users/UserChooser';
 import PersonsNumChooser from './PersonsNumChooser';
 import DateChooser from './DateChooser';
+import TimeChooser from '../Trips/TimeChooser';
 
 
 const AddBooking = ({ 
@@ -25,6 +26,7 @@ const AddBooking = ({
     phone: '',
     numberOfSeats: 1,
     date: '',
+    time: null,
     tripData: initialData?.tripData || {},
     groupId: groupId,
   });
@@ -62,6 +64,13 @@ const AddBooking = ({
       date: date
     }));
   };
+
+  const handleTimeChange = (time) =>{
+    setFormData(prevData =>({
+      ...prevData,
+      time: time
+    }))
+  }
   
   // Handle player selection from PlayerChooser
   const handlePlayerChange = (player) => {
@@ -124,6 +133,7 @@ const AddBooking = ({
           groupId: groupId,
           numberOfSeats: 1,
           date: initialData?.date? initialData.date : initialData?.tripData?.availability_type == "fixed" ? initialData?.tripData?.available_day : '',
+          time: null,
           tripData: initialData?.tripData || {},
         });
         
@@ -216,6 +226,9 @@ const AddBooking = ({
               </div>
               
               <PersonsNumChooser onChange={handlePersonsChange}/>
+              <div className='mt-4'>
+                <TimeChooser tripData={formData.tripData} onChange={handleTimeChange}/>
+              </div>
               {/* Player selection with PlayerChooser */}
               <div className="mt-4">
                 <UserChooser 

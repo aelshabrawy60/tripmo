@@ -6,11 +6,13 @@ import React, { useState, useEffect } from 'react'
 import { Check, X, Loader, ArrowRight } from 'lucide-react'
 import Cookies from 'js-cookie';
 import formatPrice from '@/utils/currency/PriceFormate';
+import TimeChooser from '@/components/Trips/TimeChooser'
 
 
 function MainBookingCard({ tripData, locale }) {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [selectedSeatsNum, setSelectedSeatsNum] = useState(1)
+  const [selectedTime, setSelectedTime] = useState(null)
   const [totalPrice, setTotalPrice] = useState(null)
   const [depositPrice, setDepositPrice] = useState(null)
   const [isAvail, setIsAvail] = useState(null)
@@ -38,7 +40,7 @@ function MainBookingCard({ tripData, locale }) {
       const formattedDate = selectedDate
 
       const response = await fetch(
-        `/api/client/bookings?tripId=${tripData.id}&date=${formattedDate}&numberOfSeats=${selectedSeatsNum}`
+        `/api/client/bookings?tripId=${tripData.id}&date=${formattedDate}&numberOfSeats=${selectedSeatsNum}&time=${selectedTime}`
       )
 
       if (!response.ok) throw new Error(`API error: ${response.status}`)
@@ -72,7 +74,7 @@ function MainBookingCard({ tripData, locale }) {
     }, 100)
 
     return () => clearTimeout(timer)
-  }, [selectedDate, selectedSeatsNum])
+  }, [selectedDate, selectedSeatsNum, selectedTime])
 
   function handleDateChange(date) {
     setSelectedDate(date)
@@ -86,9 +88,12 @@ function MainBookingCard({ tripData, locale }) {
     <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-md w-full">
       <div className="space-y-6">
         {/* Date & Person Selectors */}
-        <div className="flex gap-2 p-2 rounded-lg">
+        <div className="flex gap-2 rounded-lg">
           <DateChooser tripData={tripData} onDateChange={handleDateChange} locale={locale} />
           <PersonsNumChooser onChange={handleSeatsChange} locale={locale} />
+        </div>
+        <div>
+          <TimeChooser tripData={tripData} onChange={setSelectedTime} locale={locale}/>
         </div>
 
         {/* Loading */}
@@ -135,7 +140,7 @@ function MainBookingCard({ tripData, locale }) {
         {/* Book Button */}
         {isAvail ? (
           <a
-            href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum}`}
+            href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum}&time=${selectedTime}`}
             className="bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2"
           >
             {t.bookNow}
