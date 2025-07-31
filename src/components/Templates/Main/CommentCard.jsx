@@ -1,27 +1,21 @@
-import React from 'react';
-import { Star } from 'lucide-react';
+import React, { useState } from 'react';
 import StarsRates from '@/components/website/StarsRates';
 
-function CommentCard({ commentData }) {
-  // Function to render the rating stars
-  const renderRating = (value) => {
-    return (
-      <div className="flex flex-row-reverse justify-end mb-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <div key={star} className="mx-px">
-            <Star
-              size={16}
-              className={`${
-                value >= star
-                  ? 'text-yellow-400 fill-yellow-400'
-                  : 'text-gray-300'
-              }`}
-            />
-          </div>
-        ))}
-      </div>
-    );
+function CommentCard({ commentData, locale = "ar" }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxLength = 150; // Maximum characters to show before truncating
+  
+  const shouldTruncate = commentData.comment && commentData.comment.length > maxLength;
+  const displayText = shouldTruncate && !isExpanded 
+    ? commentData.comment.substring(0, maxLength) + '...'
+    : commentData.comment;
+  
+  const toggleText = () => {
+    setIsExpanded(!isExpanded);
   };
+  
+  const seeMoreText = locale === "ar" ? "عرض المزيد" : "See more";
+  const seeLessText = locale === "ar" ? "عرض أقل" : "See less";
 
   return (
     <div className="bg-white w-full rounded-lg shadow-sm p-4 border border-gray-100 h-fit">
@@ -34,8 +28,19 @@ function CommentCard({ commentData }) {
       
       <div className="mt-2">
         <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-          {commentData.comment}
+          {displayText}
         </p>
+        
+        {shouldTruncate && (
+          <button
+            onClick={toggleText}
+            className={`text-blue-600 hover:text-blue-800 text-sm font-medium mt-2 transition-colors ${
+              locale === "ar" ? "text-right" : "text-left"
+            }`}
+          >
+            {isExpanded ? seeLessText : seeMoreText}
+          </button>
+        )}
       </div>
     </div>
   );
