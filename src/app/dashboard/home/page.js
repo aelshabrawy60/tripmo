@@ -5,11 +5,106 @@ import DateChooser from '@/components/Bookings/DateChooser'
 import TripChooser from '@/components/Bookings/TripChooser'
 import TripBookingsList from '@/components/Bookings/TripBookingsList'
 import { useSharedContext } from '@/context/ShareAut'
-import { Loader, Calendar, AlertCircle } from 'lucide-react'
+import { Loader, Calendar, AlertCircle, Plus, MapPin, Users, Clock, Star, ArrowRight, Zap } from 'lucide-react'
 import AddBooking from '@/components/Bookings/AddBooking'
 import LoadingCirc from '@/components/Loading/LoadingCirc'
 import Link from 'next/link';
+import Image from 'next/image'
 
+
+// Focused Empty State for First Trip
+const FirstTripEmptyState = () => {
+  return (
+    <div className="max-w-2xl mx-auto text-center">
+      <div className=" p-8">
+        {/* Images Grid */}
+        <div className="flex justify-center mb-6">
+          <div className="grid grid-cols-3 gap-2 w-48">
+            <div className="relative h-16 rounded-lg overflow-hidden">
+              <Image 
+                src='https://xtcmkhuruoghbsliqbcb.supabase.co/storage/v1/object/public/trips/46/a33b1aa2_1753800006774.jpeg'
+                alt="Trip destination"
+                fill
+                className="object-cover"
+                sizes='15vw'
+              />
+            </div>
+            <div className="relative h-16 rounded-lg overflow-hidden">
+              <Image 
+                src='https://xtcmkhuruoghbsliqbcb.supabase.co/storage/v1/object/public/trips/39/f5992df6_1753580980981.jpeg'
+                alt="Trip destination"
+                fill
+                className="object-cover"
+                sizes='15vw'
+              />
+            </div>
+            <div className="relative h-16 rounded-lg overflow-hidden">
+              <Image 
+                src='https://xtcmkhuruoghbsliqbcb.supabase.co/storage/v1/object/public/trips/37/f171659b_1753464377242.jpg'
+                alt="Trip destination"
+                fill
+                className="object-cover"
+                sizes='15vw'
+              />
+            </div>
+            <div className="relative h-16 rounded-lg overflow-hidden">
+              <Image 
+                src='https://xtcmkhuruoghbsliqbcb.supabase.co/storage/v1/object/public/trips/29/6eed8b72_1752869471337.jpg'
+                alt="Trip destination"
+                fill
+                className="object-cover"
+                sizes='15vw'
+              />
+            </div>
+            <div className="relative h-16 rounded-lg overflow-hidden">
+              <Image 
+                src='https://xtcmkhuruoghbsliqbcb.supabase.co/storage/v1/object/public/trips/11/1e3c09c0_1752656038467.jpeg'
+                alt="Trip destination"
+                fill
+                className="object-cover"
+                sizes='15vw'
+              />
+            </div>
+            <div className="relative h-16 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+              <Plus className="w-6 h-6 text-gray-400" />
+            </div>
+          </div>
+        </div>
+
+        {/* Main Message */}
+        <h2 className="text-2xl font-bold text-gray-900 mb-3">
+          أضف رحلتك الأولى لتبدأ استقبال الحجوزات
+        </h2>
+        
+        <p className="text-gray-600 mb-8 text-lg">
+          أنشئ رحلة وابدأ في استقبال الحجوزات من عملاؤك على الفور
+        </p>
+
+        {/* Primary CTA */}
+        <Link 
+          href="/dashboard/trips/create" 
+          className="inline-flex items-center gap-3 bg-tripmo-500 hover:bg-tripmo-600 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-6 text-lg"
+        >
+          <Plus className="w-6 h-6" />
+          إنشاء رحلة جديدة
+          <ArrowRight className="w-5 h-5" />
+        </Link>
+
+        {/* Quick Benefits */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+          <div className="flex items-center justify-center gap-2">
+            <Zap className="w-4 h-4 text-tripmo-500" />
+            <span>إعداد سريع</span>
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <Clock className="w-4 h-4 text-tripmo-500" />
+            <span>5 دقائق فقط</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function BookingPage() {
   const { groupId, role } = useSharedContext()
@@ -95,16 +190,7 @@ function BookingPage() {
       {!isLoading && !error && (
         <div className="space-y-4">
           {!hasTrips ? (
-            <>
-              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-6 rounded-md flex flex-col items-center space-y-3">
-                <AlertCircle className="w-10 h-10 text-yellow-500" />
-                <h3 className="text-xl font-medium">لا توجد رحلات متاحة</h3>
-                
-              </div>
-              <Link href="/dashboard/trips/create" className="bg-tripmo-500 w-full md:w-auto text-center text-white py-3 px-4 rounded-lg mb-2 inline-block hover:bg-tripmo-400 transition-colors duration-300">
-                  إضافة رحلة جديدة
-              </Link>
-            </>
+            <FirstTripEmptyState />
           ) : (
             <>
               <div className="bg-white items-center p-6 gap-4 flex flex-wrap rounded-md shadow-sm border border-gray-200">
