@@ -30,16 +30,16 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
 
   return (
     <Link href={`/trips/${slug}`} className="block">
-      <div className="max-w-lg rounded-md overflow-hidden transition-all duration-300 m-2 flex flex-col h-full">
+      <div className="max-w-lg rounded-md overflow-hidden transition-all duration-300 m-2 flex flex-col h-[320px]">
         {/* Image container */}
-        <div className="relative h-50 md:h-52 overflow-hidden rounded-b-lg">
+        <div className="relative h-50 md:h-52 overflow-hidden">
           {firstImage ? (
             <Image
               src={firstImage}
               alt={name_}
               fill
               sizes="(max-width: 768px) 100vw, 400px"
-              className="object-cover transition-transform duration-500 hover:scale-105"
+              className="object-cover h-full transition-transform duration-500 hover:scale-105"
             />
           ) : (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-b-lg">
@@ -65,20 +65,22 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
         </div>
 
         {/* Content */}
-        <div className="p-3 flex-1 flex flex-col">
-          <div className="flex flex-col justify-between items-start">
+        <div className="p-3 flex-1 flex flex-col bg-white pb-4">
+          <div className="flex flex-col justify-between items-start h-full">
             <div>
               <h2 className="text-md font-bold text-gray-800 mb-2">
                 {name_}
               </h2>
             </div>
             {ratingAverage ? (
-              <div className='flex gap-1 items-center text-gray-600'>
-                <div>{ratingAverage.toFixed(1)}</div>
-                <StarsRates rate={ratingAverage} size={4} />
-                <div>{`(${rates_count})`}</div>
+              <div className='flex gap-1 items-center text-gray-600 mt-auto'>
+                <StarsRates rate={ratingAverage} size={4}/>
+                <span className='text-sm leading-none font-semibold'>{ratingAverage.toFixed(1)}</span>
+                <span className='text-xs text-gray-500 leading-none'>{`(${rates_count})`}</span>
               </div>
-            ) : null}
+            ) : 
+              null
+              }
           </div>
         </div>
       </div>

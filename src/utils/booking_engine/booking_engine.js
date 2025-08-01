@@ -2,7 +2,6 @@
 // add booking
 // check booking avlibility
 // cancel booking
-import { createClient } from "../supabase/server";
 import { supabaseAdmin } from "../supabase/service";
 import { isDayBetween, isSeatsAvaliable, isDayinWeeklyDays, isDayInPast, calculateCancelDeadline } from "./helpers";
 
