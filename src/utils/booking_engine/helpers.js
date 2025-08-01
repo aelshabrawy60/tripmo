@@ -24,15 +24,21 @@ export function isDayInPast(date) {
 }
 
 export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, edit = false, editingBookingId = null, time = null) {
-    // Calculate the timestamp for 10 minutes ago
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-    
-    let { data, error } = await supabaseAdmin
+
+    let query = supabaseAdmin
         .from('bookings')
         .select('*')
         .eq('bookable_id', tripId)
         .eq('day', date)
-        .or(`status.eq.active,and(status.eq.pending,created_at.gte.${tenMinutesAgo})`) // active booking and holded spots in the payment process yet
+        .or(`status.eq.active,and(status.eq.pending,created_at.gte.${tenMinutesAgo})`);
+
+    // Add start_time condition if `time` is provided
+    if (time) {
+        query = query.eq('start_time', time);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
         console.error("Error fetching booking data:", error);
@@ -40,28 +46,23 @@ export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, ed
     }
 
     if (data) {
-        // If edit is true, we need to exclude the current booking from the count
         if (edit && editingBookingId) {
             data = data.filter(booking => booking.id !== editingBookingId);
         }
 
-        console.log("maxSeats", maxSeats);
-
         let bookedSeats = 0;
-        // Calculate the total booked seats
-        for(let i = 0; i < data.length; i++) {
-            if (data[i].persons) {
-                bookedSeats += parseInt(data[i].persons);
+        for (let booking of data) {
+            if (booking.persons) {
+                bookedSeats += parseInt(booking.persons);
             }
         }
-        console.log("bookedSeats", bookedSeats);
-        console.log("numberOfSeats", parseInt(numberOfSeats));
-        
+
         return bookedSeats + parseInt(numberOfSeats) <= maxSeats;
     } else {
-        return true; // No bookings found, so it's available
+        return true;
     }
 }
+
 
 export function calculateCancelDeadline(bookDay, cancellationPolicy, timeZone) {
 

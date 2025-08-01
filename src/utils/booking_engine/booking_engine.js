@@ -248,8 +248,7 @@ export async function fetchTripBookings(tripId, date) {
         return null;
     }    
 
-
-    const maxSeats = tripData.max_clients;
+    const maxSeats = tripData.start_times && tripData.start_times.length > 0 ? tripData.max_clients * tripData.start_times.length : tripData.max_clients;
     const bookedSeats = data.reduce((acc, booking) => acc + booking.persons, 0);
     const availableSeats = maxSeats - bookedSeats;
     const bookingStatus = availableSeats >= 0 ? "available" : "full";
