@@ -34,7 +34,8 @@ export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, ed
         .or(`status.eq.active,and(status.eq.pending,created_at.gte.${tenMinutesAgo})`);
 
     // Add start_time condition if `time` is provided
-    if (time) {
+    if (time && time !== "null") {
+        console.log("type of time",typeof(time))
         query = query.eq('start_time', time);
     }
 

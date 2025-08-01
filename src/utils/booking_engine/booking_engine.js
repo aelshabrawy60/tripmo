@@ -106,6 +106,9 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
     const cancel_deadline = calculateCancelDeadline(date, TripData.cancellation_policy, timeZone);
     //const cancellation_fees = TripData.cancellation_policy ? TripData.cancellation_policy.fees : 0;
     
+    if(time == "null"){
+        time = null
+    }
     const { data, error } = await supabaseAdmin
         .from('bookings')
         .insert([{
