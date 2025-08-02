@@ -7,6 +7,7 @@ import PointMap from '@/components/website/PointMap'
 import ProfileCard from '@/components/website/ProfileCard'
 import { Bus, BusFront, Clock, Languages, Eye, EyeOff } from 'lucide-react'
 import React, { useState } from 'react'
+import { getLangFullName } from '@/utils/translation/helpers'
 
 function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration, translation, guideLangs}) {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -131,7 +132,7 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
               <div className='text-sm text-gray-600 flex gap-2 items-start flex-wrap'>
                 {guideLangs.map((lang, index) => (
                   <span key={index} className='bg-gray-100 text-blue-500 px-2 py-1 text-xs'>
-                    {lang}
+                    {getLangFullName(lang, locale)}
                   </span>
                 ))}
               </div>
@@ -147,7 +148,7 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
             {shouldShowReadMore && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className='text-blue-600 hover:text-blue-800 underline underline-offset-4 cursor-pointer focus:outline-none'
+                className='text-blue-500 hover:text-blue-600 text-sm underline underline-offset-4 cursor-pointer focus:outline-none'
               >
                 {isExpanded 
                   ? (locale == "en" ? "Show less" : "عرض أقل")

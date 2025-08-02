@@ -29,3 +29,22 @@ export async function translateText(text, targetLang = 'ar') {
 
   return data[0][0]
 }
+
+
+export function getLangFullName(langCode, locale = "ar") {
+  const langMap = {
+    en: { en: "English", ar: "الإنجليزية" },
+    ar: { en: "Arabic", ar: "العربية" },
+    fr: { en: "French", ar: "الفرنسية" },
+    es: { en: "Spanish", ar: "الإسبانية" },
+    de: { en: "German", ar: "الألمانية" },
+    it: { en: "Italian", ar: "الإيطالية" },
+    ru: { en: "Russian", ar: "الروسية" },
+    zh: { en: "Chinese", ar: "الصينية" },
+    ja: { en: "Japanese", ar: "اليابانية" },
+    hi: { en: "Hindi", ar: "الهندية" }
+    // Add more if needed
+  };
+
+  return langMap[langCode]?.[locale] || langCode;
+}
