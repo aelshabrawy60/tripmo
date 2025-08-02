@@ -32,7 +32,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
     <Link href={`/trips/${slug}`} className="block">
       <div className="max-w-lg rounded-md overflow-hidden transition-all duration-300 m-2 flex flex-col h-[320px]">
         {/* Image container */}
-        <div className="relative h-50 md:h-52 overflow-hidden">
+        <div className="relative h-50 md:h-52 overflow-hidden rounded-b-md">
           {firstImage ? (
             <Image
               src={firstImage}
@@ -65,7 +65,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
         </div>
 
         {/* Content */}
-        <div className="p-3 flex-1 flex flex-col bg-white pb-4">
+        <div className="p-3 flex-1 flex flex-col">
           <div className="flex flex-col justify-between items-start h-full">
             <div>
               <h2 className="text-md font-bold text-gray-800 mb-2">
