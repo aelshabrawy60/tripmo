@@ -61,7 +61,6 @@ export async function POST(request) {
       console.log(`[Payment Success] Order: ${merchantOrderId}, TX: ${transactionId}, Amount: ${amount}`);
       const bookingData = await confirmDeposit(merchantOrderId)
       
-      console.log("bookingData", bookingData)
       // 🟢 Send Meta Conversions API Event (Purchase)
       await sendMetaPurchase(bookingData.bookingData.total_price, bookingData.bookingData.client_phone, bookingData.bookingData.persons, bookingData.bookingData.id , bookingData.bookingData.deposits.tracking_data, bookingData.bookingData?.trips)
 
