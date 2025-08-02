@@ -4,6 +4,31 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import RateShow from './RateShow';
 
+// Verified Badge Component
+function VerifiedBadge({ size = 'md', className = '' }) {
+  const sizeClasses = {
+    sm: 'w-4 h-4',
+    md: 'w-5 h-5',
+    lg: 'w-6 h-6'
+  };
+
+  return (
+    <div className={`inline-flex items-center justify-center ${className}`}>
+      <svg 
+        className={`${sizeClasses[size]} text-blue-500`} 
+        fill="currentColor" 
+        viewBox="0 0 20 20"
+      >
+        <path 
+          fillRule="evenodd" 
+          d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" 
+          clipRule="evenodd" 
+        />
+      </svg>
+    </div>
+  );
+}
+
 // Loading Skeleton Component
 function ProfileCardSkeleton({ type = 0 }) {
   if (type == 1) {
@@ -49,7 +74,8 @@ function ProfileCard({ profileData, type = 0, profileId = null, showPhone = fals
     profile_image: '',
     rating_avg: 0,
     rating_count: 0,
-    clients_contact_phone: ''
+    clients_contact_phone: '',
+    is_verified: false
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -80,48 +106,67 @@ function ProfileCard({ profileData, type = 0, profileId = null, showPhone = fals
   if (type == 1) {
     return (
       <>
-      <a href={`/host/${profileDataState.id}`} className={`flex gap-5 items-center w-full ${!showPhone && ''} border-gray-200 pt-4`}>
-        <div className='w-[72px] h-[72px] rounded-full overflow-hidden mb-1 relative'>
-          <Image
-            src={imageSrc}
-            alt='Profile Image'
-            fill
-            className='object-cover rounded-full'
-          />
-        </div>
-        <div className='flex flex-col'>
-          <div className='font-bold text-lg mb-2'>
-            {profileDataState.name}
+        <a href={`/host/${profileDataState.id}`} className={`flex gap-5 items-center w-full ${!showPhone && ''} border-gray-200 pt-4`}>
+          <div className='relative w-[72px] h-[72px] rounded-full  mb-1'>
+            <Image
+              src={imageSrc}
+              alt='Profile Image'
+              fill
+              className='object-cover rounded-full'
+            />
+            {profileDataState.is_verified && (
+              <div className='absolute -top-1 -right-1 bg-white w-7 h-7 rounded-full p-1 z-10 shadow-sm'>
+                <VerifiedBadge size="md" />
+              </div>
+            )}
           </div>
-          <RateShow rate={profileDataState.rating_avg} count={profileDataState.rating_count} type={type} />
-        </div>
-      </a>
-      {showPhone && (
-        <div className='flex items-center pt-4 px-2 gap-2 text-lg'>
-          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-          </svg>
-          <span className='text-gray-700'>{profileDataState.clients_contact_phone}</span>
-        </div>
-      )}
-      
+          <div className='flex flex-col'>
+            <div className='flex items-center gap-2 mb-2'>
+              <span className='font-bold text-lg'>
+                {profileDataState.name}
+              </span>
+              {profileDataState.is_verified && (
+                <VerifiedBadge size="sm" />
+              )}
+            </div>
+            <RateShow rate={profileDataState.rating_avg} count={profileDataState.rating_count} type={type} />
+          </div>
+        </a>
+        {showPhone && (
+          <div className='flex items-center pt-4 px-2 gap-2 text-lg'>
+            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+            <span className='text-gray-700'>{profileDataState.clients_contact_phone}</span>
+          </div>
+        )}
       </>
     );
   }
 
   return (
     <div className='flex flex-col justify-center items-center min-w-[300px] max-w-[320px] w-full p-6 shadow-sm rounded-2xl bg-white border border-gray-100'>
-      <div className='w-[104px] h-[104px] rounded-full overflow-hidden mb-2 relative'>
+      <div className='relative w-[104px] h-[104px] rounded-full overflow-hidden mb-2'>
         <Image
           src={imageSrc}
           alt='Profile Image'
           fill
           className='object-cover rounded-full'
         />
+        {profileDataState.is_verified && (
+          <div className='absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-sm z-10'>
+            <VerifiedBadge size="md" />
+          </div>
+        )}
       </div>
       <div className='flex flex-col justify-center items-center text-center'>
-        <div className='font-bold text-xl mb-4'>
-          {profileDataState.name}
+        <div className='flex items-center gap-2 mb-4'>
+          <span className='font-bold text-xl'>
+            {profileDataState.name}
+          </span>
+          {profileDataState.is_verified && (
+            <VerifiedBadge size="md" />
+          )}
         </div>
         <RateShow rate={profileDataState.rating_avg} count={profileDataState.rating_count} />
       </div>
