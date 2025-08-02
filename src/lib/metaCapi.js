@@ -96,7 +96,7 @@ export async function sendMetaIntiateCheckout(request, result, phone, numberOfSe
 
 
 export async function sendMetaPurchase(price, phone, numberOfSeats, bookingId , trackingData, tripData = null){
-  console.log("sending purchase", tripData.id, tripData?.dest_city?.name)
+  console.log("sending purchase", tripData?.id, tripData?.dest_city?.name)
     try {
         await sendMetaEvent({
             eventName: 'Purchase',
@@ -110,7 +110,7 @@ export async function sendMetaPurchase(price, phone, numberOfSeats, bookingId , 
                 currency: 'EGP',
                 num_items: numberOfSeats,
                 content_type: 'destination',
-                content_ids: [tripData.id],
+                content_ids: [tripData?.id],
                 city: tripData?.dest_city?.name || 'Unknown City',
                 region: tripData?.dest_city?.name || 'Unknown City',
                 country: tripData?.dest_city?.country || 'Unknown Country',
