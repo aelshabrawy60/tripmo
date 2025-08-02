@@ -9,8 +9,8 @@ import { updateTripScore } from '@/utils/trips_engine/trips_scoring';
 import { sendMetaPurchase } from '@/lib/metaCapi';
 
 
-//const PAYMENT_API_KEY = process.env.KASHIER_PAYMENT_KEY;
-const PAYMENT_API_KEY = "d3889425-d72f-4bc2-9cd2-4b9889a2c18c";
+const PAYMENT_API_KEY = process.env.KASHIER_PAYMENT_KEY;
+//const PAYMENT_API_KEY = "d3889425-d72f-4bc2-9cd2-4b9889a2c18c";
 
 export async function POST(request) {
   try {
