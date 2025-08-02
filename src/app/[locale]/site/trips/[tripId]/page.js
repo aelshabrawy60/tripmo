@@ -1,4 +1,5 @@
 import MainTripPage from "@/components/Templates/Main/MainTripPage";
+import MetaPixelTripEvent from "@/components/website/MetaPixelTripViewEvent";
 import TripsStripSection from "@/components/website/TripsStripSection";
 import { getSimilarTrips } from "@/utils/trips_engine/trips_engine";
 import { notFound } from 'next/navigation';
@@ -113,6 +114,7 @@ export default async function Page({ params }) {
 
   const structuredData = generateStructuredData(tripData);
 
+  
   return (
     <div>
       {/* Structured Data */}
@@ -122,6 +124,9 @@ export default async function Page({ params }) {
           __html: JSON.stringify(structuredData)
         }}
       />
+
+      {/* Meta Pixel Tracking */}
+      <MetaPixelTripEvent trip={tripData} />
       
       {/* Main Content */}
       <MainTripPage tripData={tripData} locale={locale}/>
