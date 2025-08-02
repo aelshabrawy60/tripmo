@@ -126,7 +126,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
             client_id: client_id,
             lang
         }])
-        .select('*')
+        .select('*, trips (dest_city (name, country))')
         .single();
 
     if (error) {
