@@ -171,7 +171,7 @@ export async function confirmDeposit(bookId) {
     // Single query to check status and get phone in one go
     const { data: booking, error: fetchError } = await supabaseAdmin
         .from("bookings")
-        .select("status, clients(phone)")
+        .select("Group(*), *, trips(name, id, dest_city (name, country)), deposits(payment_id, tracking_data), clients(phone)")
         .eq("id", bookId)
         .single();
 
@@ -182,7 +182,10 @@ export async function confirmDeposit(bookId) {
 
     // Check if already confirmed
     if (booking?.status === "active") {
-        return { message: "Booking is already confirmed" };
+        return { 
+            message: "Booking is already confirmed",
+            bookingData: booking
+         };
     }
 
     // Update both tables in parallel
