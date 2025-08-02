@@ -69,7 +69,6 @@ export function hashPhone(rawPhone) {
 
 
 export async function sendMetaIntiateCheckout(request, result, phone, numberOfSeats){
-    console.log("sending init", [result.data.bookable_id], result.data.trips?.dest_city?.name)
     try {
         await sendMetaEvent({
             req: request,
@@ -96,7 +95,6 @@ export async function sendMetaIntiateCheckout(request, result, phone, numberOfSe
 
 
 export async function sendMetaPurchase(price, phone, numberOfSeats, bookingId , trackingData, tripData = null){
-  console.log("sending purchase", tripData?.id, tripData?.dest_city?.name)
     try {
         await sendMetaEvent({
             eventName: 'Purchase',
