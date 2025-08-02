@@ -7,7 +7,7 @@ const paymentGateawayConfig = {
   name: "kashier",
   type: "auto",
   key_1: process.env.KASHIER_MERCHANT_ID,
-  key_2: mode == "live" ? process.env.KASHIER_PAYMENT_KEY : process.env.KASHIER_PAYMENT_KEY_TEST,
+  key_2: mode == "live" ? process.env.KASHIER_PAYMENT_KEY : process.env.KASHIER_PAYMENT_KEY_TEST || "d3889425-d72f-4bc2-9cd2-4b9889a2c18c",
   key_3: mode == "live" ? process.env.KASHIER_SECRET_KEY: process.env.KASHIER_SECRET_KEY_TEST,
   status: "active",
   mode: mode
