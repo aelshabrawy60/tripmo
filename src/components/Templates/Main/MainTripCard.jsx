@@ -4,6 +4,7 @@ import Image from 'next/image';
 import React from 'react';
 import formatPrice from '@/utils/currency/PriceFormate';
 import Cookies from 'js-cookie';
+import RateShow from '@/components/website/RateShow';
 
 function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
   const {
@@ -30,7 +31,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
 
   return (
     <Link href={`/trips/${slug}`} className="block">
-      <div className="max-w-lg rounded-md overflow-hidden transition-all duration-300 m-2 flex flex-col h-[320px]">
+      <div className="max-w-lg rounded-md overflow-hidden transition-all duration-300 m-2 flex flex-col">
         {/* Image container */}
         <div className="relative h-50 md:h-52 overflow-hidden rounded-b-md">
           {firstImage ? (
@@ -48,7 +49,7 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
           )}
 
           {availability_type && (
-            <div className="absolute top-2 right-2 bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-medium shadow-sm">
+            <div className="absolute top-2 right-2 bg-white/80 text-gray-800 px-2 py-1 rounded-full text-xs font-medium shadow-sm">
               {availability_type === 'fixed'
                 ? available_day
                 : availability_type === 'daily'
@@ -62,6 +63,12 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
               {formattedPrice} {locale === 'ar' ? 'للفرد' : 'per person'}
             </div>
           )}
+
+          {ratingAverage && (
+            <div className="absolute bottom-2 right-2 bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm">
+              <RateShow rate={ratingAverage.toFixed(1)} count={rates_count} type={1} size={3}/>
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -72,15 +79,6 @@ function MainTripCard({ tripData, themeColor = "#4F46E5", locale = "ar" }) {
                 {name_}
               </h2>
             </div>
-            {ratingAverage ? (
-              <div className='flex gap-1 items-center text-gray-600 mt-auto'>
-                <StarsRates rate={ratingAverage} size={4}/>
-                <span className='text-sm leading-none font-semibold'>{ratingAverage.toFixed(1)}</span>
-                <span className='text-xs text-gray-500 leading-none'>{`(${rates_count})`}</span>
-              </div>
-            ) : 
-              null
-              }
           </div>
         </div>
       </div>
