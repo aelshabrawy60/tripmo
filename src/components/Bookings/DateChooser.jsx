@@ -162,9 +162,17 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
 
   const commonCalendarHeader = (
     <div className="flex items-center justify-between mb-2">
-      <button type="button" onClick={handleNextMonth} className="p-1 hover:bg-gray-200 rounded-full">
-        <ChevronRight className="h-5 w-5" />
-      </button>
+
+      {locale == "ar" ? 
+        <button type="button" onClick={handlePrevMonth} className="p-1 hover:bg-gray-200 rounded-full">
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      :
+        <button type="button" onClick={handlePrevMonth} className="p-1 hover:bg-gray-200 rounded-full">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      }
+
       <div className="font-medium">
         {new Intl.DateTimeFormat(language, {
           month: 'long',
@@ -172,9 +180,17 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
           calendar: 'gregory'
         }).format(currentMonth)}
       </div>
-      <button type="button" onClick={handlePrevMonth} className="p-1 hover:bg-gray-200 rounded-full">
-        <ChevronLeft className="h-5 w-5" />
-      </button>
+
+      {locale == "ar" ? 
+        <button type="button" onClick={handleNextMonth} className="p-1 hover:bg-gray-200 rounded-full">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      :
+        <button type="button" onClick={handleNextMonth} className="p-1 hover:bg-gray-200 rounded-full">
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      }
+      
     </div>
   );
 
@@ -238,7 +254,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
         <button
           type="button"
           ref={buttonRef}
-          className="w-full flex items-center gap-2 px-3 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full flex items-center gap-2 px-3 py-3 border bg-white border-gray-200 rounded-lg hover:bg-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           onClick={() => setShowCalendar(!showCalendar)}
         >
           <Calendar className="h-5 w-5 text-gray-400" />

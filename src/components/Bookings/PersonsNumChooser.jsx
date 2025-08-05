@@ -189,7 +189,7 @@ function PersonsNumChooser({ onChange, initialValue = 1, locale }) {
           setTempCount(count);
           setIsPopupOpen(true);
         }}
-        className="flex w-full items-center space-x-2 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+        className="flex w-full items-center space-x-2 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <Users className="text-gray-600" size={20} />
         <span className="font-medium">{count}</span>
