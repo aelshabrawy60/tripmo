@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 
 function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale = "ar" }) {
@@ -6,10 +6,28 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
   const [language, setLanguage] = useState('ar');
+  const calendarRef = useRef(null);
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     setLanguage(locale === 'ar' ? 'ar' : 'en');
   }, [locale]);
+
+  // Handle click outside to close calendar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (calendarRef.current && !calendarRef.current.contains(event.target) && buttonRef.current && !buttonRef.current.contains(event.target)) {
+        setShowCalendar(false);
+      }
+    };
+
+    if (showCalendar) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showCalendar]);
 
   const daysOfWeekArabic = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
   const daysOfWeekArabicShort = ["أحد", "اثن", "ثلا", "أرب", "خمي", "جمع", "سبت"];
@@ -178,16 +196,9 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
   );
 
   const commonCalendarFooter = (
-    <div className="mt-3 flex justify-between items-center">
-      <button
-        type="button"
-        onClick={() => setShowCalendar(false)}
-        className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-md"
-      >
-        {locale === 'ar' ? "تم" : "Done"}
-      </button>
+    <div className="flex justify-between items-center">
       {tripData.availability_type === "weekly" && (
-        <div className="text-xs text-gray-500 italic">
+        <div className="text-xs text-gray-500 italic mt-3">
           {locale === 'ar'
             ? `متاح فقط في ${tripData.weekly_days?.map(i => daysOfWeekArabic[i]).join('، ')}`
             : `Available only on ${tripData.weekly_days?.map(i => daysOfWeekEnglish[i]).join(', ')}`}
@@ -197,7 +208,10 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
   );
 
   const calendarPopup = (
-    <div className="absolute mt-1 p-3 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+    <div 
+      ref={calendarRef}
+      className="absolute mt-1 p-3 bg-white border border-gray-300 rounded-md shadow-lg z-[9999999px]"
+    >
       {commonCalendarHeader}
       {commonWeekDaysHeader}
       <div className="grid grid-cols-7 gap-1">{renderCalendar()}</div>
@@ -223,6 +237,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
       <div className="relative">
         <button
           type="button"
+          ref={buttonRef}
           className="w-full flex items-center gap-2 px-3 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           onClick={() => setShowCalendar(!showCalendar)}
         >

@@ -56,7 +56,7 @@ function MainTrip({tripData, locale}) {
           
           {/* Booking Card - Takes full width on mobile, half on larger screens */}
           <div className="order-2 lg:order-2">
-            <div className="sticky flex flex-col items-end top-4">
+            <div className="sticky flex flex-col items-end top-4 z-10">
               <MainBookingCard 
                 tripData={tripData}
                 isLoading={isLoading}
