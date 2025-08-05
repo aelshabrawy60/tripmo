@@ -6,6 +6,7 @@ import MainBookingCard from './MainBookingCard'
 import MainRatingsSection from './MainRatingsSection'
 import StarsRates from '@/components/website/StarsRates'
 import InlineCancelationPolicy from '@/components/Trips/InlineCancelationPolicy'
+import MiniBookingCard from '@/components/website/MiniBookingCard'
 
 function MainTrip({tripData, locale}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +57,7 @@ function MainTrip({tripData, locale}) {
           
           {/* Booking Card - Takes full width on mobile, half on larger screens */}
           <div className="order-2 lg:order-2">
-            <div className="sticky flex flex-col items-end top-4 z-10">
+            <div className="sticky flex flex-col items-end top-4 z-10" id="booking-section">
               <MainBookingCard 
                 tripData={tripData}
                 isLoading={isLoading}
@@ -65,6 +66,8 @@ function MainTrip({tripData, locale}) {
               />
             </div>
           </div>
+
+          <MiniBookingCard pricing={tripData.pricing} locale={locale}/>
         </div>
       </div>
       <MainRatingsSection ratings={tripData.ratings} tripId={tripData.id}/>
