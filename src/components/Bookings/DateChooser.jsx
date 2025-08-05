@@ -226,7 +226,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
   const calendarPopup = (
     <div 
       ref={calendarRef}
-      className="absolute mt-1 p-3 bg-white border border-gray-300 rounded-md shadow-lg z-[9999999px]"
+      className="absolute mt-1 p-3 bg-white border border-gray-300 rounded-md shadow-lg z-50"
     >
       {commonCalendarHeader}
       {commonWeekDaysHeader}
