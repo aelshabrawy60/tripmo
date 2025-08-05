@@ -18,6 +18,7 @@
     "framer-motion": "^12.9.4",
     "franc": "^6.2.0",
     "fuse.js": "^7.1.0",
+    "googleapis": "^155.0.0",
     "iso-639-3": "^3.0.1",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",

@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Users, MapPin, Star, Calendar, ExternalLink, Shield } from 'lucide-react';
 import Image from 'next/image';
 import BlockTripModal from './BlockTripModal';
@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 
 function TripAdminCard({ data, onStatusChange }) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
   
   // Status configuration with Arabic labels and colors
   const statusConfig = {
@@ -79,30 +81,22 @@ function TripAdminCard({ data, onStatusChange }) {
     e.stopPropagation();
   };
 
-  async function downloadCsv(e, tripId) {
+  async function addToCatalouge(e, tripId) {
     e.stopPropagation();
     e.preventDefault();
-    
+    setIsLoading(true);
     try {
       const response = await fetch(`/api/admin/trips/extract?id=${tripId}`);
       if (!response.ok) {
         console.error("Failed to download CSV");
-        return;
       }
-      
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `trip-${tripId}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading CSV:", error);
+    } finally {
+      setIsLoading(false);
     }
   }
+
 
   const currentStatus = statusConfig[data.status] || statusConfig.private;
   const priceInfo = getPriceInfo();
@@ -197,9 +191,14 @@ function TripAdminCard({ data, onStatusChange }) {
               />
             </div>
 
-            <button className='px-3 py-1.5 rounded-md cursor-pointer hover:bg-gray-100 text-xs font-medium  flex items-center gap-2' onClick={(e) => downloadCsv(e, data.id)}>
-              تحميل csv
+            <button
+              className='px-3 py-1.5 rounded-md cursor-pointer hover:bg-gray-100 text-xs font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+              onClick={(e) => addToCatalouge(e, data.id)}
+              disabled={isLoading}
+            >
+              {isLoading ? 'جارٍ الإضافة...' : 'catalouge +'}
             </button>
+
           </div>
         </div>
 
