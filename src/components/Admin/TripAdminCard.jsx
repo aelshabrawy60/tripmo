@@ -79,6 +79,31 @@ function TripAdminCard({ data, onStatusChange }) {
     e.stopPropagation();
   };
 
+  async function downloadCsv(e, tripId) {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    try {
+      const response = await fetch(`/api/admin/trips/extract?id=${tripId}`);
+      if (!response.ok) {
+        console.error("Failed to download CSV");
+        return;
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `trip-${tripId}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading CSV:", error);
+    }
+  }
+
   const currentStatus = statusConfig[data.status] || statusConfig.private;
   const priceInfo = getPriceInfo();
   const isBlocked = data.status === 'blocked';
@@ -171,6 +196,10 @@ function TripAdminCard({ data, onStatusChange }) {
                 onStatusChange={onStatusChange}
               />
             </div>
+
+            <button className='px-3 py-1.5 rounded-md cursor-pointer hover:bg-gray-100 text-xs font-medium  flex items-center gap-2' onClick={(e) => downloadCsv(e, data.id)}>
+              تحميل csv
+            </button>
           </div>
         </div>
 
