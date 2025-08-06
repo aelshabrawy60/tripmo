@@ -17,7 +17,7 @@ function MainTrip({tripData, locale}) {
       
       
       <div className="w-full relative overflow-hidden">
-        <GalleryViewer images={tripData.images}/>
+        <GalleryViewer images={tripData.images} locale={locale}/>
       </div>
       
       {/* Content Section - Responsive Grid */}

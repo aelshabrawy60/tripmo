@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 
-function GalleryViewer({ images = [] }) {
+function GalleryViewer({ images = [] , locale = 'ar'}) {
   const [showSlider, setShowSlider] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -14,8 +14,8 @@ function GalleryViewer({ images = [] }) {
     );
   }
 
-  const hasMoreImages = images.length > 4;
-  const visibleImages = images.slice(0, 4);
+  const hasMoreImages = images.length > 3;
+  const visibleImages = images.slice(0, 3);
 
   const handleImageClick = (index) => {
     setActiveSlide(index);
@@ -26,7 +26,7 @@ function GalleryViewer({ images = [] }) {
     setShowSlider(false);
   };
 
-  const nextSlide = () => {
+  const nextSlider = () => {
     setActiveSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
@@ -53,7 +53,7 @@ function GalleryViewer({ images = [] }) {
       ) : (
         <div className="grid grid-cols-3 gap-2">
           <div 
-            className="col-span-3 md:col-span-2 h-64 md:h-[420px] rounded-lg overflow-hidden cursor-pointer relative"
+            className={`col-span-3 md:col-span-2 h-64 md:h-[420px] ${locale == "en"? 'rounded-tl-lg md:rounded-bl-lg md:rounded-tr-none md:rounded-br-none rounded-tr-lg': 'rounded-tl-lg md:rounded-tl-none md:rounded-bl-none md:rounded-tr-lg md:rounded-br-lg'} overflow-hidden cursor-pointer relative`}
             onClick={() => handleImageClick(0)}
           >
             <Image 
@@ -67,28 +67,39 @@ function GalleryViewer({ images = [] }) {
           </div>
 
           <div className="col-span-3 md:col-span-1 flex md:flex-col justify-between gap-2 h-32 md:h-[420px]">
-            {visibleImages.slice(1).map((image, index) => (
-              <div 
-                key={index}
-                className="h-32 md:h-40 flex-1 rounded-lg overflow-hidden cursor-pointer relative"
-                onClick={() => handleImageClick(index + 1)}
-              >
-                <Image 
-                  src={image} 
-                  alt={`Gallery image ${index + 2}`}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-300"
-                  sizes={`(max-width: 768px) 33vw, (max-width: 1200px) ${images.length == 2? '40vw': '30vw'}, ${images.length == 2? '35vw': '25vw'}`}
-                />
-                {hasMoreImages && index === visibleImages.length - 2 && (
-                  <div className="absolute inset-0 bg-black/40 bg-opacity-40 flex items-center justify-center z-10">
-                    <span className="text-white font-medium text-lg">
-                      +{images.length - 4} صور
-                    </span>
-                  </div>
-                )}
-              </div>
-            ))}
+            {visibleImages.slice(1).map((image, index) => {
+              let roundedClasses = '';
+              if (index === 0) {
+                // First small image (top right)
+                roundedClasses = locale == "en"? 'rounded-bl-lg md:rounded-tl-none md:rounded-bl-none md:rounded-tr-lg' : 'rounded-br-lg md:rounded-br-none md:rounded-bl-none md:rounded-tl-lg';
+              } else if (index === visibleImages.length - 2) {
+                // Last small image (bottom right)
+                roundedClasses = locale == "en"? 'rounded-br-lg md:rounded-tl-none md:rounded-bl-none': 'rounded-bl-lg md:rounded-tr-none md:rounded-br-none md:rounded-bl-lg';
+              }
+              
+              return (
+                <div 
+                  key={index}
+                  className={`h-32 md:h-40 flex-1 ${roundedClasses} overflow-hidden cursor-pointer relative`}
+                  onClick={() => handleImageClick(index + 1)}
+                >
+                  <Image 
+                    src={image} 
+                    alt={`Gallery image ${index + 2}`}
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-300"
+                    sizes={`(max-width: 768px) 33vw, (max-width: 1200px) ${images.length == 2? '40vw': '30vw'}, ${images.length == 2? '35vw': '25vw'}`}
+                  />
+                  {hasMoreImages && index === visibleImages.length - 2 && (
+                    <div className="absolute inset-0 bg-black/40 bg-opacity-40 flex items-center justify-center z-10">
+                      <span className="text-white font-medium text-lg">
+                        +{images.length - 4} صور
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
@@ -132,7 +143,7 @@ function GalleryViewer({ images = [] }) {
               </svg>
             </button>
             <button 
-              onClick={nextSlide}
+              onClick={nextSlider}
               className="absolute right-4 bg-black bg-opacity-50 rounded-full p-2 text-white hover:bg-opacity-70 z-10"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">

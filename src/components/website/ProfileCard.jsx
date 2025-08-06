@@ -6,6 +6,8 @@ import RateShow from './RateShow';
 
 // Verified Badge Component
 function VerifiedBadge({ size = 'md', className = '' }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   const sizeClasses = {
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
@@ -13,11 +15,15 @@ function VerifiedBadge({ size = 'md', className = '' }) {
   };
 
   return (
-    <div className={`inline-flex items-center justify-center ${className}`}>
+    <div className={`relative inline-flex items-center justify-center ${className}`}>
       <svg 
-        className={`${sizeClasses[size]} text-blue-500`} 
+        className={`${sizeClasses[size]} text-blue-500 cursor-pointer transition-colors hover:text-blue-600`} 
         fill="currentColor" 
         viewBox="0 0 20 20"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => setShowTooltip(!showTooltip)}
+        aria-label="Verified by Rehla"
       >
         <path 
           fillRule="evenodd" 
@@ -25,6 +31,17 @@ function VerifiedBadge({ size = 'md', className = '' }) {
           clipRule="evenodd" 
         />
       </svg>
+      
+      {/* Tooltip */}
+      {showTooltip && (
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap z-10 shadow-lg">
+          <div className="relative">
+            Verified by Rehla Now
+            {/* Tooltip Arrow */}
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -114,11 +131,6 @@ function ProfileCard({ profileData, type = 0, profileId = null, showPhone = fals
               fill
               className='object-cover rounded-full'
             />
-            {profileDataState.is_verified && (
-              <div className='absolute -top-1 -right-1 bg-white w-7 h-7 rounded-full p-1 z-10 shadow-sm'>
-                <VerifiedBadge size="md" />
-              </div>
-            )}
           </div>
           <div className='flex flex-col'>
             <div className='flex items-center gap-2 mb-2'>
@@ -126,7 +138,7 @@ function ProfileCard({ profileData, type = 0, profileId = null, showPhone = fals
                 {profileDataState.name}
               </span>
               {profileDataState.is_verified && (
-                <VerifiedBadge size="sm" />
+                <VerifiedBadge size="md" />
               )}
             </div>
             <RateShow rate={profileDataState.rating_avg} count={profileDataState.rating_count} type={type} />
@@ -153,11 +165,6 @@ function ProfileCard({ profileData, type = 0, profileId = null, showPhone = fals
           fill
           className='object-cover rounded-full'
         />
-        {profileDataState.is_verified && (
-          <div className='absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-sm z-10'>
-            <VerifiedBadge size="md" />
-          </div>
-        )}
       </div>
       <div className='flex flex-col justify-center items-center text-center'>
         <div className='flex items-center gap-2 mb-4'>

@@ -47,7 +47,7 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
     if (!hasTranslatedContent) return null
     
     return (
-      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mb-4 p-2 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Languages size={16} className="text-blue-400" />
@@ -86,61 +86,63 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
           <FromTo from={depature_city} to={dest_city} locale={locale}/>
         </div>
 
-        {duration !== null ?
-          <div className='flex gap-3 mt-8'>
-            <Clock size={25}/>
-            <div>
-              <div className='font-medium'>{locale == "en"? "duration": "المدة"}</div>
-              <div className='text-sm text-gray-600'>
-              {
-                duration >= 24 ?
-                `${duration / 24} ${locale == "en" ? "day" : "يوم"}`
-                :
-                `${duration} ${locale == "en" ? "hour" : "ساعة"}`
-              }
+        <div className='mt-8'>
+          {duration !== null && duration != 0?
+            <div className='flex gap-3'>
+              <Clock size={25}/>
+              <div>
+                <div className='font-medium'>{locale == "en"? "duration": "المدة"}</div>
+                <div className='text-sm text-gray-600'>
+                {
+                  duration >= 24 ?
+                  `${duration / 24} ${locale == "en" ? "day" : "يوم"}`
+                  :
+                  `${duration} ${locale == "en" ? "hour" : "ساعة"}`
+                }
+                </div>
               </div>
             </div>
-          </div>
-        :
-          null
-        }
-
-        {startLocation?.type == "pickup" && startLocation?.description ? 
-          <div className='flex gap-3 mt-4'>
-            <BusFront size={25}/>
-            <div>
-              <div className='font-medium mb-2 flex items-center flex-wrap'>
-                {locale == "en"? "Pickup included" : "متاح استقبالك من مكان اقامتك"}
-              </div>
-              <div className='text-sm text-gray-600 flex gap-2 items-start flex-wrap'>
-                {displayPickupNote}
-              </div>
-            </div>
-          </div>
-        :
-          null
-        }
-
-        {
-          guideLangs && guideLangs.length > 0 ?
-          <div className='flex gap-3 mt-4'>
-            <Languages size={25}/>
-            <div>
-              <div className='font-medium mb-2 flex items-center flex-wrap'>
-                {locale == "en"? "Guide languages" : "لغات المرشدين"}
-              </div>
-              <div className='text-sm text-gray-600 flex gap-2 items-start flex-wrap'>
-                {guideLangs.map((lang, index) => (
-                  <span key={index} className='bg-gray-100 text-blue-500 px-2 py-1 text-xs'>
-                    {getLangFullName(lang, locale)}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
           :
-          null
-        }
+            null
+          }
+
+          {startLocation?.type == "pickup" && startLocation?.description ? 
+            <div className='flex gap-3 mt-4'>
+              <BusFront size={25}/>
+              <div>
+                <div className='font-medium mb-2 flex items-center flex-wrap'>
+                  {locale == "en"? "Pickup included" : "متاح استقبالك من مكان اقامتك"}
+                </div>
+                <div className='text-sm text-gray-600 flex gap-2 items-start flex-wrap'>
+                  {displayPickupNote}
+                </div>
+              </div>
+            </div>
+          :
+            null
+          }
+
+          {
+            guideLangs && guideLangs.length > 0 ?
+            <div className='flex gap-3 mt-4'>
+              <Languages size={25}/>
+              <div>
+                <div className='font-medium mb-2 flex items-center flex-wrap'>
+                  {locale == "en"? "Guide languages" : "لغات المرشدين"}
+                </div>
+                <div className='text-sm text-gray-600 flex gap-2 items-start flex-wrap'>
+                  {guideLangs.map((lang, index) => (
+                    <span key={index} className='bg-gray-100 text-blue-500 px-2 py-1 text-xs'>
+                      {getLangFullName(lang, locale)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            :
+            null
+          }
+        </div>
 
         <div className='text-lg mt-10 mb-2'>
           <span dangerouslySetInnerHTML={{ __html: displayText.replace(/\n/g, "<br />") }} />
