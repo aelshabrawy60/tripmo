@@ -5,6 +5,7 @@ import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
 import CurrencySwitcher from '@/components/LanguageSwitcher/CurrencySwitcher';
+import SettingsSwitcher from '@/components/LanguageSwitcher/SettingsSwitcher';
 
 function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale, type = 0 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,8 +45,7 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale, type
 
           {type == 0 ? 
             <div>
-              <LanguageSwitcher/>
-              <CurrencySwitcher/>
+              <SettingsSwitcher/>
             </div>
            :
             <a target='_blank' href='https://rehlanow.com' className='block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium text-right'>
