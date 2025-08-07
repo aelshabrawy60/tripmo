@@ -59,37 +59,47 @@ export default function SettingsSwitcher({ className = '', onCurrencyChange }) {
     }
   }, [pathname])
 
-  // Dropdown positioning logic
-  useEffect(() => {
-    if (isOpen && buttonRef.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect()
-      const dropdownWidth = dropdownRef.current?.offsetWidth || 200
-      const dropdownHeight = dropdownRef.current?.offsetHeight || 300
-      
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
-      const margin = 8
+  // Calculate dropdown position before opening
+  const calculateDropdownPosition = () => {
+    if (!buttonRef.current) return { top: '100%', left: '0' }
 
-      let topPosition = buttonRect.height + 8
-      let leftPosition = 0
+    const buttonRect = buttonRef.current.getBoundingClientRect()
+    // Estimated dropdown dimensions
+    const dropdownWidth = 208 // w-52 = 208px
+    const dropdownHeight = 300 // Approximate height
+    
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    const margin = 8
 
-      // Check vertical space
-      const spaceBelow = viewportHeight - buttonRect.bottom
-      if (spaceBelow < dropdownHeight + margin && buttonRect.top > dropdownHeight + margin) {
-        topPosition = -(dropdownHeight + 8)
-      }
+    let topPosition = buttonRect.height + 8
+    let leftPosition = 0
 
-      // Check horizontal space
-      if (buttonRect.left + dropdownWidth > viewportWidth - margin) {
-        leftPosition = buttonRect.width - dropdownWidth
-      }
-
-      setDropdownStyle({
-        top: `${topPosition}px`,
-        left: `${leftPosition}px`,
-      })
+    // Check vertical space
+    const spaceBelow = viewportHeight - buttonRect.bottom
+    if (spaceBelow < dropdownHeight + margin && buttonRect.top > dropdownHeight + margin) {
+      topPosition = -(dropdownHeight + 8)
     }
-  }, [isOpen])
+
+    // Check horizontal space
+    if (buttonRect.left + dropdownWidth > viewportWidth - margin) {
+      leftPosition = buttonRect.width - dropdownWidth
+    }
+
+    return {
+      top: `${topPosition}px`,
+      left: `${leftPosition}px`,
+    }
+  }
+
+  const handleToggleDropdown = () => {
+    if (!isOpen) {
+      // Calculate position before opening
+      const newPosition = calculateDropdownPosition()
+      setDropdownStyle(newPosition)
+    }
+    setIsOpen(!isOpen)
+  }
 
   const switchCurrency = (newCurrency) => {
     document.cookie = `currency=${newCurrency}; path=/; max-age=${365 * 24 * 60 * 60}`
@@ -125,7 +135,7 @@ export default function SettingsSwitcher({ className = '', onCurrencyChange }) {
     <div className={`relative inline-block ${className}`}>
       <button
         ref={buttonRef}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggleDropdown}
         className="group flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200"
         aria-haspopup="true"
         aria-expanded={isOpen}
