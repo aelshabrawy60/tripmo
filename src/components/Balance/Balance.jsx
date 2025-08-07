@@ -205,7 +205,7 @@ export default function BalanceDisplay({ groupId }) {
           
           <div className="border-t border-white/20 pt-4">
             <p className="text-blue-100 text-sm">
-              الأموال المتاحة للسحب
+              اضغط للسحب
             </p>
           </div>
         </a>

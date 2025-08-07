@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 
+
+// This component displays a gallery of images with a slider for viewing larger versions.
+
 function GalleryViewer({ images = [] , locale = 'ar'}) {
   const [showSlider, setShowSlider] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
