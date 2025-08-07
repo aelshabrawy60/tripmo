@@ -53,7 +53,7 @@ function GalleryViewer({ images = [] , locale = 'ar'}) {
       ) : (
         <div className="grid grid-cols-3 gap-2">
           <div 
-            className={`col-span-3 md:col-span-2 h-64 md:h-[420px] ${locale == "en"? 'rounded-tl-lg md:rounded-bl-lg md:rounded-tr-none md:rounded-br-none rounded-tr-lg': 'rounded-tl-lg md:rounded-tl-none md:rounded-bl-none md:rounded-tr-lg md:rounded-br-lg'} overflow-hidden cursor-pointer relative`}
+            className={`col-span-3 md:col-span-2 h-64 md:h-[420px] ${locale == "en"? 'rounded-tl-lg md:rounded-bl-lg md:rounded-tr-none md:rounded-br-none rounded-tr-lg': 'rounded-tl-lg md:rounded-tl-none md:rounded-bl-none rounded-tr-lg md:rounded-br-lg'} overflow-hidden cursor-pointer relative`}
             onClick={() => handleImageClick(0)}
           >
             <Image 
