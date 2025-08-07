@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  DollarSign, 
   Calendar, 
   Users, 
   Plus, 
@@ -10,13 +9,17 @@ import {
   Info,
   CreditCard
 } from 'lucide-react';
-import { FaMoneyBill } from 'react-icons/fa';
 import { PiMoney } from 'react-icons/pi';
 
 function TripPricingEditor({ onChange, initialValue = null, fixedDate = false }) {
   const MIN_ADVANCE_PERCENTAGE = 20; // Define the minimum advance percentage
 
   const [personPrice, setPersonPrice] = useState(initialValue?.PersonPrice?.toString() || '300');
+  const [childPrice, setChildPrice] = useState(initialValue?.ChildPrice?.toString() || parseNumberValue(personPrice) / 2);
+  const [infantPrice, setInfantPrice] = useState(initialValue?.InfantPrice?.toString() || '0');
+  const [notAllowedChildren, setNotAllowedChildren] = useState(initialValue?.ChildPrice === -1);
+  const [notAllowedInfants, setNotAllowedInfants] = useState(initialValue?.InfantPrice === -1);
+
   const [customDayPricing, setCustomDayPricing] = useState(false);
   const [customPersonPricing, setCustomPersonPricing] = useState(false);
   
@@ -48,6 +51,16 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
       initialized.current = true;
 
       setPersonPrice(initialValue.PersonPrice?.toString() || '300');
+      
+      const initChild = initialValue?.ChildPrice ?? parseNumberValue(personPrice) / 2;
+      const initInfant = initialValue?.InfantPrice ?? 0;
+
+      setChildPrice(initChild === -1 ? '' : initChild.toString());
+      setInfantPrice(initInfant === -1 ? '' : initInfant.toString());
+      setNotAllowedChildren(initChild === -1);
+      setNotAllowedInfants(initInfant === -1);
+
+
 
       if (initialValue.PricePerWeeklyDays?.length > 0) {
         setCustomDayPricing(true);
@@ -84,6 +97,10 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
         // If initialValue is null/undefined from the start and we haven't initialized
         initialized.current = true; // Mark as "initialized" (to prevent re-running this if initialValue remains null)
         setPersonPrice('300');
+        setChildPrice(parseNumberValue(personPrice) / 2);
+        setInfantPrice('0');
+
+
         setCustomDayPricing(false);
         setDayPricing([]);
         setCustomPersonPricing(false);
@@ -97,7 +114,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
   // Update output JSON whenever values change
   useEffect(() => {
     updateOutput();
-  }, [personPrice, customDayPricing, dayPricing, customPersonPricing, personPricing, advancePaymentPercentage]);
+  }, [personPrice, customDayPricing, dayPricing, customPersonPricing, personPricing, advancePaymentPercentage, notAllowedChildren, notAllowedInfants, childPrice, infantPrice]);
   
   // Function to add a new day pricing rule
   const addDayPricing = () => {
@@ -136,16 +153,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
     newPersonPricing[index][field] = value;
     setPersonPricing(newPersonPricing);
   };
-  
-  // Function to safely parse number values
-  const parseNumberValue = (value) => {
-    // If value is empty string, return null
-    if (value === '') return null;
-    // Otherwise parse as integer
-    const parsed = parseInt(value);
-    return isNaN(parsed) ? null : parsed;
-  };
-  
+
   // Function to update output JSON
   const updateOutput = () => {
     const output = {
@@ -172,6 +180,11 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
       }));
       output.PricePerPersons = personPricingArray;
     }
+
+
+    
+    output.ChildPrice = notAllowedChildren ? -1 : parseNumberValue(childPrice);
+    output.InfantPrice = notAllowedInfants ? -1 : parseNumberValue(infantPrice);
     
     // Call onChange callback
     if (onChange) {
@@ -204,7 +217,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
         <div className="flex items-center mb-1">
           <PiMoney size={16} className="ml-1 text-blue-600" />
           <label className="text-gray-700 text-xs mb-1 font-medium">
-            السعر للفرد
+            السعر للفرد (12 عام او اكبر)
           </label>
         </div>
         <div className="flex items-center gap-2">
@@ -219,6 +232,93 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
           </div>
         </div>
       </div>
+
+
+      {/* Child Price */}
+      {!notAllowedChildren && 
+        <div className="mb-3">
+          <div className="flex items-center mb-1">
+            <PiMoney size={16} className="ml-1 text-green-600" />
+            <label className="text-gray-700 text-xs mb-1 font-medium">
+              السعر للطفل (من 3 ل 11 عام)
+            </label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              className="border border-gray-200 rounded py-1 px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-right"
+              value={childPrice}
+              onChange={(e) => setChildPrice(e.target.value)}
+            />
+            <div className='text-sm'>ج.م</div>
+          </div>
+        </div>
+      }
+      
+
+      <div className="flex items-center gap-2 mb-4">
+        <input
+          type="checkbox"
+          id="notAllowedChildren"
+          checked={notAllowedChildren}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setNotAllowedChildren(checked);
+            if (checked) {
+              setChildPrice('-1');
+            } else {
+              setChildPrice('150');
+            }
+          }}
+        />
+        <label htmlFor="notAllowedChildren" className="text-xs">
+          غير مسموح بالأطفال
+        </label>
+      </div>
+
+
+      {!notAllowedInfants &&
+        <div className="mb-4">
+          <div className="flex items-center mb-1">
+            <PiMoney size={16} className="ml-1 text-yellow-600" />
+            <label className="text-gray-700 text-xs mb-1 font-medium">
+              السعر للرضيع (2 عام او اقل)
+            </label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              className="border border-gray-200 rounded py-1 px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-right"
+              value={infantPrice}
+              onChange={(e) => setInfantPrice(e.target.value)}
+            />
+            <div className='text-sm'>ج.م</div>
+          </div>
+        </div>
+      }
+      
+
+      <div className="flex items-center gap-2 mb-4">
+        <input
+          type="checkbox"
+          id="notAllowedInfants"
+          checked={notAllowedInfants}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setNotAllowedInfants(checked);
+            if (checked) {
+              setInfantPrice('-1');
+            } else {
+              setInfantPrice('0');
+            }
+          }}
+        />
+        <label htmlFor="notAllowedInfants" className="text-xs">
+          غير مسموح بالرضع
+        </label>
+      </div>
+
+
       
       {/* Advance Payment Percentage Slider */}
       <div className="my-6">
@@ -490,3 +590,14 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
 }
 
 export default TripPricingEditor;
+
+
+// Function to safely parse number values
+const parseNumberValue = (value) => {
+  // If value is empty string, return null
+  if (value === '') return null;
+  // Otherwise parse as integer
+  const parsed = parseInt(value);
+  return isNaN(parsed) ? null : parsed;
+};
+  
