@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
 const PhoneInputForm = ({
@@ -14,32 +14,16 @@ const PhoneInputForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [dropdownDirection, setDropdownDirection] = useState('down');
+  const buttonRef = useRef(null);
 
   const t = {
-    phoneLabel: {
-      ar: "رقم الهاتف",
-      en: "Phone number"
-    },
-    phonePlaceholder: {
-      ar: "أدخل رقم الهاتف",
-      en: "Enter your phone number"
-    },
-    sendError: {
-      ar: "فشل في إرسال رمز التحقق",
-      en: "Failed to send OTP"
-    },
-    invalidFormat: {
-      ar: "صيغة رقم الهاتف غير صحيحة",
-      en: "Invalid phone number format"
-    },
-    submit: {
-      ar: "متابعة",
-      en: "Continue"
-    },
-    loading: {
-      ar: "جاري التحقق...",
-      en: "Verifying..."
-    }
+    phoneLabel: { ar: "رقم الهاتف", en: "Phone number" },
+    phonePlaceholder: { ar: "أدخل رقم الهاتف", en: "Enter your phone number" },
+    sendError: { ar: "فشل في إرسال رمز التحقق", en: "Failed to send OTP" },
+    invalidFormat: { ar: "صيغة رقم الهاتف غير صحيحة", en: "Invalid phone number format" },
+    submit: { ar: "متابعة", en: "Continue" },
+    loading: { ar: "جاري التحقق...", en: "Verifying..." }
   };
 
   const getFullPhoneNumber = (inputPhone = phone, country = selectedCountryCode) => {
@@ -52,7 +36,6 @@ const PhoneInputForm = ({
     setError('');
 
     const fullPhone = getFullPhoneNumber();
-
     if (!/^\d{10,15}$/.test(fullPhone)) {
       setError(t.invalidFormat[locale]);
       return;
@@ -68,10 +51,7 @@ const PhoneInputForm = ({
       });
 
       const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || t.sendError[locale]);
-      }
+      if (!res.ok || !data.success) throw new Error(data.message || t.sendError[locale]);
 
       Cookies.set('client_phone', fullPhone, { expires: 1 });
       if (onSuccess) onSuccess(fullPhone, data.verificationId);
@@ -82,23 +62,39 @@ const PhoneInputForm = ({
     setIsLoading(false);
   };
 
+  // Decide dropdown direction dynamically
+  useEffect(() => {
+    if (showCountryDropdown && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const dropdownHeight = 256; // 64 * 4 rows = approx max height (max-h-64)
+
+      if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+        setDropdownDirection('up');
+      } else {
+        setDropdownDirection('down');
+      }
+    }
+  }, [showCountryDropdown]);
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
         <label htmlFor="phone" className="block text-sm font-medium mb-2">
           {t.phoneLabel[locale]}
         </label>
-        <div className={`relative flex ${locale == "en"? 'flex-row-reverse': null}`}>
+        <div className={`relative flex ${locale === "en" ? 'flex-row-reverse' : ''}`}>
           <input
             id="phone"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder={t.phonePlaceholder[locale]}
-            className={`flex-grow p-3 py-2 border rounded-r-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-left ${locale == "ar"? "placeholder:text-right": "placeholder:text-left"} border-l-0`}
+            className={`flex-grow p-3 py-2 border rounded-r-lg border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-left ${locale === "ar" ? "placeholder:text-right" : "placeholder:text-left"} border-l-0`}
             disabled={isLoading}
           />
-          <div className="relative">
+          <div className="relative" ref={buttonRef}>
             <button
               type="button"
               className="flex items-center justify-center h-full px-3 border bg-white border-gray-300 rounded-l-lg"
@@ -109,7 +105,11 @@ const PhoneInputForm = ({
             </button>
 
             {showCountryDropdown && (
-              <div className="absolute z-50 left-0 w-[250px] mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+              <div
+                className={`absolute z-50 left-0 w-[250px] bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto ${
+                  dropdownDirection === 'down' ? 'mt-2 top-full' : 'mb-2 bottom-full'
+                }`}
+              >
                 {countryCodes.map((country) => (
                   <div
                     key={country.code}
