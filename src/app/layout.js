@@ -2,6 +2,8 @@ import { Tajawal } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Script from "next/script";
+import ClientWrapper from "@/components/ClientWrapper";
+import ClarityProvider from "@/components/ClarityProvider";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -85,7 +87,9 @@ export default function RootLayout({ children }) {
               `,
             }}
           />
-
+          <ClientWrapper>
+            <ClarityProvider/>
+          </ClientWrapper>
           {/* Noscript fallback */}
           <noscript>
             <img
