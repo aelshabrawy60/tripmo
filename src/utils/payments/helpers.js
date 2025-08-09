@@ -48,6 +48,17 @@ export async function calculateNetAmount(amount, total_price, group_id){
     return amount - commision
 }
 
+export function calculateAffiliateAmount(total_price){
+    let affiliateCommissionRate = 0.08; // 8% affiliate commission
+
+    if (total_price >= 2000 && total_price <= 8000){
+        affiliateCommissionRate = 0.06
+    }else if(total_price > 8000){
+        affiliateCommissionRate = 0.04
+    }
+    return total_price * affiliateCommissionRate;
+}
+
 
 
 function calcualteMinDateToRelease(){
@@ -93,7 +104,7 @@ export function calculateReleaseDateAggresive(cancelDeadlineDate) {
 
 
 
-export async function createDeposit(bookData, url, paymentId, type, tracking_data = null) {
+export async function createDeposit(bookData, url, paymentId, type, tracking_data = null, affiliate_ref = null) {
 
     const amount = bookData.deposite_price
     const status = amount > 0 ? "pending": "confirmed"
@@ -112,7 +123,9 @@ export async function createDeposit(bookData, url, paymentId, type, tracking_dat
         type: type,
         net_amount: await calculateNetAmount(amount, bookData.total_price, bookData.group_id),
         release_date: releaseDate,
-        tracking_data: tracking_data
+        tracking_data: tracking_data,
+        referral_code: affiliate_ref,
+        affiliate_amount: affiliate_ref? calculateAffiliateAmount(bookData.total_price) : 0
     }])
 
     if(error){

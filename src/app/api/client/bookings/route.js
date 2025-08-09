@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabase/service";
 import { getTrip } from "../../dashboard/trips/helpers";
 import NotificationService from "@/utils/notifications/NotificationService";
-import { calculateNetAmount } from "@/utils/payments/helpers";
+import { calculateNetAmount , calculateAffiliateAmount} from "@/utils/payments/helpers";
 import { requireClient } from "@/utils/middleware/requireClient";
 import { sendMetaIntiateCheckout } from "@/lib/metaCapi";
 import { calcCancelationFees } from "@/utils/payments/helpers";
@@ -15,6 +15,7 @@ export async function POST(request) {
 
     const cookieStore = cookies();
     const currency = cookieStore.get('currency')?.value;
+    const refCode = cookieStore.get('affiliate_ref')?.value || null;
 
     //
     try {
@@ -29,7 +30,7 @@ export async function POST(request) {
             const type = "auto"
 
             if(type == "auto"){
-                const payment = await initDepositPayment(result.data, getTrackingData(request), lang || 'ar', currency)
+                const payment = await initDepositPayment(result.data, getTrackingData(request), lang || 'ar', currency, refCode)
 
                 // 🟢 Send Meta Conversions API Event (InitiateCheckout)
                 await sendMetaIntiateCheckout(request, result, phone, numberOfSeats)
@@ -237,7 +238,7 @@ async function editFees(bookId) {
     // Get the current deposit and related booking
     const { data: deposit, error: fetchError } = await supabaseAdmin
         .from("deposits")
-        .select("id, amount, group_id")
+        .select("id, amount, group_id, referral_code")
         .eq("book_id", bookId)
         .single();
 
@@ -252,11 +253,12 @@ async function editFees(bookId) {
         deposit.group_id
     );
 
+    const affiliateAmount = deposit.referral_code ? calculateAffiliateAmount(deposit.amount) : 0;
 
     // Update the single deposit
     const { data: updatedDeposit, error: updateError } = await supabaseAdmin
         .from("deposits")
-        .update({ net_amount: newAmount })
+        .update({ net_amount: newAmount, affiliate_amount: affiliateAmount })
         .eq("id", deposit.id)
         .select()
         .single();
