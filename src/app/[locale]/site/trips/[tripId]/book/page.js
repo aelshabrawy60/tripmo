@@ -231,6 +231,7 @@ function BookingPage() {
               tripData={tripData}
               pricing={pricing}
               locale={locale}
+              time={time}
             />
 
             {showPaymentButton && (

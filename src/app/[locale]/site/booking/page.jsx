@@ -51,6 +51,24 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated, qrDataUrl, lo
     return new Date(dateString).toLocaleDateString(locale === 'ar' ? 'ar-EG' : 'en-US', options);
   };
 
+  // Helper function to format persons breakdown
+  const formatPersonsBreakdown = (personsTypes) => {
+    if (!personsTypes) return '';
+    
+    const breakdown = [];
+    if (personsTypes.adults && parseInt(personsTypes.adults) > 0) {
+      breakdown.push(`${personsTypes.adults} ${locale === 'ar' ? 'بالغ' : 'Adult'}${parseInt(personsTypes.adults) > 1 ? (locale === 'ar' ? 'ين' : 's') : ''}`);
+    }
+    if (personsTypes.children && parseInt(personsTypes.children) > 0) {
+      breakdown.push(`${personsTypes.children} ${locale === 'ar' ? 'طفل' : 'Child'}${parseInt(personsTypes.children) > 1 ? (locale === 'ar' ? '' : 'ren') : ''}`);
+    }
+    if (personsTypes.infants && parseInt(personsTypes.infants) > 0) {
+      breakdown.push(`${personsTypes.infants} ${locale === 'ar' ? 'رضيع' : 'Infant'}${parseInt(personsTypes.infants) > 1 ? (locale === 'ar' ? '' : 's') : ''}`);
+    }
+    
+    return breakdown.join(locale === 'ar' ? ' • ' : ' • ');
+  };
+
   return (
     <div dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-xl">
@@ -98,6 +116,12 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated, qrDataUrl, lo
               <div>
                 <p className="font-medium text-gray-700">{t.persons[locale]}</p>
                 <p className="text-gray-600">{bookingData.persons} {t.personUnit[locale]}</p>
+                {/* Persons breakdown */}
+                {bookingData.persons_types && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    ({formatPersonsBreakdown(bookingData.persons_types)})
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -162,26 +186,6 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated, qrDataUrl, lo
           </div>
         )}
 
-      </div>
-    </div>
-  );
-};
-
-const ErrorDisplay = ({ message, locale = "ar" }) => {
-  const t = translations;
-  return (
-    <div className="max-w-md mx-auto my-8 p-6 bg-white rounded-xl shadow-xl" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mb-4">
-          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </div>
-        <h2 className="text-xl font-bold text-red-600 mb-2">{t.paymentErrorTitle[locale]}</h2>
-        <p className="text-gray-600 mb-6">{message || t.paymentErrorMessage[locale]}</p>
-        <button className="px-6 py-3 bg-tripmo-500 text-white rounded-lg hover:bg-tripmo-600 transition-colors shadow-md">
-          {t.goBack[locale]}
-        </button>
       </div>
     </div>
   );

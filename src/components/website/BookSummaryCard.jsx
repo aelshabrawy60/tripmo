@@ -5,13 +5,13 @@ import Cookies from 'js-cookie';
 import formatPrice from '@/utils/currency/PriceFormate';
 
 
-function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
+function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = null }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const t = {
     tripDate: {
-      ar: "موعد الرحلة",
-      en: "Trip Date"
+      ar: "اليوم",
+      en: "Day"
     },
     notSelected: {
       ar: "لم يتم تحديد التاريخ",
@@ -20,6 +20,18 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
     guests: {
       ar: "عدد الأفراد",
       en: "Number of Guests"
+    },
+    adults: {
+      ar: "بالغ",
+      en: "Adult"
+    },
+    children: {
+      ar: "طفل",
+      en: "Child"
+    },
+    infants: {
+      ar: "رضيع",
+      en: "Infant"
     },
     totalPrice: {
       ar: "إجمالي السعر",
@@ -32,6 +44,21 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
   };
 
   const Currency = Cookies.get('currency');
+
+  // Calculate totals and check if breakdown is needed
+  const adultsCount = parseInt(seats.adults) || 0;
+  const childrenCount = parseInt(seats.children) || 0;
+  const infantsCount = parseInt(seats.infants) || 0;
+  const totalGuests = adultsCount + childrenCount + infantsCount;
+  
+  // Show breakdown if more than one type has guests
+  const guestTypes = [
+    { count: adultsCount, label: t.adults[locale] },
+    { count: childrenCount, label: t.children[locale] },
+    { count: infantsCount, label: t.infants[locale] }
+  ].filter(type => type.count > 0);
+  
+  const showBreakdown = guestTypes.length > 1;
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-50 overflow-hidden w-full">
@@ -76,9 +103,21 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
             <div className="text-xs text-gray-500 mb-1">
               {t.guests[locale]}
             </div>
-            <div className="font-bold text-gray-800">
-              {parseInt(seats.adults) + parseInt(seats.children) + parseInt(seats.infants) || '0'}
+            <div className="font-bold text-gray-800 mb-1">
+              {!showBreakdown ? totalGuests || '0' : ''}
             </div>
+            
+            {/* Person Type Breakdown */}
+            {showBreakdown && (
+              <div className="text-xs font-bold">
+                {guestTypes.map((type, index) => (
+                  <span key={index}>
+                    {type.count} {type.label}
+                    {index < guestTypes.length - 1 ? ' • ' : ''}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Total Price */}
@@ -88,7 +127,7 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
               {t.totalPrice[locale]}
             </div>
             <div className="font-bold">
-              {pricing?.price ? `${formatPrice(pricing.price, Currency)}` : `0 ${t.currency[locale]}`}
+              {pricing?.price ? `${formatPrice(pricing.price, Currency)}` : `0 ${Currency || ''}`}
             </div>
           </div>
         </div>
