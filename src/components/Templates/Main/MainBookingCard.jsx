@@ -11,7 +11,7 @@ import TimeChooser from '@/components/Trips/TimeChooser'
 
 function MainBookingCard({ tripData, locale }) {
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [selectedSeatsNum, setSelectedSeatsNum] = useState(1)
+  const [selectedSeatsNum, setSelectedSeatsNum] = useState({ adults: 1, children: 0, infants: 0 })
   const [selectedTime, setSelectedTime] = useState(null)
   const [totalPrice, setTotalPrice] = useState(null)
   const [depositPrice, setDepositPrice] = useState(null)
@@ -40,7 +40,7 @@ function MainBookingCard({ tripData, locale }) {
       const formattedDate = selectedDate
 
       const response = await fetch(
-        `/api/client/bookings?tripId=${tripData.id}&date=${formattedDate}&numberOfSeats=${selectedSeatsNum}&time=${selectedTime}`
+        `/api/client/bookings?tripId=${tripData.id}&date=${formattedDate}&numberOfSeats=${selectedSeatsNum.adults}&time=${selectedTime}&numberOfChildren=${selectedSeatsNum.children}&numberOfInfants=${selectedSeatsNum.infants}`
       )
 
       if (!response.ok) throw new Error(`API error: ${response.status}`)
@@ -90,7 +90,12 @@ function MainBookingCard({ tripData, locale }) {
         {/* Date & Person Selectors */}
         <div className="flex gap-2 rounded-lg">
           <DateChooser tripData={tripData} onDateChange={handleDateChange} locale={locale} />
-          <PersonsNumChooser onChange={handleSeatsChange} locale={locale} />
+          <PersonsNumChooser onChange={handleSeatsChange} locale={locale} 
+            tripPersonsGroups={{
+              ChildPrice: tripData.pricing.ChildPrice ?? null,
+              InfantPrice: tripData.pricing.InfantPrice ?? null
+            }}
+          />
         </div>
         <div>
           <TimeChooser tripData={tripData} onChange={setSelectedTime} locale={locale}/>
@@ -140,7 +145,7 @@ function MainBookingCard({ tripData, locale }) {
         {/* Book Button */}
         {isAvail ? (
           <a
-            href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum}&time=${selectedTime}`}
+            href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum.adults}&time=${selectedTime}&children=${selectedSeatsNum.children}&infants=${selectedSeatsNum.infants}`}
             className="bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2"
           >
             {t.bookNow}

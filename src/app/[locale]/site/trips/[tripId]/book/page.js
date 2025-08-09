@@ -16,6 +16,8 @@ function BookingPage() {
   const searchParams = useSearchParams();
   const date = searchParams.get('date');
   const numberOfSeats = searchParams.get('seats') || '1';
+  const numberOfChildren = searchParams.get('children') || '0';
+  const numberOfInfants = searchParams.get('infants') || '0';
   const time = searchParams.get('time') || null;
 
   const [pricing, setPricing] = useState(null);
@@ -75,7 +77,7 @@ function BookingPage() {
       const formattedDate = date;
 
       const response = await fetch(
-        `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${numberOfSeats}&getTrip=true&time=${time}`
+        `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${numberOfSeats}&getTrip=true&time=${time}&numberOfChildren=${numberOfChildren}&numberOfInfants=${numberOfInfants}`
       );
 
       if (!response.ok) {
@@ -160,6 +162,8 @@ function BookingPage() {
       name: clientData.clientName,
       phone: clientData.clientPhone,
       numberOfSeats: numberOfSeats,
+      numberOfChildren: numberOfChildren,
+      numberOfInfants: numberOfInfants,
       date: date || new Date().toISOString().split('T')[0],
       time: time || null,
       tripId: tripId,
@@ -219,7 +223,11 @@ function BookingPage() {
           <div className={`flex flex-col gap-4 ${showAuthFlow ? 'max-w-sm' : ''}`} >
             <BookSummaryCard
               day={date}
-              seats={numberOfSeats}
+              seats={{
+                adults: numberOfSeats,
+                children: numberOfChildren,
+                infants: numberOfInfants
+              }}
               tripData={tripData}
               pricing={pricing}
               locale={locale}

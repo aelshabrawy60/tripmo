@@ -161,7 +161,7 @@ function BookingCard({ bookData, type = 0, onDeleteBooking, onEditBooking, tripD
         bookingId={bookData.id}
         tripData={tripData}
         initialDate={bookData.day}
-        initialNumberOfSeats={bookData.persons}
+        initialNumberOfSeats={bookData.persons_types.adults ? bookData.persons_types : { adults: bookData.persons, children: 0, infants: 0 }}
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         onSuccess={handleEditSuccess}

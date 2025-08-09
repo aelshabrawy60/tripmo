@@ -77,7 +77,7 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar' }) {
               {t.guests[locale]}
             </div>
             <div className="font-bold text-gray-800">
-              {seats || '0'}
+              {parseInt(seats.adults) + parseInt(seats.children) + parseInt(seats.infants) || '0'}
             </div>
           </div>
 

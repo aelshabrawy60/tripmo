@@ -39,7 +39,7 @@ export async function isSeatsAvaliable(tripId, date, numberOfSeats, maxSeats, ed
         query = query.eq('start_time', time);
     }
 
-    const { data, error } = await query;
+    let { data, error } = await query;
 
     if (error) {
         console.error("Error fetching booking data:", error);
@@ -94,4 +94,26 @@ export function calculateCancelDeadline(bookDay, cancellationPolicy, timeZone) {
     }
 
     return null
+}
+
+export function checkIfAgeGroupAvaliable(tripPersonsGroups, bookingPersonsGroups) {
+    // check childs
+    if (bookingPersonsGroups.childs > 0) {
+        if (tripPersonsGroups.ChildPrice !== undefined && tripPersonsGroups.ChildPrice !== -1) {
+            // valid child price
+        } else {
+            return false;
+        }
+    }
+
+    // check infants
+    if (bookingPersonsGroups.infants > 0) {
+        if (tripPersonsGroups.InfantPrice !== undefined && tripPersonsGroups.InfantPrice !== -1) {
+            // valid infant price
+        } else {
+            return false;
+        }
+    }
+
+    return true;
 }

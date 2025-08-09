@@ -55,7 +55,9 @@ const EditBooking = ({
           bookingId,
           tripId: tripData.id,
           date,
-          numberOfSeats,
+          numberOfSeats : numberOfSeats?.adults, // number of adults
+          numberOfChildren : numberOfSeats?.children,
+          numberOfInfants : numberOfSeats?.infants,
         }),
       });
 
@@ -140,6 +142,10 @@ const EditBooking = ({
               <PersonsNumChooser
                 onChange={handleSeatsChange}
                 initialValue={numberOfSeats}
+                tripPersonsGroups={{
+                  ChildPrice: tripData.pricing.ChildPrice ?? null,
+                  InfantPrice: tripData.pricing.InfantPrice ?? null
+                }}
               />
               
               <div className="flex mt-4 items-center justify-between">

@@ -53,7 +53,9 @@ const AddBooking = ({
   const handlePersonsChange = (num) => {
     setFormData(prevData => ({
       ...prevData,
-      numberOfSeats: num
+      numberOfSeats: num.adults,
+      numberOfChildren: num.children,
+      numberOfInfants: num.infants
     }));
   };
   // Handle time select changes
@@ -225,7 +227,14 @@ const AddBooking = ({
                 <DateChooser tripData={formData.tripData} onDateChange={handleDateChange} intiateDate={new Date(formData.date)}/>
               </div>
               
-              <PersonsNumChooser onChange={handlePersonsChange}/>
+              <PersonsNumChooser 
+                onChange={handlePersonsChange}
+                tripPersonsGroups={{
+                  ChildPrice: formData.tripData.pricing.ChildPrice ?? null,
+                  InfantPrice: formData.tripData.pricing.InfantPrice ?? null
+                }}
+
+              />
               <div className='mt-4'>
                 <TimeChooser tripData={formData.tripData} onChange={handleTimeChange}/>
               </div>

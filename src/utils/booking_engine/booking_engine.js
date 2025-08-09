@@ -3,7 +3,7 @@
 // check booking avlibility
 // cancel booking
 import { supabaseAdmin } from "../supabase/service";
-import { isDayBetween, isSeatsAvaliable, isDayinWeeklyDays, isDayInPast, calculateCancelDeadline } from "./helpers";
+import { isDayBetween, isSeatsAvaliable, isDayinWeeklyDays, isDayInPast, calculateCancelDeadline , checkIfAgeGroupAvaliable} from "./helpers";
 
 function getDay(dateString) {
     // Force the date to be interpreted exactly as provided
@@ -14,12 +14,14 @@ function getDay(dateString) {
     return date.getUTCDay();
 }
 
-export async function getBookingPrice(tripId, date, numberOfSeats, TripData = null){
+export async function getBookingPrice(tripId, date, numberOfSeats, TripData = null, numberOfChildren = 0, numberOfInfants = 0) {
     if(!TripData){
         TripData = await fetchTripData(tripId);
     }
 
     let DeafultTripPrice = TripData.pricing.PersonPrice;
+    let DeafultChildrenPrice = TripData.pricing.ChildPrice || 0;
+    let DeafultInfantsPrice = TripData.pricing.InfantPrice || 0;
 
     console.log("TripData.pricing", TripData.pricing);
 
@@ -42,7 +44,7 @@ export async function getBookingPrice(tripId, date, numberOfSeats, TripData = nu
         }
     }
 
-    DeafultTripPrice *= numberOfSeats;
+    DeafultTripPrice = (DeafultTripPrice * numberOfSeats) + (DeafultChildrenPrice * numberOfChildren) + (DeafultInfantsPrice * numberOfInfants);
     let depositPrice = DeafultTripPrice * (TripData.pricing.AdvancePaymentPercentage / 100);
     return {
         price: DeafultTripPrice,
@@ -60,6 +62,7 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, time
         return { success: false, message: "Trip not found." };
     }
 
+    console.log("checking for number of seats", numberOfSeats)
     const maxSeats = TripData.max_clients;
     const avlibilityType = TripData.availability_type;
 
@@ -86,22 +89,33 @@ export async function checkBookingAvailability(tripId, date, numberOfSeats, time
 }
 
 
-export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, time = null, timeZone = 0, client_id = null, lang = "ar") { 
+export async function addBooking(name, tripId, date, phone, numberOfSeats, user_role, time = null, timeZone = 0, client_id = null, lang = "ar", numberOfChilds = 0, numberOfInfants = 0) { 
 
     if(isDayInPast(date)){
         return { success: false, message: "Cannot book a trip in the past." };
     }
 
     const TripData = await fetchTripData(tripId);
-    
-    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, time, TripData);
-    
+
+    const availability = await checkBookingAvailability(tripId, date, parseInt(numberOfSeats) + parseInt(numberOfChilds) + parseInt(numberOfInfants), time, TripData);
+
     if (!availability.success) {
         console.error("Booking not available:", availability.message);
         return { success: false, message: availability.message };
     }
 
-    const {price, deposit} = await getBookingPrice(tripId, date, numberOfSeats, TripData);
+    const isAgeGroupAvailable = checkIfAgeGroupAvaliable(TripData.pricing, {
+        adults: numberOfSeats,
+        children: numberOfChilds,
+        infants: numberOfInfants
+    });
+
+    if (!isAgeGroupAvailable) {
+        console.error("Booking not available: Invalid age group.");
+        return { success: false, message: "Invalid age group." };
+    }
+
+    const {price, deposit} = await getBookingPrice(tripId, date, numberOfSeats, TripData, numberOfChilds, numberOfInfants);
 
     const cancel_deadline = calculateCancelDeadline(date, TripData.cancellation_policy, timeZone);
     //const cancellation_fees = TripData.cancellation_policy ? TripData.cancellation_policy.fees : 0;
@@ -117,7 +131,12 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
             bookable_id: tripId,
             day: date,
             client_phone: phone,
-            persons: numberOfSeats,
+            persons: parseInt(numberOfSeats) + parseInt(numberOfChilds) + parseInt(numberOfInfants),
+            persons_types: {
+                adults: numberOfSeats,
+                children: numberOfChilds,
+                infants: numberOfInfants
+            },
             start_time: time,
             total_price: price,
             deposite_price: user_role == "admin" ? 0 : deposit,
@@ -139,9 +158,9 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
 
 
 
-export async function editBooking(booking_id, tripId, date, numberOfSeats, user_role, time = null) {
+export async function editBooking(booking_id, tripId, date, numberOfSeats, user_role, time = null, numberOfChilds = 0, numberOfInfants = 0) {
     // check avalibility first
-    const availability = await checkBookingAvailability(tripId, date, numberOfSeats, time , null , true, booking_id);
+    const availability = await checkBookingAvailability(tripId, date, parseInt(numberOfSeats) + parseInt(numberOfChilds) + parseInt(numberOfInfants), time , null , true, booking_id);
 
     if (!availability.success) {
         console.error("Booking not available:", availability.message);
@@ -152,8 +171,13 @@ export async function editBooking(booking_id, tripId, date, numberOfSeats, user_
         .from('bookings')
         .update({
             day: date,
-            persons: numberOfSeats,
-            start_time: time
+            persons: parseInt(numberOfSeats) + parseInt(numberOfChilds) + parseInt(numberOfInfants),
+            start_time: time,
+            persons_types: {
+                adults: numberOfSeats,
+                children: numberOfChilds,
+                infants: numberOfInfants
+            }
         })
         .eq('id', booking_id)
         .select('*')
