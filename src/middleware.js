@@ -71,6 +71,39 @@ export function middleware(request) {
       })
     }
   }
+
+  // If it's a subdomain like affiliate.maindomain.com
+  if (subdomain === 'affiliate') {
+    // Handle root path for admin subdomain
+    if (url.pathname === '/') {
+      console.log('[MIDDLEWARE] Admin subdomain root, rewriting to /admin')
+      url.pathname = '/affiliate'
+      response = NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      })
+    }
+    // For other paths under admin subdomain, prepend /admin if not already there
+    else if (!url.pathname.startsWith('/affiliate')) {
+      console.log(`[MIDDLEWARE] Admin subdomain, rewriting ${url.pathname} to /affiliate${url.pathname}`)
+      url.pathname = `/affiliate${url.pathname}`
+      response = NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      })
+    }
+    // Already has /admin path
+    else {
+      console.log(`[MIDDLEWARE] Admin subdomain detected, allowing path: ${url.pathname}`)
+      response = NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      })
+    }
+  }
   
   // If it's a subdomain like host.maindomain.com
   else if (subdomain === 'host') {

@@ -4,6 +4,7 @@ import MainLayout from "@/components/Templates/Main/MainLayout";
 import MainNavbar from "@/components/Templates/Main/MainNavbar";
 import MainFooter from "@/components/Templates/Main/MainFooter";
 import { footerPages, pages, socialMedia } from "./data";
+import AffiliateTracker from "@/components/Affiliate/AffiliateTracker";
 
 
 export const metadata = {
@@ -39,6 +40,7 @@ export default function RootLayout({ children, params }) {
     <>
       <div style={{direction: locale == "en" ? "ltr" : "rtl"}}>
         <MainLayout>
+          <AffiliateTracker/>
           {!shouldHideNavbar && <MainNavbar pages={pages} locale={locale}/>}
           <div>{children}</div>
         </MainLayout>

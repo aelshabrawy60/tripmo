@@ -136,3 +136,45 @@ export async function signInAdmin(formData) {
     return { error: "حدث خطأ غير متوقع." };
   }
 }
+
+export async function signInAffiliate(formData){
+  const data = {
+    username: formData.get("username"),
+    password: formData.get("password"),
+  };
+
+  if (!data.username || !data.password) {
+    return { error: "اسم المستخدم وكلمة المرور مطلوبان." };
+  }
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/affiliate/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      return { error: errorData.error || "فشل في تسجيل الدخول" };
+    }
+
+    const { token } = await res.json();
+
+    cookies().set("affiliate_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+
+    revalidatePath("/affiliate");
+    return { success: true }; // Return success, don't redirect
+
+  } catch (error) {
+    console.error("SignIn Error:", error);
+    return { error: "حدث خطأ غير متوقع." };
+  }
+}
