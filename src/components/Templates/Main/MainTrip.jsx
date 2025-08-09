@@ -1,5 +1,3 @@
-"use client"
-import React, { useEffect, useState } from 'react'
 import GalleryViewer from './GalleryViewer'
 import MainTripDetails from './MainTripDetails'
 import MainBookingCard from './MainBookingCard'
@@ -9,7 +7,6 @@ import InlineCancelationPolicy from '@/components/Trips/InlineCancelationPolicy'
 import MiniBookingCard from '@/components/website/MiniBookingCard'
 
 function MainTrip({tripData, locale}) {
-  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="max-w-7xl mx-auto p-2">
@@ -60,8 +57,6 @@ function MainTrip({tripData, locale}) {
             <div className="sticky flex flex-col items-end top-4 z-10" id="booking-section">
               <MainBookingCard 
                 tripData={tripData}
-                isLoading={isLoading}
-                onBookingRequest={() => setIsLoading(true)}
                 locale={locale}
               />
             </div>

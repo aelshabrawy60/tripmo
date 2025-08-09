@@ -71,7 +71,7 @@ function MainBookingCard({ tripData, locale }) {
       if (selectedDate && selectedSeatsNum) {
         checkAvailAndPricing()
       }
-    }, 100)
+    }, 150)
 
     return () => clearTimeout(timer)
   }, [selectedDate, selectedSeatsNum, selectedTime])
