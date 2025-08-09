@@ -87,7 +87,7 @@ export default function RootLayout({ children }) {
             }}
           />
 
-          <ClarityProvider/>
+          {/*<ClarityProvider/>*/}
 
           {/* Noscript fallback */}
           <noscript>
