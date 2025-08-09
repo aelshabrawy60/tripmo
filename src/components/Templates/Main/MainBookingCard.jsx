@@ -51,6 +51,7 @@ function MainBookingCard({ tripData, locale }) {
         setIsAvail(true)
         setTotalPrice(data.pricing.price)
         setDepositPrice(data.pricing.deposit)
+        setError(null)
       } else {
         setIsAvail(false)
         setTotalPrice(null)
