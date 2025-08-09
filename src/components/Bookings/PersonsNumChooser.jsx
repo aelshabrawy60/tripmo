@@ -4,7 +4,7 @@ import { Users } from 'lucide-react';
 function PersonsNumChooser({ 
   onChange, 
   initialValue = { adults: 1, children: 0, infants: 0 }, 
-  locale, 
+  locale = "ar", 
   tripPersonsGroups = { ChildPrice: null, InfantPrice: null } 
 }) {
   const [counts, setCounts] = useState(initialValue);
