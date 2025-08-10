@@ -1,7 +1,7 @@
 // app/admin/layout.js
 "use client"
 import "../globals.css";
-import { SharedContext } from "@/context/ShareAdminAuth";
+import { SharedContext } from "@/context/ShareAffiliateAuth";
 import Loading from "@/components/Loading";
 import { useAffiliateAuth } from "@/context/AffiliateAuthContext";
 import { AffiliateAuthProvider } from "@/context/AffiliateAuthContext";

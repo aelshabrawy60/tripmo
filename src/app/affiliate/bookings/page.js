@@ -1,8 +1,11 @@
+import { AffiliateBookings } from '@/components/Affiliate/AffiliateBookings'
 import React from 'react'
 
 function page() {
   return (
-    <div>page</div>
+    <div>
+      <AffiliateBookings/>
+    </div>
   )
 }
 

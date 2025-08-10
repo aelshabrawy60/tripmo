@@ -105,8 +105,7 @@ export function middleware(request) {
     }
   }
 
-  
-  
+
   // If it's a subdomain like host.maindomain.com
   else if (subdomain === 'host') {
     // Handle root path for host subdomain
