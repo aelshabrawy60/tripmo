@@ -73,10 +73,10 @@ export function middleware(request) {
   }
 
   // If it's a subdomain like affiliate.maindomain.com
-  if (subdomain === 'affiliate') {
-    // Handle root path for admin subdomain
+  else if (subdomain === 'affiliate') {
+    // Handle root path for affiliate subdomain
     if (url.pathname === '/') {
-      console.log('[MIDDLEWARE] Admin subdomain root, rewriting to /admin')
+      console.log('[MIDDLEWARE] Affiliate subdomain root, rewriting to /affiliate')
       url.pathname = '/affiliate'
       response = NextResponse.rewrite(url, {
         request: {
@@ -104,6 +104,8 @@ export function middleware(request) {
       })
     }
   }
+
+  
   
   // If it's a subdomain like host.maindomain.com
   else if (subdomain === 'host') {
