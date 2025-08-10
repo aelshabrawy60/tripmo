@@ -1,5 +1,34 @@
 import { supabaseAdmin } from "../supabase/service";
 import jwt from "jsonwebtoken";
+import { generateRefCode, generatePassword } from "./helper";
+
+export async function createAffiliate(email, name, phone) {
+    const referralCode = generateRefCode(email);
+    const password = generatePassword();
+
+    const { data, error } = await supabaseAdmin
+        .from("affiliates")
+        .insert([{ email, name, phone, ref_code: referralCode, password }])
+        .select("*");
+
+    if (error) {
+        throw new Error("Failed to create affiliate: " + error.message);
+    }
+
+    const affiliate = data[0];
+    
+    const token = jwt.sign(
+        {
+            id: affiliate.id,
+            email: affiliate.email,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1000d" }
+    );
+
+    return { affiliate, token };
+}
+
 
 export async function signin(email, password){
     const {data, error} = await supabaseAdmin.from("affiliates")
