@@ -6,6 +6,6 @@ export const roles = [
   },
   {
     name: "accountant",
-    disallowedPaths: ["bookings", "refunds", "withdraws", "trips", "hosts"],
+    disallowedPaths: ["bookings", "refunds", "withdraws", "trips", "hosts", "affiliates"],
   }
 ];

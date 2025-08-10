@@ -8,7 +8,6 @@ import { usePathname } from 'next/navigation';
 import { FileText, HomeIcon, Settings, Settings2, SettingsIcon, User } from 'lucide-react';
 import { FaMoneyCheck } from 'react-icons/fa';
 import { PiCarProfile, PiMountainsBold } from "react-icons/pi";
-import AdminProfileCard from '../profile/AdminProfileCard';
 
 
 // Define your sidebar items function that filters based on role

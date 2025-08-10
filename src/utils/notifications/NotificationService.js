@@ -1,5 +1,6 @@
 import { ChannelDispatcher } from "./channel/ChannelDispatcher";
 import { supabaseAdmin } from "../supabase/service";
+import { getAffiliateWelcomeHtmlTemplate } from "./HtmlTemplates/AffiliateWelcomeEmailTemplate";
 
 export default class NotificationService{
 
@@ -125,6 +126,21 @@ export default class NotificationService{
 
         const result = await this.dispatcher.sendMessage(channelName, { to: to, template: rateTemplate })
 
+        return result
+    }
+
+    async sendAffiliateWelcome(channelName, affiliateData) {
+
+        const payload = {
+            senderName: "Rehla Now",
+            senderEmail: "info@rehlanow.com",
+            recipientEmail: affiliateData.email,
+            recipientName: affiliateData.name,
+            subject: "أهلاً بك في برنامج شركاء رحلة ناو",
+            htmlContent: getAffiliateWelcomeHtmlTemplate(affiliateData),
+        }
+
+        const result = await this.dispatcher.sendMessage(channelName, payload)
         return result
     }
 

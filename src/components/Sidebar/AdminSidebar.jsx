@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, ChevronRight, ChevronLeft} from 'react-feather';
 import { usePathname } from 'next/navigation';
-import { BanknoteArrowDown, FileText, HomeIcon, MapPlus, Settings, Settings2, SettingsIcon, Ticket, Tickets, TicketSlash, User, Users, Wallet } from 'lucide-react';
+import { BanknoteArrowDown, FileText, HomeIcon, MapPlus, Settings, Settings2, SettingsIcon, Ticket, Tickets, TicketSlash, User, UserCheck2, Users, Wallet } from 'lucide-react';
 import { roles } from '@/utils/middleware/AdminRoles';
 
 // Define your sidebar items function that filters based on role
@@ -45,6 +45,11 @@ const getSidebarItems = (userRole) => {
       path: '/revenue',
       icon: <Wallet size={20}/>
     },
+    {
+      title: "المسوقين",
+      path: "/affiliates",
+      icon: <UserCheck2 size={20}/>
+    }
   ];
 
   // Find the role configuration

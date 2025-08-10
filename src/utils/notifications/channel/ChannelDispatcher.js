@@ -1,10 +1,10 @@
-import { ZixFlowWhatsAppChannel } from "./channels/whatsapp/ZixFlowWhatsAppChannel";
 import { MessageBirdWhatsAppChannel } from "./channels/whatsapp/MessageBirdWhatsAppChannel";
+import { BrevoEmailChannel } from "./channels/email/BrevoEmailChannel";
 export class ChannelDispatcher {
   constructor(config) {
     this.channels = {
       whatsapp: new MessageBirdWhatsAppChannel(config), // Or MessageBirdWhatsAppChannel
-      // email: new EmailChannel(config),
+      email: new BrevoEmailChannel(config),
       // sms: new SMSChannel(config),
     };
   }
