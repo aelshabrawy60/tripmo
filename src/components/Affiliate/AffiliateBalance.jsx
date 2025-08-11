@@ -190,7 +190,7 @@ export default function AffiliateBalanceDisplay() {
         </div>
 
         {/* Available Balance Card */}
-        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <a href='/withdraw' className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
           <div className="flex items-center gap-4 mb-6">
             <div className="bg-white/20 rounded-full p-4">
               <CheckCircle  className="h-8 w-8" />
@@ -203,10 +203,10 @@ export default function AffiliateBalanceDisplay() {
           
           <div className="border-t border-white/20 pt-4">
             <p className="text-blue-100 text-sm">
-               الرصيد القابل للسحب
+                اضغط للسحب
             </p>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   );
