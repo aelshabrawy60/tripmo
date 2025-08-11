@@ -123,6 +123,7 @@ export async function addBooking(name, tripId, date, phone, numberOfSeats, user_
     if(time == "null"){
         time = null
     }
+    
     const { data, error } = await supabaseAdmin
         .from('bookings')
         .insert([{
