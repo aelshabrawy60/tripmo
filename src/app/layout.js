@@ -104,6 +104,7 @@ export default function RootLayout({ children }) {
           />
 
           {/* Tawk.to Chat Script */}
+          {/*
           <Script
             id="tawkto"
             strategy="afterInteractive"
@@ -121,6 +122,7 @@ export default function RootLayout({ children }) {
               `,
             }}
           />
+          */}
 
       
           {/* Noscript fallback */}
