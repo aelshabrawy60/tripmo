@@ -3,7 +3,6 @@ import { supabaseAdmin } from "@/utils/supabase/service";
 import { initPayout } from "@/utils/payments/payments"
 
 
-
 export async function GET() {
   try {
     const { data: events, error } = await supabaseAdmin

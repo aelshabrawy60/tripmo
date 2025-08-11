@@ -1,9 +1,10 @@
 import { supabaseAdmin } from "../supabase/service";
-import { unstable_cache } from 'next/cache'
 
 
 export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
+  
     try {
+        const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
         // Start building the query
         let query = supabaseAdmin
             .from("trips")
@@ -12,7 +13,8 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
               dest:dest_city (name),
               depature:depature_city (name)`
             )
-            .eq("status", "active");
+            .eq("status", "active")
+            .or(`available_day.is.null,available_day.gte.${today}`);
 
 
         if(destLocationId != null && depatureLoctionId != null){
@@ -69,6 +71,8 @@ export async function TrendingDestinations(locale = "ar") {
 
 
 export async function popularTrips() {
+
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
   // Fetch top 100 trips by score
   const { data, error } = await supabaseAdmin
     .from("trips")
@@ -79,6 +83,7 @@ export async function popularTrips() {
     `)
     .order("score", { ascending: false })
     .eq("status", "active")
+    .or(`available_day.is.null,available_day.gte.${today}`)
     .limit(100);
 
   if (error) {
