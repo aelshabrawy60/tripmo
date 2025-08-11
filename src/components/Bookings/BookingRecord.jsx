@@ -30,6 +30,24 @@ function BookingRecord({ bookData, type = 0 }) {
     }
   };
 
+  // Helper function to format persons breakdown in Arabic
+  const formatPersonsBreakdown = (personsTypes) => {
+    if (!personsTypes) return '';
+    
+    const breakdown = [];
+    if (personsTypes.adults && parseInt(personsTypes.adults) > 0) {
+      breakdown.push(`${personsTypes.adults} بالغ${parseInt(personsTypes.adults) > 1 ? 'ين' : ''}`);
+    }
+    if (personsTypes.children && parseInt(personsTypes.children) > 0) {
+      breakdown.push(`${personsTypes.children} طفل`);
+    }
+    if (personsTypes.infants && parseInt(personsTypes.infants) > 0) {
+      breakdown.push(`${personsTypes.infants} رضيع`);
+    }
+    
+    return breakdown.join(' • ');
+  };
+
   const statusInfo = getStatusInfo(bookData.status);
   const StatusIcon = statusInfo.icon;
 
@@ -89,6 +107,12 @@ function BookingRecord({ bookData, type = 0 }) {
               <User className="ml-1 text-gray-500" size={16} />
               <div>
                 <span className="text-gray-700">{bookData.persons} فرد</span>
+                {/* Persons breakdown */}
+                {bookData.persons_types && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    ({formatPersonsBreakdown(bookData.persons_types)})
+                  </div>
+                )}
               </div>
             </div>
             

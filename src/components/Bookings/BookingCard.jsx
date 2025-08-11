@@ -60,6 +60,24 @@ function BookingCard({ bookData, type = 0, onDeleteBooking, onEditBooking, tripD
     }
   };
 
+  // Helper function to format persons breakdown in Arabic
+  const formatPersonsBreakdown = (personsTypes) => {
+    if (!personsTypes) return '';
+    
+    const breakdown = [];
+    if (personsTypes.adults && parseInt(personsTypes.adults) > 0) {
+      breakdown.push(`${personsTypes.adults} بالغ${parseInt(personsTypes.adults) > 1 ? 'ين' : ''}`);
+    }
+    if (personsTypes.children && parseInt(personsTypes.children) > 0) {
+      breakdown.push(`${personsTypes.children} طفل`);
+    }
+    if (personsTypes.infants && parseInt(personsTypes.infants) > 0) {
+      breakdown.push(`${personsTypes.infants} رضيع`);
+    }
+    
+    return breakdown.join(' • ');
+  };
+
   const statusInfo = getStatusInfo(bookData.status);
 
   const handleDelete = async () => {
@@ -118,6 +136,12 @@ function BookingCard({ bookData, type = 0, onDeleteBooking, onEditBooking, tripD
               <div>
                 <span className="block text-sm text-gray-500">عدد الأفراد</span>
                 <span className="font-medium text-gray-700">{bookData.persons} فرد</span>
+                {/* Persons breakdown */}
+                {bookData.persons_types && (
+                  <span className="block text-xs text-gray-500 mt-1">
+                    ({formatPersonsBreakdown(bookData.persons_types)})
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -161,7 +185,7 @@ function BookingCard({ bookData, type = 0, onDeleteBooking, onEditBooking, tripD
         bookingId={bookData.id}
         tripData={tripData}
         initialDate={bookData.day}
-        initialNumberOfSeats={bookData.persons}
+        initialNumberOfSeats={bookData.persons_types?.adults ? bookData.persons_types : { adults: bookData.persons, children: 0, infants: 0 }}
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         onSuccess={handleEditSuccess}

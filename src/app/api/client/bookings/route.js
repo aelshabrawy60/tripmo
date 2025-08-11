@@ -11,7 +11,7 @@ import { calcCancelationFees } from "@/utils/payments/helpers";
 import { cookies } from 'next/headers';
 
 export async function POST(request) {
-    const { name, tripId, date, phone, numberOfSeats, time, offset, client_id, lang} = await request.json();
+    const { name, tripId, date, phone, numberOfSeats, time, offset, client_id, lang, numberOfChildren, numberOfInfants} = await request.json();
 
     const cookieStore = cookies();
     const currency = cookieStore.get('currency')?.value;
@@ -19,7 +19,7 @@ export async function POST(request) {
 
     //
     try {
-        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user", time , offset, client_id, lang);
+        const result = await addBooking(name, tripId, date, phone, numberOfSeats, "user", time , offset, client_id, lang, numberOfChildren, numberOfInfants);
 
         if (!result.success) {
             return NextResponse.json({ success: false, message: result.message }, { status: 400 });
@@ -63,6 +63,8 @@ export async function GET(request) {
     const numberOfSeats = searchParams.get("numberOfSeats");
     const time = searchParams.get("time");
     const fetchTrip = searchParams.get("getTrip");
+    const numberOfChildren = searchParams.get("numberOfChildren") || 0;
+    const numberOfInfants = searchParams.get("numberOfInfants") || 0;
 
     try {
 
@@ -70,14 +72,14 @@ export async function GET(request) {
 
         if(fetchTrip == 'true'){
             tripData = await getTrip(tripId)
-            console.log("data", tripData)
         }
 
-        const result = await checkBookingAvailability(tripId, date, numberOfSeats, time);
+        const result = await checkBookingAvailability(tripId, date, parseInt(numberOfSeats) + parseInt(numberOfChildren) + parseInt(numberOfInfants), time);
 
+        console.log("Booking availability result:", result);
         // calc trip price
 
-        const price = await getBookingPrice(tripId, date, numberOfSeats)
+        const price = await getBookingPrice(tripId, date, numberOfSeats, null, numberOfChildren, numberOfInfants)
         return NextResponse.json(result.success
             ? { success: true , pricing: price, tripData: tripData}
             : { success: false, message: result.message, pricing: price }, 

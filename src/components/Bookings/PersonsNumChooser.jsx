@@ -1,11 +1,15 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Users } from 'lucide-react';
 
-function PersonsNumChooser({ onChange, initialValue = 1, locale }) {
-  const [count, setCount] = useState(initialValue);
+function PersonsNumChooser({ 
+  onChange, 
+  initialValue = { adults: 1, children: 0, infants: 0 }, 
+  locale = "ar", 
+  tripPersonsGroups = { ChildPrice: null, InfantPrice: null } 
+}) {
+  const [counts, setCounts] = useState(initialValue);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [tempCount, setTempCount] = useState(initialValue);
+  const [tempCounts, setTempCounts] = useState(initialValue);
   const [popupPosition, setPopupPosition] = useState({ 
     vertical: 'bottom', 
     horizontal: 'left',
@@ -17,29 +21,47 @@ function PersonsNumChooser({ onChange, initialValue = 1, locale }) {
   // Translation helper
   const t = {
     title: locale === 'ar' ? 'عدد الأفراد' : 'Number of persons',
+    adults: locale === 'ar' ? 'البالغين' : 'Adults',
+    children: locale === 'ar' ? 'الأطفال' : 'Children',
+    infants: locale === 'ar' ? 'الرضع' : 'Infants',
     save: locale === 'ar' ? 'حفظ' : 'Save',
     cancel: locale === 'ar' ? 'اغلاق' : 'Cancel'
   };
 
-  const handleDecrement = () => {
-    if (tempCount > 1) {
-      setTempCount(tempCount - 1);
+  // Check which age groups are allowed
+  const isChildrenAllowed = tripPersonsGroups.ChildPrice !== null && tripPersonsGroups.ChildPrice !== -1;
+  const isInfantsAllowed = tripPersonsGroups.InfantPrice !== null && tripPersonsGroups.InfantPrice !== -1;
+
+  const handleDecrement = (type) => {
+    const minValue = type === 'adults' ? 1 : 0;
+    if (tempCounts[type] > minValue) {
+      setTempCounts(prev => ({
+        ...prev,
+        [type]: prev[type] - 1
+      }));
     }
   };
 
-  const handleIncrement = () => {
-    setTempCount(tempCount + 1);
+  const handleIncrement = (type) => {
+    setTempCounts(prev => ({
+      ...prev,
+      [type]: prev[type] + 1
+    }));
   };
 
   const handleSave = () => {
-    setCount(tempCount);
-    onChange(tempCount);
+    setCounts(tempCounts);
+    onChange(tempCounts);
     setIsPopupOpen(false);
   };
 
   const handleCancel = () => {
-    setTempCount(count);
+    setTempCounts(counts);
     setIsPopupOpen(false);
+  };
+
+  const getTotalCount = (countsObj = counts) => {
+    return countsObj.adults + countsObj.children + countsObj.infants;
   };
 
   const calculateOptimalPosition = () => {
@@ -55,7 +77,7 @@ function PersonsNumChooser({ onChange, initialValue = 1, locale }) {
 
     const margin = 8; // Minimum margin from viewport edges
     const popupWidth = 256; // w-64 = 16rem = 256px
-    const popupHeight = popupRect.height || 160; // Estimated height
+    const popupHeight = popupRect.height || 200; // Estimated height (increased for multiple selectors)
 
     let vertical = 'bottom';
     let horizontal = 'left';
@@ -149,7 +171,7 @@ function PersonsNumChooser({ onChange, initialValue = 1, locale }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isPopupOpen, count]);
+  }, [isPopupOpen, counts]);
 
   const getPositionClasses = () => {
     const { vertical, horizontal } = popupPosition;
@@ -180,66 +202,80 @@ function PersonsNumChooser({ onChange, initialValue = 1, locale }) {
     };
   };
 
+  const renderAgeGroupSelector = (type, label, value, info,  minValue = 0, ) => (
+    <div key={type} className="flex items-center justify-between py-2">
+      <div className="text-sm font-medium text-gray-700">{label} <div className='text-[11px] text-gray-600 mt-1'>{info}</div></div>
+      <div className="flex items-center space-x-3">
+        <button
+          type="button"
+          onClick={() => handleDecrement(type)}
+          disabled={value <= minValue}
+          aria-label={`Decrease ${label.toLowerCase()}`}
+          className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg transition-colors
+          ${value <= minValue ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+        >
+          -
+        </button>
+
+        <div className="mx-3 font-medium text-center min-w-[24px]">{value}</div>
+
+        <button
+          type="button"
+          onClick={() => handleIncrement(type)}
+          aria-label={`Increase ${label.toLowerCase()}`}
+          className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-lg hover:bg-gray-300 transition-colors"
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="relative">
       <button
         ref={buttonRef}
         type="button"
         onClick={() => {
-          setTempCount(count);
+          setTempCounts(counts);
           setIsPopupOpen(true);
         }}
         className="flex w-full items-center space-x-2 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <Users className="text-gray-600" size={20} />
-        <span className="font-medium">{count}</span>
+        <span className="font-medium">{getTotalCount()}</span>
       </button>
 
       {isPopupOpen && (
         <div
           ref={popupRef}
-          className={`${getPositionClasses()} bg-white shadow-lg rounded-lg p-4 border border-gray-200 z-50 w-64`}
+          className={`${getPositionClasses()} bg-white shadow-lg rounded-lg p-4 border border-gray-200 z-50 w-68`}
           style={getTransformStyle()}
         >
           <div className="flex flex-col space-y-4">
-            <div className="text-sm font-medium text-gray-700">{t.title}</div>
+            <div className="space-y-2">
+              {/* Adults selector - always shown */}
+              {renderAgeGroupSelector('adults', t.adults, tempCounts.adults, 'اكبر من 12 عام' ,1)}
+              
+              {/* Children selector - shown if allowed */}
+              {isChildrenAllowed && renderAgeGroupSelector('children', t.children, tempCounts.children, '(3-12) عام', 0)}
 
-            <div className="flex items-center justify-between border border-gray-200 rounded-lg p-2 bg-gray-50">
-              <button
-                type="button"
-                onClick={handleDecrement}
-                disabled={tempCount <= 1}
-                aria-label="Decrease number of persons"
-                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg transition-colors
-                ${tempCount <= 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
-              >
-                -
-              </button>
-
-              <div className="mx-3 font-medium text-center min-w-[24px]">{tempCount}</div>
-
-              <button
-                type="button"
-                onClick={handleIncrement}
-                aria-label="Increase number of persons"
-                className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-lg hover:bg-gray-300 transition-colors"
-              >
-                +
-              </button>
+              {/* Infants selector - shown if allowed */}
+              {isInfantsAllowed && renderAgeGroupSelector('infants', t.infants, tempCounts.infants, '2 عام او اقل', 0)}
             </div>
 
-            <div className="flex space-x-2 pt-2">
+            <div className="flex space-x-2 pt-2 border-gray-200">
               <button
                 type="button"
                 onClick={handleSave}
-                className="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 {t.save}
               </button>
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
               >
                 {t.cancel}
               </button>
@@ -250,4 +286,5 @@ function PersonsNumChooser({ onChange, initialValue = 1, locale }) {
     </div>
   );
 }
+
 export default PersonsNumChooser;
