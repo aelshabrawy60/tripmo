@@ -222,7 +222,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
         </div>
         <div className="flex items-center gap-2">
           <input
-            type="text"
+            type="number"
             className="border border-gray-200 rounded py-1 px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-right"
             value={personPrice}
             onChange={(e) => setPersonPrice(e.target.value)}
@@ -245,7 +245,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
           </div>
           <div className="flex items-center gap-2">
             <input
-              type="text"
+              type="number"
               className="border border-gray-200 rounded py-1 px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-right"
               value={childPrice}
               onChange={(e) => setChildPrice(e.target.value)}
@@ -287,7 +287,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
           </div>
           <div className="flex items-center gap-2">
             <input
-              type="text"
+              type="number"
               className="border border-gray-200 rounded py-1 px-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-right"
               value={infantPrice}
               onChange={(e) => setInfantPrice(e.target.value)}
@@ -423,7 +423,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
               
               <div className="flex items-center flex-1">
                 <input
-                  type="text"
+                  type="number"
                   className="border rounded w-14 py-1 px-1 text-gray-700 text-xs text-center"
                   value={item.percentage}
                   onChange={(e) => updateDayPricing(index, "percentage", e.target.value)}
@@ -476,7 +476,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
             <div key={`person-${index}`} className="flex items-center mb-2 bg-gray-50 p-2 rounded">
               <div className="flex items-center mr-1">
                 <input
-                  type="text"
+                  type="number"
                   className="border rounded w-12 py-1 px-1 text-gray-700 text-xs text-center"
                   value={item.count}
                   onChange={(e) => updatePersonPricing(index, "count", e.target.value)}
@@ -487,7 +487,7 @@ function TripPricingEditor({ onChange, initialValue = null, fixedDate = false })
               
               <div className="flex items-center flex-1">
                 <input
-                  type="text"
+                  type="number"
                   className="border rounded w-14 py-1 px-1 text-gray-700 text-xs text-center"
                   value={item.percentage}
                   onChange={(e) => updatePersonPricing(index, "percentage", e.target.value)}
