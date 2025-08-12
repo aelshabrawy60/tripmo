@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { signInAffiliate } from '@/lib/auth-actions';
+import Link from 'next/link';
 
 const AffiliateSignInPage = () => {
     const [username, setUsername] = useState('');
@@ -145,6 +146,15 @@ const AffiliateSignInPage = () => {
                                             </>
                                         ) : 'دخول لوحة التحكم'}
                                     </button>
+
+                                    <div className="text-center text-gray-600 mt-4">
+                                        <p className="text-sm">
+                                            ليس لديك حساب ؟
+                                            <Link href="/signup" className="text-tripmo-500 hover:text-tripmo-400 font-medium mr-1">
+                                                انشاء حساب جديد
+                                            </Link>
+                                        </p>
+                                    </div>
                                 </form>
                             </div>
                         </div>

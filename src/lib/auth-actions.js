@@ -178,3 +178,58 @@ export async function signInAffiliate(formData){
     return { error: "حدث خطأ غير متوقع." };
   }
 }
+
+
+
+export async function signUpAffiliate(formData) {
+  const data = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+  };
+
+  if (!data.name || !data.email || !data.phone) {
+    return { error: "جميع البيانات مطلوبة." };
+  }
+
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(data.email)) {
+    return { error: "يرجى إدخال بريد إلكتروني صحيح." };
+  }
+
+  try {
+    // First, create the affiliate account
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/admin/affiliates`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      return { error: errorData.error || "فشل في إنشاء الحساب" };
+    }
+
+    const result = await res.json();
+
+    if (result.token) {
+      // If the signup API returns a token directly
+      cookies().set("affiliate_token", result.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+      });
+    }
+
+    revalidatePath("/affiliate");
+    return { success: true, affiliate: result.affiliate }; // Return success with affiliate data
+
+  } catch (error) {
+    console.error("SignUp Error:", error);
+    return { error: "حدث خطأ غير متوقع." };
+  }
+}
