@@ -22,6 +22,13 @@ export const footerPages = [
     }
     , link: `https://host.rehlanow.com` 
   },
+  {
+    name: {
+      ar: "انضم كمسوق",
+      en: "Become an affiliate"
+    },
+    link: `https://affiliate.rehlanow.com/signup`
+  },
   { 
     name: {
       ar: "الشروط والأحكام",
@@ -40,7 +47,8 @@ export const footerPages = [
       ar:"سياسة الاسترداد",
       en: "refund policy"
     }, 
-    link: "/terms#cancellation-policy" },
+    link: "/terms#cancellation-policy" 
+  },
 ];
 
 export const socialMedia = [

@@ -13,7 +13,7 @@ async function page({params}) {
 
   const { locale } = params;
   const topDestinations = await TrendingDestinations(locale)
-  const topTrips =  (await popularTrips())
+  const topTrips =  (await popularTrips(locale))
 
 
 
@@ -27,22 +27,24 @@ async function page({params}) {
         />
         <div className='mt-[100px]'>
             <TripsStripSection tripsData={topTrips.top} title={locale == "en"? locales.Home.topTripsTitle.en : locales.Home.topTripsTitle.ar} locale={locale}/>
-            <div className='mt-5'>
+            <div>
               <TopDestinations destinations={topDestinations} title={locale == "en"? locales.Home.topDestTitle.en : locales.Home.topDestTitle.ar}/>
             </div>
 
+            <div className='mt-20'>
             {
               topTrips.categories?.map((categorie) => {
                 return (
                   <TripsStripSection 
                     key={categorie.city} 
                     tripsData={categorie.trips} 
-                    title={`رحلات الي ${categorie.city}`} 
+                    title={`${locale == "en" ? "Trips to" : "رحلات الي"} ${categorie.city}`} 
                     locale={locale}
                   />
                 )
               })
             }
+            </div>
 
             <div className='mt-20'>
               <PaymentWays/>

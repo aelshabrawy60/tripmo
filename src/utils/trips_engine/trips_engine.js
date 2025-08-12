@@ -70,7 +70,7 @@ export async function TrendingDestinations(locale = "ar") {
 }
 
 
-export async function popularTrips() {
+export async function popularTrips(locale = "ar") {
 
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
   // Fetch top 100 trips by score
@@ -78,8 +78,8 @@ export async function popularTrips() {
     .from("trips")
     .select(`
       *,
-      dest:dest_city (name),
-      depature:depature_city (name)
+      dest:dest_city (name, name_en),
+      depature:depature_city (name, name_en)
     `)
     .order("score", { ascending: false })
     .eq("status", "active")
@@ -96,17 +96,17 @@ export async function popularTrips() {
   }
 
   // Get top 20 trips
-  const top20 = data.slice(0, 25);
+  const top20 = data.slice(0, 20);
   
   // Get remaining 80 trips for categorization
-  const remaining80 = data.slice(25);
+  const remaining80 = data.slice(20);
   
   // Group remaining trips by destination city
   const cityGroups = {};
   
   remaining80.forEach(trip => {
-    const cityName = trip.dest?.name || `Unknown City`;
-    
+    const cityName = locale === "en" ? trip.dest?.name_en : trip.dest?.name || `Unknown City`;
+
     if (!cityGroups[cityName]) {
       cityGroups[cityName] = [];
     }
