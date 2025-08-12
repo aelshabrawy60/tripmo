@@ -29,7 +29,7 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
   const isMeetingPointTranslated = meetingPointNote !== startLocation?.notes && translation?.meeting_point_note?.main_lang !== locale
 
   // Check if any content is translated
-  const hasTranslatedContent = isNameTranslated || isAboutTranslated || isPickupTranslated || isMeetingPointTranslated
+  const hasTranslatedContent = isNameTranslated || isAboutTranslated
 
   // Determine what text to show based on translation state
   const displayName = showOriginal ? name : translatedName
