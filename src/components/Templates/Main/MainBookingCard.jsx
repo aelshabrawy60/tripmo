@@ -88,18 +88,20 @@ function MainBookingCard({ tripData, locale }) {
   return (
     <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-md w-full">
       <div className="space-y-6">
-        {/* Date & Person Selectors */}
-        <div className="flex gap-2 rounded-lg">
-          <DateChooser tripData={tripData} onDateChange={handleDateChange} locale={locale} />
-          <PersonsNumChooser onChange={handleSeatsChange} locale={locale} 
-            tripPersonsGroups={{
-              ChildPrice: tripData.pricing.ChildPrice ?? null,
-              InfantPrice: tripData.pricing.InfantPrice ?? null
-            }}
-          />
-        </div>
-        <div>
-          <TimeChooser tripData={tripData} onChange={setSelectedTime} locale={locale}/>
+        <div className='flex flex-col gap-4'>
+          {/* Date & Person Selectors */}
+          <div className="flex gap-2 rounded-lg">
+            <DateChooser tripData={tripData} onDateChange={handleDateChange} locale={locale} />
+            <PersonsNumChooser onChange={handleSeatsChange} locale={locale} 
+              tripPersonsGroups={{
+                ChildPrice: tripData.pricing.ChildPrice ?? null,
+                InfantPrice: tripData.pricing.InfantPrice ?? null
+              }}
+            />
+          </div>
+          <div>
+            <TimeChooser tripData={tripData} onChange={setSelectedTime} locale={locale}/>
+          </div>
         </div>
 
         {/* Loading */}

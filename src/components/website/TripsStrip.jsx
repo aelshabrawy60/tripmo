@@ -119,7 +119,7 @@ function TripsStrip({ tripsData , locale}) {
       {/* Scrollable Container */}
       <div 
         ref={scrollContainerRef}
-        className="flex gap-2 md:gap-6 overflow-x-auto scrollbar-hide px-2 md:px-4 scroll-smooth"
+        className="flex gap-2 md:gap-6 overflow-x-auto scrollbar-hide scroll-smooth"
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',

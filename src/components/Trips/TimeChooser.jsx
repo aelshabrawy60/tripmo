@@ -59,7 +59,7 @@ function TimeChooser({tripData, onChange, locale = "ar"}) {
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`relative w-full bg-white border border-gray-300 rounded-md shadow-sm py-2.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-400 hover:shadow-md ${
+          className={`relative w-full bg-white border border-gray-200 rounded-md py-2.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:shadow-md ${
             locale === 'ar' ? 'pl-10 pr-4 text-right' : 'pl-4 pr-10 text-left'
           }`}
         >

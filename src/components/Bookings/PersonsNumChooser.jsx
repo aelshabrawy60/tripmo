@@ -25,7 +25,10 @@ function PersonsNumChooser({
     children: locale === 'ar' ? 'الأطفال' : 'Children',
     infants: locale === 'ar' ? 'الرضع' : 'Infants',
     save: locale === 'ar' ? 'حفظ' : 'Save',
-    cancel: locale === 'ar' ? 'اغلاق' : 'Cancel'
+    cancel: locale === 'ar' ? 'اغلاق' : 'Cancel',
+    adultsAgeRange: locale === 'ar' ? 'اكبر من 12 عام' : 'age 12+',
+    childrenAgeRange: locale === 'ar' ? '(3-12) عام' : 'age 3-12',
+    infantsAgeRange: locale === 'ar' ? '2 عام او اقل' : 'age 0-2',
   };
 
   // Check which age groups are allowed
@@ -255,13 +258,13 @@ function PersonsNumChooser({
           <div className="flex flex-col space-y-4">
             <div className="space-y-2">
               {/* Adults selector - always shown */}
-              {renderAgeGroupSelector('adults', t.adults, tempCounts.adults, 'اكبر من 12 عام' ,1)}
+              {renderAgeGroupSelector('adults', t.adults, tempCounts.adults, t.adultsAgeRange ,1)}
               
               {/* Children selector - shown if allowed */}
-              {isChildrenAllowed && renderAgeGroupSelector('children', t.children, tempCounts.children, '(3-12) عام', 0)}
+              {isChildrenAllowed && renderAgeGroupSelector('children', t.children, tempCounts.children, t.childrenAgeRange, 0)}
 
               {/* Infants selector - shown if allowed */}
-              {isInfantsAllowed && renderAgeGroupSelector('infants', t.infants, tempCounts.infants, '2 عام او اقل', 0)}
+              {isInfantsAllowed && renderAgeGroupSelector('infants', t.infants, tempCounts.infants, t.infantsAgeRange, 0)}
             </div>
 
             <div className="flex space-x-2 pt-2 border-gray-200">

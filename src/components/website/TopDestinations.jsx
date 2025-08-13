@@ -6,7 +6,7 @@ function TopDestinations({ destinations, title }) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <h2 className="text-2xl font-bold mb-8 text-gray-800">{title}</h2>
 
       {/* Grid container */}
