@@ -117,7 +117,7 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
           </div>
 
           {
-              time && (
+              time && time != "null" && (
                 <div className="flex flex-1 items-center gap-3 p-4 bg-gray-50 rounded-xl">
                   <div className="flex-1">
                     <div className='flex items-center gap-2 mb-1'>
