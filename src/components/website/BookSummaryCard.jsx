@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Users, CreditCard } from 'lucide-react';
+import { Calendar, Users, CreditCard, Clock } from 'lucide-react';
 import StarsRates from './StarsRates';
 import Cookies from 'js-cookie';
 import formatPrice from '@/utils/currency/PriceFormate';
@@ -12,6 +12,10 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
     tripDate: {
       ar: "اليوم",
       en: "Day"
+    },
+    tripTime: {
+      ar: "الوقت",
+      en: "Time"
     },
     notSelected: {
       ar: "لم يتم تحديد التاريخ",
@@ -42,6 +46,18 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
       en: "Deposit"
     },
   };
+
+  function formatTime(timeStr) {
+    // Create a date with the given time (today's date doesn't matter)
+    const date = new Date(`1970-01-01T${timeStr}`);
+    
+    // Format to 12-hour clock with AM/PM
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
 
   const Currency = Cookies.get('currency');
 
@@ -82,18 +98,43 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
 
       {/* Content Section */}
       <div className="space-y-5">
-        {/* Date & Time */}
-        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-          <Calendar className="w-5 h-5 text-gray-600 flex-shrink-0" />
-          <div className="flex-1">
-            <div className="text-sm text-gray-500 mb-1">
-              {t.tripDate[locale]}
-            </div>
-            <div className="font-semibold text-gray-800">
-              {day || t.notSelected[locale]}
-            </div>
+        <div className='flex gap-5 w-full'>
+
+          {/* Date & Time */}
+          <div className="flex flex-1 items-center gap-3 p-4 bg-gray-50 rounded-xl">
+              <div className="flex-1">
+                <div className='flex items-center gap-2 mb-1'>
+                  <Calendar className="w-5 h-5 text-gray-600 flex-shrink-0" />
+                  <div className="text-sm text-gray-500">
+                  {t.tripDate[locale]}
+                  </div>
+                </div>
+                
+                <div className="font-semibold text-gray-800">
+                  {day || t.notSelected[locale]}
+                </div>
+              </div>
           </div>
+
+          {
+              time && (
+                <div className="flex flex-1 items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                  <div className="flex-1">
+                    <div className='flex items-center gap-2 mb-1'>
+                      <Clock className="w-5 h-5 text-gray-600 flex-shrink-0" />
+                      <div className="text-sm text-gray-500">
+                        {t.tripTime[locale]}
+                      </div>
+                    </div>
+                    <div className="font-semibold text-gray-800">
+                      {formatTime(time) || t.notSelected[locale]}
+                    </div>
+                  </div>
+                </div>
+              )
+          }
         </div>
+
 
         {/* Guests & Price */}
         <div className="grid grid-cols-2 gap-4">
