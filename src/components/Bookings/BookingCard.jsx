@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, Phone, User, Tag, CheckCircle, AlertCircle, Trash2, Edit } from 'lucide-react';
+import { Calendar, Clock, Phone, User, Tag, CheckCircle, AlertCircle, Trash2, Edit, Calendar1 } from 'lucide-react';
 import EditBooking from './EditBooking';
+import { formatTime } from '../website/helpers';
 
 // DeleteBookingModal component
 const DeleteBookingModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
@@ -117,7 +118,7 @@ function BookingCard({ bookData, type = 0, onDeleteBooking, onEditBooking, tripD
       <div className="flex">
         {/* Client information */}
         <div className="w-full">
-          <div className="flex flex-wrap gap-2 mb-2">
+          <div className="grid md:grid-cols-3 gap-2 mb-2">
             <div className="bg-gray-50 rounded-lg p-4 flex-1">
               <div className="flex items-center mb-2">
                 <User className="ml-2 text-gray-500" size={18} />
@@ -129,6 +130,22 @@ function BookingCard({ bookData, type = 0, onDeleteBooking, onEditBooking, tripD
                   {bookData.client_phone}
                 </a>
               </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-4 flex-1">
+              <div className="flex items-center mb-2">
+                <Calendar1 className="ml-2 text-gray-500" size={18} />
+                <span className="font-medium text-gray-700">{bookData.day}</span>
+              </div>
+
+              {bookData.start_time && bookData.start_time !== "null" && (
+                <div className="flex items-center">
+                  <Clock className="ml-2 text-gray-500" size={18} />
+                  <div className="font-medium text-gray-700">
+                    {formatTime(bookData.start_time)}
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="bg-gray-50 rounded-lg p-4 flex items-center flex-1">
