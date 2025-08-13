@@ -2,13 +2,15 @@ import React from 'react';
 import { PaymentRedirectFlow } from '../../../../utils/payments/payments';
 import { confirmDeposit } from '@/utils/payments/helpers';
 import { supabaseAdmin } from '@/utils/supabase/service';
-import { Check, Calendar, Users, MapPin } from 'lucide-react';
+import { Check, Calendar, Users, MapPin, Clock } from 'lucide-react';
 import { paymentGateawayConfig } from '../../../../utils/payments/payments';
 import CancelBookClient from '@/components/Bookings/CancelBookClient';
 import CanceldOrder from '@/components/Bookings/CanceldOrder';
 import AddComment from '@/components/Templates/Main/AddComment';
 import ProfileCard from '@/components/website/ProfileCard';
 import QRCode from 'qrcode';
+import { formatTime } from '@/components/website/helpers';
+
 
 // Fetch booking data from Supabase
 async function fetchBookingData(id) {
@@ -111,6 +113,18 @@ const ConfirmationReceipt = ({ bookingData, tripData, isBookRated, qrDataUrl, lo
                 <p className="text-gray-600">{formatDate(bookingData.day)}</p>
               </div>
             </div>
+
+
+            {bookingData.start_time && (
+              <div className="flex items-start gap-3">
+                <Clock className="h-5 w-5 text-tripmo-400 mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-gray-700">{t.time[locale]}</p>
+                  <p className="text-gray-600">{formatTime(bookingData.start_time)}</p>
+                </div>
+              </div>
+            )}
+            
             <div className="flex items-start gap-3">
               <Users className="h-5 w-5 text-tripmo-400 mt-1 flex-shrink-0" />
               <div>
@@ -283,6 +297,10 @@ const translations = {
   date: {
     ar: "التاريخ",
     en: "Date",
+  },
+  time: {
+    ar: "الوقت",
+    en: "Time",
   },
   persons: {
     ar: "عدد الأشخاص",
