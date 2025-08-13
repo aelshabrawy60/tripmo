@@ -16,7 +16,6 @@ async function page({params}) {
   const topTrips =  (await popularTrips(locale))
 
 
-
   return (
     <>
         <MainHero 
@@ -32,18 +31,18 @@ async function page({params}) {
             </div>
 
             <div className='mt-20'>
-            {
-              topTrips.categories?.map((categorie) => {
-                return (
-                  <TripsStripSection 
-                    key={categorie.city} 
-                    tripsData={categorie.trips} 
-                    title={`${locale == "en" ? "Trips to" : "رحلات الي"} ${categorie.city}`} 
-                    locale={locale}
-                  />
-                )
-              })
-            }
+              {
+                topTrips.categories?.map((categorie) => {
+                  return (
+                    <TripsStripSection 
+                      key={categorie.city} 
+                      tripsData={categorie.trips} 
+                      title={`${locale == "en" ? "Trips to" : "رحلات الي"} ${categorie.city}`} 
+                      locale={locale}
+                    />
+                  )
+                })
+              }
             </div>
 
             <div className='mt-20'>

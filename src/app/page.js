@@ -13,10 +13,7 @@ export default function Home() {
   
   return (
     <MainLayout>
-      <ImgUploader onUpload={updateImgs} groupId={1}/>
-      <div className="flex flex-col gap-10">
-        {imgs}
-      </div>
+      
     </MainLayout>
   );
 }

@@ -19,6 +19,7 @@ export default function LocationStep({ tripData, errors, onUpdateTripData, onCle
 
   return (
     <div className="space-y-6">
+      <div className="text-sm text-amber-500">اكتب اسم المدينة باللغة العربية ثم اخترها من القائمة المنسدلة</div>
       {/* Departure Location */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
