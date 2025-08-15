@@ -3,10 +3,20 @@ import { Calendar, Users, CreditCard, Clock } from 'lucide-react';
 import StarsRates from './StarsRates';
 import Cookies from 'js-cookie';
 import formatPrice from '@/utils/currency/PriceFormate';
+import PersonsNumChooserBottomSheet from '../Bookings/PersonsNumChooserBottomSheet';
 
 
 function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = null }) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  //const [persons, setPersons] = useState(seats);
+  //const [isPersonsModalOpen, setIsPersonsModalOpen] = useState(false);
+
+
+  /*
+  const handlePersonsChange = (newCounts) => {
+    setPersons(newCounts);
+  };
+  */
 
   const t = {
     tripDate: {
@@ -75,6 +85,24 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
   ].filter(type => type.count > 0);
   
   const showBreakdown = guestTypes.length > 1;
+
+  // Calculate prices for sale display
+  const calculatePrices = () => {
+    if (!pricing?.price) return { finalPrice: 0, originalPrice: 0, hasSale: false };
+    
+    const finalPrice = pricing.price; // Customer pays this amount
+    const saleUp = tripData?.pricing?.sale_up;
+    
+    if (saleUp && saleUp > 0) {
+      // Calculate what the original price would have been before discount
+      const originalPrice = finalPrice + (finalPrice * (saleUp));
+      return { finalPrice, originalPrice, hasSale: true };
+    }
+    
+    return { finalPrice, originalPrice: finalPrice, hasSale: false };
+  };
+
+  const { finalPrice, originalPrice, hasSale } = calculatePrices();
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-50 overflow-hidden w-full">
@@ -168,7 +196,20 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
               {t.totalPrice[locale]}
             </div>
             <div className="font-bold">
-              {pricing?.price ? `${formatPrice(pricing.price, Currency)}` : `0 ${Currency || ''}`}
+              {hasSale ? (
+                <div className="space-y-1">
+                  <div className="text-xs opacity-75 line-through">
+                    {formatPrice(originalPrice, Currency)}
+                  </div>
+                  <div>
+                    {formatPrice(finalPrice, Currency)}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  {finalPrice ? `${formatPrice(finalPrice, Currency)}` : `0 ${Currency || ''}`}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -187,6 +228,17 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
           </div>
         )}
       </div>
+
+      {/*}
+      <PersonsNumChooserBottomSheet
+        onChange={handlePersonsChange}
+        initialValue={{ adults: parseInt(persons.adults), children: parseInt(persons.children), infants: parseInt(persons.infants) }}
+        isOpen={isPersonsModalOpen}
+        tripPersonsGroups={tripData.pricing}
+        onClose={() => setIsPersonsModalOpen(false)}
+        locale={locale}
+      />
+      */}
     </div>
   );
 }

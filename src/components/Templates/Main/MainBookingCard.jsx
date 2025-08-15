@@ -25,10 +25,31 @@ function MainBookingCard({ tripData, locale }) {
     deposit: locale === 'ar' ? 'المقدم المطلوب:' : 'Deposit Required:',
     bookNow: locale === 'ar' ? 'احجز الآن' : 'Book Now',
     notAvailableMsg: locale === 'ar' ? 'غير متوفر في هذا التاريخ' : 'Not available on this date',
-    unavailable: locale === 'ar' ? 'غير متاح' : 'Unavailable'
+    unavailable: locale === 'ar' ? 'غير متاح' : 'Unavailable',
+    save: locale === 'ar' ? 'وفر' : 'SAVE',
+    youSave: locale === 'ar' ? 'توفر' : 'You save',
+    sale: locale === 'ar' ? 'تخفيض!' : 'SALE!'
   }
 
   const Currency = Cookies.get('currency');
+
+  // Calculate prices for sale display
+  const calculatePrices = () => {
+    if (!totalPrice) return { finalPrice: 0, originalPrice: 0, hasSale: false };
+    
+    const finalPrice = totalPrice; // Customer pays this amount
+    const saleUp = tripData?.pricing?.sale_up;
+    
+    if (saleUp && saleUp > 0) {
+      // Calculate what the original price would have been before discount
+      const originalPrice = finalPrice + (finalPrice * (saleUp));
+      return { finalPrice, originalPrice, hasSale: true };
+    }
+    
+    return { finalPrice, originalPrice: finalPrice, hasSale: false };
+  };
+
+  const { finalPrice, originalPrice, hasSale } = calculatePrices();
 
   async function checkAvailAndPricing() {
     if (!selectedDate || !selectedSeatsNum) return
@@ -121,23 +142,44 @@ function MainBookingCard({ tripData, locale }) {
 
         {/* Availability */}
         {isAvail && !isLoading && totalPrice && (
-          <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="bg-blue-50 p-4 rounded-lg relative overflow-hidden">
+            {hasSale && (
+              <div className={`absolute -top-1 bg-red-500 text-white text-sm font-bold px-3 py-1 shadow-lg ${
+                locale === 'ar' ? '-left-2 rounded-br-lg rounded-tr-lg' : '-right-2 rounded-bl-lg rounded-tr-lg'
+              }`}>
+                {t.save} {tripData.pricing.sale_up * 100}%
+              </div>
+            )}
+            
             <div className="flex items-center mb-2">
               <Check className={`text-blue-600 w-5 h-5 ${locale == "ar"? "ml-2" : "mr-2"}`} />
               <h3 className="font-semibold text-blue-800">{t.available}</h3>
             </div>
 
-            <div className="space-y-2 mt-3">
-              <div className="flex justify-between">
+            <div className="space-y-3 mt-3">
+              <div className={`flex justify-between items-end`}>
                 <span className="font-bold">{t.totalPrice}</span>
-                <span className="font-bold text-blue-600 text-lg md:text-xl">
-                  {formatPrice(totalPrice, Currency)}
-                </span>
+                <div className={`${locale === 'ar' ? 'text-left' : 'text-right'}`}>
+                  {hasSale ? (
+                    <div className="space-y-1">
+                      <div className="text-md text-gray-800 line-through decoration-1 decoration-red-500 opacity-80">
+                        {formatPrice(originalPrice, Currency)}
+                      </div>
+                      <div className="font-bold text-blue-600 text-xl md:text-2xl">
+                        {formatPrice(finalPrice, Currency)}
+                      </div>
+                    </div>
+                  ) : (
+                    <span className="font-bold text-blue-600 text-lg md:text-xl">
+                      {formatPrice(finalPrice, Currency)}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              <div className="flex justify-between text-sm">
+              <div className={`flex justify-between text-sm`}>
                 <span className="text-gray-600">{t.deposit}</span>
-                <span className="font-medium text-md  md:text-lg">
+                <span className="font-medium text-md md:text-lg">
                   {formatPrice(depositPrice, Currency)}
                 </span>
               </div>
@@ -149,7 +191,7 @@ function MainBookingCard({ tripData, locale }) {
         {isAvail ? (
           <a
             href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum.adults}&time=${selectedTime}&children=${selectedSeatsNum.children}&infants=${selectedSeatsNum.infants}`}
-            className="bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2"
+            className={`bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg`}
           >
             {t.bookNow}
             <ArrowRight size={18} />
