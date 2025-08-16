@@ -28,6 +28,7 @@ function BookingPage() {
     children: parseInt(numberOfChildren),
     infants: parseInt(numberOfInfants),
   });
+  const [day, setDay] = useState(date);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -71,7 +72,7 @@ function BookingPage() {
 
   useEffect(() => {
     checkPricing();
-  }, [seats]);
+  }, [seats, day]);
 
   const handlePersonsChange = (newCounts) => {
     setSeats(newCounts);
@@ -88,6 +89,19 @@ function BookingPage() {
     router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
   };
 
+  const handleDateChange = (newDate) => {
+    setDay(newDate);
+    
+    // Create new URLSearchParams with current params
+    const params = new URLSearchParams(searchParams.toString());
+    
+    // Update the parameters
+    params.set('date', newDate);
+    
+    // Update the URL without page reload
+    router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+  };
+
   async function checkPricing() {
     if (!date || !seats.adults) return;
 
@@ -95,7 +109,7 @@ function BookingPage() {
     setError(null);
 
     try {
-      const formattedDate = date;
+      const formattedDate = day;
 
       const response = await fetch(
         `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${seats.adults}&getTrip=true&time=${time}&numberOfChildren=${seats.children}&numberOfInfants=${seats.infants}`
@@ -185,7 +199,7 @@ function BookingPage() {
       numberOfSeats: seats.adults,
       numberOfChildren: seats.children,
       numberOfInfants: seats.infants,
-      date: date || new Date().toISOString().split('T')[0],
+      date: day || new Date().toISOString().split('T')[0],
       time: time || null,
       tripId: tripId,
       offset: offset,
@@ -243,7 +257,7 @@ function BookingPage() {
         <div className={`grid gap-6 ${showAuthFlow ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 lg:grid-cols-1'}`}>
           <div className={`flex flex-col gap-4 ${showAuthFlow ? 'max-w-sm' : ''}`} >
             <BookSummaryCard
-              day={date}
+              day={day}
               seats={{
                 adults: seats.adults,
                 children: seats.children,
@@ -254,6 +268,7 @@ function BookingPage() {
               locale={locale}
               time={time}
               handlePersonsChange={handlePersonsChange}
+              handleDateChange={handleDateChange}
             />
 
             {showPaymentButton && (

@@ -4,9 +4,6 @@ import { X } from 'lucide-react';
 function PersonsNumChooserBottomSheet({ 
   onChange, 
   initialValue = { adults: 1, children: 0, infants: 0 },
-  selectedDate,
-  selectedTime,
-  tripData,
   locale = "ar", 
   tripPersonsGroups = { ChildPrice: null, InfantPrice: null },
   isOpen,
@@ -14,9 +11,6 @@ function PersonsNumChooserBottomSheet({
 }) {
   const [counts, setCounts] = useState(initialValue);
   const [tempCounts, setTempCounts] = useState(initialValue);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isAvail, setIsAvail] = useState(true);
 
   // Translation helper
   const t = {
@@ -66,54 +60,14 @@ function PersonsNumChooserBottomSheet({
 
   const handleSave = async () => {
     setCounts(tempCounts);
-    await checkAvailAndPricing();
-
-    console.log("Availability and pricing checked", isAvail);
-    if (isAvail){
-      onChange(tempCounts);
-      onClose();
-    }
+    onChange(tempCounts);
+    onClose();
   };
 
   const handleCancel = () => {
     setTempCounts(counts);
     onClose();
   };
-
-  async function checkAvailAndPricing() {
-    const selectedSeatsNum = tempCounts;
-
-    if (!selectedDate || !selectedSeatsNum) return
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const formattedDate = selectedDate
-
-      const response = await fetch(
-        `/api/client/bookings?tripId=${tripData.id}&date=${formattedDate}&numberOfSeats=${selectedSeatsNum.adults}&time=${selectedTime}&numberOfChildren=${selectedSeatsNum.children}&numberOfInfants=${selectedSeatsNum.infants}`
-      )
-
-    
-
-      const data = await response.json()
-
-      if (data.success) {
-        setIsAvail(true)
-        setError(null)
-      } else {
-        setIsAvail(false)
-        setError(data.message || t.notAvailableMsg)
-      }
-    } catch (err) {
-      setIsAvail(false)
-      setError(t.unavailable)
-      console.error("Error checking availability:", err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   const renderAgeGroupSelector = (type, label, value, info, minValue = 0) => (
     <div key={type} className="flex items-center justify-between py-4">
@@ -191,12 +145,6 @@ function PersonsNumChooserBottomSheet({
             {isInfantsAllowed && renderAgeGroupSelector('infants', t.infants, tempCounts.infants, t.infantsAgeRange, 0)}
           </div>
 
-          {error && (
-            <div className="px-6 py-4 text-red-500">
-              {error}
-            </div>
-          )}
-
           {/* Footer with buttons */}
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
             <div className={`flex space-x-3`}>
@@ -210,8 +158,7 @@ function PersonsNumChooserBottomSheet({
               <button
                 type="button"
                 onClick={handleSave}
-                disabled={isLoading}
-                className={`${isLoading ? 'opacity-50 cursor-not-allowed' : ''} flex-1 px-4 py-3 text-base font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors`}
+                className={` flex-1 px-4 py-3 text-base font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors`}
               >
                 {t.save}
               </button>

@@ -4,11 +4,13 @@ import StarsRates from './StarsRates';
 import Cookies from 'js-cookie';
 import formatPrice from '@/utils/currency/PriceFormate';
 import PersonsNumChooserBottomSheet from '../Bookings/PersonsNumChooserBottomSheet';
+import DateChooserBottomSheet from '../Bookings/DateChooserBottomSheet';
 
 
-function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = null, handlePersonsChange }) {
+function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = null, handlePersonsChange, handleDateChange }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isPersonsModalOpen, setIsPersonsModalOpen] = useState(false);
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   
 
   const t = {
@@ -122,7 +124,7 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
         <div className='flex gap-5 w-full'>
 
           {/* Date & Time */}
-          <div className="flex flex-1 items-center gap-3 p-4 bg-gray-50 rounded-xl">
+          <div className="flex flex-1 items-center gap-3 p-4 bg-gray-50 rounded-xl" onClick={() => setIsDateModalOpen(true)}>
               <div className="flex-1">
                 <div className='flex items-center gap-2 mb-1'>
                   <Calendar className="w-5 h-5 text-gray-600 flex-shrink-0" />
@@ -236,6 +238,15 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
         selectedDate={day}
         tripData={tripData}
         selectedTime={time}
+      />
+
+      <DateChooserBottomSheet
+        tripData={tripData}
+        onDateChange={handleDateChange}
+        initialDate={new Date(day)}
+        locale={locale}
+        isOpen={isDateModalOpen}
+        onClose={() => setIsDateModalOpen(false)}
       />
     </div>
   );
