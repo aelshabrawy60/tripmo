@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useParams } from 'next/navigation';
+import { useSearchParams, useParams, useRouter } from 'next/navigation';
 import ClientAuthFlow from '@/components/auth/ClientAuthFlow';
 import BookSummaryCard from '@/components/website/BookSummaryCard';
 import LoadingCirc from '@/components/Loading/LoadingCirc';
@@ -10,6 +10,7 @@ import PaymentWays from '@/components/website/PaymentWays';
 
 function BookingPage() {
   const params = useParams();
+  const router = useRouter();
   const { tripId } = params;
   const locale = params.locale;
 
@@ -22,6 +23,11 @@ function BookingPage() {
 
   const [pricing, setPricing] = useState(null);
   const [tripData, setTripData] = useState(null);
+  const [seats, setSeats] = useState({
+    adults: parseInt(numberOfSeats),
+    children: parseInt(numberOfChildren),
+    infants: parseInt(numberOfInfants),
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -65,10 +71,25 @@ function BookingPage() {
 
   useEffect(() => {
     checkPricing();
-  }, []);
+  }, [seats]);
+
+  const handlePersonsChange = (newCounts) => {
+    setSeats(newCounts);
+    
+    // Create new URLSearchParams with current params
+    const params = new URLSearchParams(searchParams.toString());
+    
+    // Update the parameters
+    params.set('seats', newCounts.adults.toString());
+    params.set('children', newCounts.children.toString());
+    params.set('infants', newCounts.infants.toString());
+    
+    // Update the URL without page reload
+    router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+  };
 
   async function checkPricing() {
-    if (!date || !numberOfSeats) return;
+    if (!date || !seats.adults) return;
 
     setIsLoading(true);
     setError(null);
@@ -77,7 +98,7 @@ function BookingPage() {
       const formattedDate = date;
 
       const response = await fetch(
-        `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${numberOfSeats}&getTrip=true&time=${time}&numberOfChildren=${numberOfChildren}&numberOfInfants=${numberOfInfants}`
+        `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${seats.adults}&getTrip=true&time=${time}&numberOfChildren=${seats.children}&numberOfInfants=${seats.infants}`
       );
 
       if (!response.ok) {
@@ -161,9 +182,9 @@ function BookingPage() {
     const formData = {
       name: clientData.clientName,
       phone: clientData.clientPhone,
-      numberOfSeats: numberOfSeats,
-      numberOfChildren: numberOfChildren,
-      numberOfInfants: numberOfInfants,
+      numberOfSeats: seats.adults,
+      numberOfChildren: seats.children,
+      numberOfInfants: seats.infants,
       date: date || new Date().toISOString().split('T')[0],
       time: time || null,
       tripId: tripId,
@@ -224,14 +245,15 @@ function BookingPage() {
             <BookSummaryCard
               day={date}
               seats={{
-                adults: numberOfSeats,
-                children: numberOfChildren,
-                infants: numberOfInfants
+                adults: seats.adults,
+                children: seats.children,
+                infants: seats.infants
               }}
               tripData={tripData}
               pricing={pricing}
               locale={locale}
               time={time}
+              handlePersonsChange={handlePersonsChange}
             />
 
             {showPaymentButton && (

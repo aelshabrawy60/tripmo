@@ -6,17 +6,10 @@ import formatPrice from '@/utils/currency/PriceFormate';
 import PersonsNumChooserBottomSheet from '../Bookings/PersonsNumChooserBottomSheet';
 
 
-function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = null }) {
+function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = null, handlePersonsChange }) {
   const [imageLoaded, setImageLoaded] = useState(false);
-  //const [persons, setPersons] = useState(seats);
-  //const [isPersonsModalOpen, setIsPersonsModalOpen] = useState(false);
-
-
-  /*
-  const handlePersonsChange = (newCounts) => {
-    setPersons(newCounts);
-  };
-  */
+  const [isPersonsModalOpen, setIsPersonsModalOpen] = useState(false);
+  
 
   const t = {
     tripDate: {
@@ -167,7 +160,7 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
         {/* Guests & Price */}
         <div className="grid grid-cols-2 gap-4">
           {/* Guests */}
-          <div className="text-center p-4 border border-gray-100 rounded-xl">
+          <div className="text-center p-4 border border-gray-100 rounded-xl" onClick={() => setIsPersonsModalOpen(true)}>
             <Users className="w-6 h-6 text-gray-600 mx-auto mb-2" />
             <div className="text-xs text-gray-500 mb-1">
               {t.guests[locale]}
@@ -229,16 +222,21 @@ function BookSummaryCard({ tripData, day, seats, pricing, locale = 'ar', time = 
         )}
       </div>
 
-      {/*}
+      
       <PersonsNumChooserBottomSheet
         onChange={handlePersonsChange}
-        initialValue={{ adults: parseInt(persons.adults), children: parseInt(persons.children), infants: parseInt(persons.infants) }}
+        initialValue={{ adults: parseInt(seats.adults), children: parseInt(seats.children), infants: parseInt(seats.infants) }}
         isOpen={isPersonsModalOpen}
-        tripPersonsGroups={tripData.pricing}
+        tripPersonsGroups={{
+                ChildPrice: tripData.pricing.ChildPrice ?? null,
+                InfantPrice: tripData.pricing.InfantPrice ?? null
+              }}
         onClose={() => setIsPersonsModalOpen(false)}
         locale={locale}
+        selectedDate={day}
+        tripData={tripData}
+        selectedTime={time}
       />
-      */}
     </div>
   );
 }
