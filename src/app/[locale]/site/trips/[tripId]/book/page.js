@@ -29,6 +29,7 @@ function BookingPage() {
     infants: parseInt(numberOfInfants),
   });
   const [day, setDay] = useState(date);
+  const [timeState, setTimeState] = useState(time);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -72,7 +73,7 @@ function BookingPage() {
 
   useEffect(() => {
     checkPricing();
-  }, [seats, day]);
+  }, [seats, day, time]);
 
   const handlePersonsChange = (newCounts) => {
     setSeats(newCounts);
@@ -102,6 +103,19 @@ function BookingPage() {
     router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
   };
 
+  const handleTimeChange = (newTime) => {
+    setTimeState(newTime);
+
+    // Create new URLSearchParams with current params
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Update the parameters
+    params.set('time', newTime);
+
+    // Update the URL without page reload
+    router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+  };
+
   async function checkPricing() {
     if (!date || !seats.adults) return;
 
@@ -112,7 +126,7 @@ function BookingPage() {
       const formattedDate = day;
 
       const response = await fetch(
-        `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${seats.adults}&getTrip=true&time=${time}&numberOfChildren=${seats.children}&numberOfInfants=${seats.infants}`
+        `/api/client/bookings?tripId=${tripId}&date=${formattedDate}&numberOfSeats=${seats.adults}&getTrip=true&time=${timeState}&numberOfChildren=${seats.children}&numberOfInfants=${seats.infants}`
       );
 
       if (!response.ok) {
@@ -200,7 +214,7 @@ function BookingPage() {
       numberOfChildren: seats.children,
       numberOfInfants: seats.infants,
       date: day || new Date().toISOString().split('T')[0],
-      time: time || null,
+      time: timeState || null,
       tripId: tripId,
       offset: offset,
       client_id: clientData.clientId,
@@ -266,9 +280,10 @@ function BookingPage() {
               tripData={tripData}
               pricing={pricing}
               locale={locale}
-              time={time}
+              time={timeState}
               handlePersonsChange={handlePersonsChange}
               handleDateChange={handleDateChange}
+              handleTimeChange={handleTimeChange}
             />
 
             {showPaymentButton && (
