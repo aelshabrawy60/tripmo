@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 
@@ -8,6 +8,48 @@ import Image from 'next/image';
 function GalleryViewer({ images = [] , locale = 'ar'}) {
   const [showSlider, setShowSlider] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  // Disable/enable scrolling when slider opens/closes
+  useEffect(() => {
+    if (showSlider) {
+      // Save current scroll position and disable scrolling
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scrolling
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup function to ensure scrolling is re-enabled if component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showSlider]);
+
+  // Handle touch events for swiping
+  const handleTouchStart = (e) => {
+    setTouchEnd(0); // Reset touch end
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextSlider();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
 
   if (!images || images.length === 0) {
     return (
@@ -109,11 +151,11 @@ function GalleryViewer({ images = [] , locale = 'ar'}) {
 
       {/* Full Screen Slider */}
       {showSlider && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex flex-col">
+        <div className="fixed inset-0 bg-black/90 z-[70] flex flex-col">
           <div className="flex justify-end p-4">
             <button
               onClick={closeSlider}
-              className="text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700"
+              className="text-white bg-gray-800 border-2 border-white rounded-full p-2 hover:bg-gray-700"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -126,7 +168,12 @@ function GalleryViewer({ images = [] , locale = 'ar'}) {
               {activeSlide + 1} / {images.length}
             </div>
 
-            <div className="h-[calc(100vh-200px)] w-full max-w-full px-4 relative">
+            <div 
+              className="h-[calc(100vh-200px)] w-full max-w-full px-4 relative"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               <Image 
                 src={images[activeSlide]} 
                 alt={`Slide ${activeSlide + 1}`}
@@ -139,17 +186,17 @@ function GalleryViewer({ images = [] , locale = 'ar'}) {
 
             <button 
               onClick={prevSlide}
-              className="absolute left-4 bg-black bg-opacity-50 rounded-full p-2 text-white hover:bg-opacity-70 z-10"
+              className="absolute left-4 bg-black/50 rounded-full p-2 text-white hover:bg-opacity-70 z-10"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             <button 
               onClick={nextSlider}
-              className="absolute right-4 bg-black bg-opacity-50 rounded-full p-2 text-white hover:bg-opacity-70 z-10"
+              className="absolute right-4 bg-black/50 rounded-full p-2 text-white hover:bg-opacity-70 z-10"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
