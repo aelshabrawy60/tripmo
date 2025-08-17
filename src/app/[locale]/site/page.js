@@ -10,7 +10,6 @@ export const revalidate = 21600 // Revalidate every 6 hours
 
 async function page({params}) {
 
-
   const { locale } = params;
   const topDestinations = await TrendingDestinations(locale)
   const topTrips =  (await popularTrips(locale))

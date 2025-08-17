@@ -7,7 +7,7 @@ import { footerPages, pages, socialMedia } from "./data";
 import AffiliateTracker from "@/components/Affiliate/AffiliateTracker";
 
 export const metadata = {
-  title: "رحلة ناو | احجز رحلتك القادمة",
+  title: "Rehla Now | رحلة ناو | احجز رحلتك القادمة" ,
   description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now. عروض رائعة، وجهات مميزة، وتجربة سفر لا مثيل لها.",
   keywords: ["رحلات", "حجوزات", "سياحة", "سفر", "مغامرات", "رحلات مصر", "رحلات شرم الشيخ", "Rehla Now", "رحلة ناو", "استكشاف", "عروض سفر", "حجز رحلات"],
   openGraph: {
