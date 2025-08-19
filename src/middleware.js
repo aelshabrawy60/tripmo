@@ -25,11 +25,15 @@ export function middleware(request) {
   
   // Currency logic - set currency cookie if not already set
   const currency = request.cookies.get('currency')?.value
-  
+
   // Apply currency cookie to the response if needed
   if (!currency) {
-    const country = request.geo?.country || 'EG'
-    console.log(`[MIDDLEWARE] Detected country: ${request.geo?.country}`)
+    // More robust country detection with fallbacks
+    const country = request.geo?.country || 
+                   request.headers.get('cf-ipcountry') || // Cloudflare
+                   request.headers.get('x-vercel-ip-country') || // Vercel
+                   'EG' // Default fallback
+
     const selectedCurrency = country === 'EG' ? 'EGP' : 'USD'
     console.log(`[MIDDLEWARE] Setting currency cookie: ${selectedCurrency} for country: ${country}`)
 
