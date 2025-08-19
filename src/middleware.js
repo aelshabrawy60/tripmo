@@ -25,12 +25,18 @@ export function middleware(request) {
   
   // Currency logic - set currency cookie if not already set
   const currency = request.cookies.get('currency')?.value
+  
+  // Apply currency cookie to the response if needed
   if (!currency) {
-    const country = request.geo?.country || 'US'
+    const country = request.geo?.country || 'EG'
+    console.log(`[MIDDLEWARE] Detected country: ${request.geo?.country}`)
     const selectedCurrency = country === 'EG' ? 'EGP' : 'USD'
     console.log(`[MIDDLEWARE] Setting currency cookie: ${selectedCurrency} for country: ${country}`)
-    
-    // We'll need to handle this in each response below
+
+    response.cookies.set('currency', selectedCurrency, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    })
   }
 
   // Clone the request headers to add pathname
@@ -241,16 +247,6 @@ export function middleware(request) {
       request: {
         headers: requestHeaders,
       },
-    })
-  }
-
-  // Apply currency cookie to the response if needed
-  if (!currency) {
-    const country = request.geo?.country || 'EG'
-    const selectedCurrency = country === 'EG' ? 'EGP' : 'USD'
-    response.cookies.set('currency', selectedCurrency, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
     })
   }
 

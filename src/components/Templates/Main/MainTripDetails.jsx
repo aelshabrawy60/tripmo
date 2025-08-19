@@ -23,10 +23,8 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
   const isNameTranslated = translatedName !== name && translation?.name?.main_lang !== locale
   
   const pickupNote = getTranslatedPickUpNote(startLocation?.description, translation, locale)
-  const isPickupTranslated = pickupNote !== startLocation?.description && translation?.pickup_note?.main_lang !== locale
   
   const meetingPointNote = getTranslatedMeetPointNotes(startLocation?.notes, translation, locale)
-  const isMeetingPointTranslated = meetingPointNote !== startLocation?.notes && translation?.meeting_point_note?.main_lang !== locale
 
   // Check if any content is translated
   const hasTranslatedContent = isNameTranslated || isAboutTranslated
