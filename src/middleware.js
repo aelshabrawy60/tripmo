@@ -26,23 +26,6 @@ export function middleware(request) {
   // Currency logic - set currency cookie if not already set
   const currency = request.cookies.get('currency')?.value
 
-  // Apply currency cookie to the response if needed
-  if (!currency) {
-    // More robust country detection with fallbacks
-    const country = request.geo?.country || 
-                   request.headers.get('cf-ipcountry') || // Cloudflare
-                   request.headers.get('x-vercel-ip-country') || // Vercel
-                   'EG' // Default fallback
-
-    const selectedCurrency = country === 'EG' ? 'EGP' : 'USD'
-    console.log(`[MIDDLEWARE] Setting currency cookie: ${selectedCurrency} for country: ${country}`)
-
-    response.cookies.set('currency', selectedCurrency, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    })
-  }
-
   // Clone the request headers to add pathname
   const requestHeaders = new Headers(request.headers)
   
@@ -251,6 +234,23 @@ export function middleware(request) {
       request: {
         headers: requestHeaders,
       },
+    })
+  }
+
+  // Apply currency cookie to the response if needed
+  if (!currency) {
+    // More robust country detection with fallbacks
+    const country = request.geo?.country || 
+                   request.headers.get('cf-ipcountry') || // Cloudflare
+                   request.headers.get('x-vercel-ip-country') || // Vercel
+                   'EG' // Default fallback
+
+    const selectedCurrency = country === 'EG' ? 'EGP' : 'USD'
+    console.log(`[MIDDLEWARE] Setting currency cookie: ${selectedCurrency} for country: ${country}`)
+
+    response.cookies.set('currency', selectedCurrency, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
     })
   }
 
