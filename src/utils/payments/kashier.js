@@ -49,7 +49,7 @@ class KashierRedirect {
       maxFailureAttempts: 3,
       paymentType: "credit",
       amount,
-      currency: currency,
+      currency: "EGP",
       order: orderId,
       merchantRedirect: encodeURI(this.successUrl),
       display: lang,
