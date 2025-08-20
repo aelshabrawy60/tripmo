@@ -38,7 +38,7 @@ class KashierRedirect {
     if (currency !== "EGP" && currency !== "USD") {
       currency = "EGP";
     }
-    const priceInCurrency = orderDetails.deposite_price * (exchangeRates[currency] || 1);
+    const priceInCurrency = orderDetails.deposite_price * 1 //(exchangeRates[currency] || 1);
 
 
     const amount = parseFloat(priceInCurrency).toFixed(2);
