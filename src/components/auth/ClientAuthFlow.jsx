@@ -194,7 +194,6 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB', locale }
             <PhoneInputForm
               selectedCountryCode={selectedCountryCode}
               onCountryCodeChange={handleCountryCodeChange}
-              countryCodes={countryCodes}
               onSuccess={handlePhoneSuccess}
               primary_color={primary_color}
               locale={locale}

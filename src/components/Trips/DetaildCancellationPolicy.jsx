@@ -10,17 +10,29 @@ const DetailedCancelationPolicy = ({ policy, locale }) => {
               : "This trip cannot be canceled once booked, and no refund will be issued. Please make sure your plans are certain before booking.",
         };
 
-      case "refund_until":
+      case "refund_until": {
+        let description;
+        if (policy.until > 25) {
+          const days = Math.floor(policy.until / 24);
+          description =
+            locale === "ar"
+              ? `يمكنك إلغاء الحجز واسترداد المبلغ كاملًا إذا تم الإلغاء قبل ${days} يوم${days > 1 ? "" : ""} من يوم بدء الرحلة. بعد هذا الوقت، لن يكون هناك استرداد.`
+              : `You can cancel your booking and receive a full refund if cancellation is made at least ${days} day${days > 1 ? "s" : ""} before the trip day begins. No refunds are available after this time.`;
+        } else {
+          description =
+            locale === "ar"
+              ? `يمكنك إلغاء الحجز واسترداد المبلغ كاملًا إذا تم الإلغاء قبل ${policy.until} ساعة من يوم بدء الرحلة. بعد هذا الوقت، لن يكون هناك استرداد.`
+              : `You can cancel your booking and receive a full refund if cancellation is made at least ${policy.until} hours before the trip day begins. No refunds are available after this time.`;
+        }
+
         return {
           title:
             locale === "ar"
               ? "إلغاء مجاني حتى وقت محدد قبل الرحلة"
               : "Free cancellation up to a specific time before the trip",
-          description:
-            locale === "ar"
-              ? `يمكنك إلغاء الحجز واسترداد المبلغ كاملًا إذا تم الإلغاء قبل ${policy.until} ساعة من يوم بدء الرحلة. بعد هذا الوقت، لن يكون هناك استرداد.`
-              : `You can cancel your booking and receive a full refund if cancellation is made at least ${policy.until} hours before the trip day begins. No refunds are available after this time.`,
+          description,
         };
+      }
 
       case "refund":
         return {
@@ -51,8 +63,12 @@ const DetailedCancelationPolicy = ({ policy, locale }) => {
     <div>
       <p className="text-sm mt-2 leading-relaxed mb-4">{content.description}</p>
 
-      <a href='/terms#cancellation-policy' className="text-sm underline underline-offset-4">{locale == "en"? "more" : "المزيد عن سياسة الإلغاء"}</a>
-
+      <a
+        href="/terms#cancellation-policy"
+        className="text-sm underline underline-offset-4"
+      >
+        {locale === "en" ? "more" : "المزيد عن سياسة الإلغاء"}
+      </a>
     </div>
   );
 };

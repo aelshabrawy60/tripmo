@@ -13,16 +13,29 @@ const InlineCancelationPolicy = ({ policy, locale }) => {
           borderColor: 'border-red-200'
         };
       
-      case 'refund_until':
+      case 'refund_until': {
+        let textValue;
+        if (policy.until > 25) {
+          const days = Math.floor(policy.until / 24);
+          textValue =
+            locale === 'ar'
+              ? `إلغاء مجاني قبل ${days} يوم${days > 1 ? '' : ''} من يوم الرحلة`
+              : `Free cancellation until ${days} day${days > 1 ? 's' : ''} before the trip`;
+        } else {
+          textValue =
+            locale === 'ar'
+              ? `إلغاء مجاني قبل ${policy.until} س من يوم الرحلة`
+              : `Free cancellation until ${policy.until}h before the trip`;
+        }
+
         return {
           icon: <Clock className="w-3 h-3 text-green-600" />,
-          text: locale === 'ar'
-            ? `إلغاء مجاني قبل ${policy.until} س من يوم الرحلة`
-            : `Free cancellation until ${policy.until}h before the trip`,
+          text: textValue,
           textColor: 'text-green-700',
           bgColor: 'bg-green-50',
           borderColor: 'border-green-200'
         };
+      }
       
       case 'refund':
         return {
@@ -48,9 +61,10 @@ const InlineCancelationPolicy = ({ policy, locale }) => {
 
   const content = getPolicyContent();
 
-  if(policy?.type == 'no_refund'){
-    return null
+  if (policy?.type === 'no_refund') {
+    return null;
   }
+
   return (
     <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md border ${content.borderColor} ${content.bgColor}`}>
       {content.icon}

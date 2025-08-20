@@ -1,11 +1,12 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { country_codes } from './country_codes';
 
 const PhoneInputForm = ({
   selectedCountryCode,
   onCountryCodeChange,
-  countryCodes,
+  countryCodes = country_codes,
   onSuccess,
   primary_color = '#1db954',
   locale = "ar"
