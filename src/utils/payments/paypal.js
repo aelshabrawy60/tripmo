@@ -1,7 +1,8 @@
 const crypto = require('crypto');
+const { exchangeRates } = require('../currency/exhangeRates');
+
 import {
     ApiError,
-    CheckoutPaymentIntent,
     Client,
     Environment,
     LogLevel,
@@ -32,71 +33,100 @@ class Paypal {
    }
 
   async createPaymentRedirect(orderDetails, lang = 'ar', currency = "EGP") {
+    console.log("credentials:", {
+      clientId: this.PAYPAL_CLIENT_ID,
+      clientSecret: this.PAYPAL_CLIENT_SECRET,
+      mode: this.mode
+    });
     this.validateOrderDetails(orderDetails);
 
-    const collect ={
-        
-    }
-
-    // Validate currency, fallback to EGP
-    if (currency !== "EGP" && currency !== "USD") {
-      currency = "EGP";
-    }
-    const priceInCurrency = orderDetails.deposite_price * (exchangeRates[currency] || 1);
-
+    const priceInCurrency = orderDetails.deposite_price * (exchangeRates["USD"] || 0.02);
 
     const amount = parseFloat(priceInCurrency).toFixed(2);
-    const orderId = String(orderDetails.id);
 
-    const payload = {
-      expireAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-      maxFailureAttempts: 3,
-      paymentType: "credit",
-      amount,
-      currency: "EGP",
-      order: orderId,
-      merchantRedirect: encodeURI(this.successUrl),
-      display: lang,
-      type: "one-time",
-      merchantId: this.merchantId,
-      failureRedirect: false,
-      customer: {
-        reference: orderDetails.customerReference || orderId
-      },
-      serverWebhook: "https://tripmo.vercel.app/api/webhook/deposits"
-    };
-
-    try {
-      const response = await fetch(this.kashierCreateApi, {
-        method: "POST",
-        headers: {
-          "Authorization": this.secretKey,
-          "api-key": this.apiKey,
-          "Content-Type": "application/json"
+    const collect = {
+        body: {
+            intent: "CAPTURE",
+            purchaseUnits: [
+                {
+                    amount: {
+                        currencyCode: "USD",
+                        value: amount,
+                        breakdown: {
+                            itemTotal: {
+                                currencyCode: "USD",
+                                value: amount,
+                            },
+                        },
+                    },
+                    items: [
+                        {
+                            name: "T-Shirt",
+                            unitAmount: {
+                                currencyCode: "USD",
+                                value: amount,
+                            },
+                            quantity: "1",
+                            description: "Super Fresh Shirt",
+                            sku: "sku01",
+                        },
+                    ],
+                },
+                
+            ],
         },
-        body: JSON.stringify(payload)
-      });
+        prefer: "return=minimal",
+    }
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.log("error data", errorData)
+    
+    try {
+        const { body, ...httpResponse } = await this.OrdersController.createOrder(
+            collect
+        );
 
-        throw new Error(`Kashier API error: ${response.statusText}`);
-      }
+        const data = typeof body === "string" ? JSON.parse(body) : body;
 
-      const result = await response.json();
-      console.log("Payment session created:", result);
-
-      return {
-        "redirectUrl": result.sessionUrl,
-        "paymentId": result._id
-      }
-
+        return {
+            "redirectUrl": data.links.find(link => link.rel === "approve").href,
+            "paymentId": data.id
+        }
     } catch (error) {
-      console.error("Error creating Kashier session:", error);
-      throw error;
+        console.error("Error creating PayPal order:", error);
+        if (error instanceof ApiError) {
+            throw new Error(error.message);
+        }
     }
   }
+
+    /**
+     * Capture payment for the created order to complete the transaction.
+     * @see https://developer.paypal.com/docs/api/orders/v2/#orders_capture
+     */
+    async captureOrder(orderID) {
+        const collect = {
+            id: orderID,
+            prefer: "return=minimal",
+        };
+
+        console.log("Capturing PayPal order:", collect);
+
+        try {
+            const { body, ...httpResponse } = await this.OrdersController.captureOrder(
+                collect
+            );
+
+            console.log("Capture result:", JSON.parse(body));
+            return {
+                jsonResponse: JSON.parse(body),
+                httpStatusCode: httpResponse.statusCode,
+            };
+        } catch (error) {
+            console.log("Error capturing PayPal order:", error);
+            if (error instanceof ApiError) {
+                throw new Error(error.message);
+            }
+        }
+    };
 
   validateOrderDetails(order) {
     if (!order) throw new Error("Order details are required");

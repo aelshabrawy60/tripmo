@@ -8,20 +8,15 @@ function Message({ content }) {
 }
 
 
-function Paypal() {
+function Paypal({OrderPayload}) {
 
     const [message, setMessage] = useState("");
 
     const initialOptions = {
         "client-id":
             "AVlPPp8tVH66bgP064QAptT__9PQKbNMAMYjyfvpEtroWZIxJfVtlvmh9g3rBB-8t03F6r2VatOaIl9p",
-        "enable-funding": "venmo",
-        "disable-funding": "",
-        "buyer-country": "US",
+        "buyer-country": "EG",
         currency: "USD",
-        "data-page-type": "product-details",
-        components: "buttons",
-        "data-sdk-integration-source": "developer-studio",
     };
   return (
     <div>
@@ -35,33 +30,21 @@ function Paypal() {
                 }}
                 createOrder={async () => {
                     try {
-                        const response = await fetch("/api/orders", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            // use the "body" param to optionally pass additional order information
-                            // like product ids and quantities
-                            body: JSON.stringify({
-                                cart: [
-                                    {
-                                        id: "YOUR_PRODUCT_ID",
-                                        quantity: "YOUR_PRODUCT_QUANTITY",
-                                    },
-                                ],
-                            }),
+                        console.log("Creating PayPal order...", OrderPayload);
+
+                        const response = await fetch('/api/client/bookings', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(OrderPayload),
                         });
 
-                        const orderData = await response.json();
 
-                        if (orderData.id) {
-                            return orderData.id;
+                        const data = await response.json();
+
+                        if (data.paymentId) {
+                            return data.paymentId;
                         } else {
-                            const errorDetail = orderData?.details?.[0];
-                            const errorMessage = errorDetail
-                                ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                                : JSON.stringify(orderData);
-
+                            const errorMessage = data?.message || "Unknown error occurred";
                             throw new Error(errorMessage);
                         }
                     } catch (error) {
@@ -74,16 +57,19 @@ function Paypal() {
                 onApprove={async (data, actions) => {
                     try {
                         const response = await fetch(
-                            `/api/orders/${data.orderID}/capture`,
+                            `/api/client/payments/capture`,
                             {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",
                                 },
+                                body: JSON.stringify({ orderID: data.orderID }),
                             }
                         );
 
                         const orderData = await response.json();
+
+                        console.log("Order data:", orderData);
                         // Three cases to handle:
                         //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
                         //   (2) Other non-recoverable errors -> Show a failure message
@@ -114,6 +100,7 @@ function Paypal() {
                                 orderData,
                                 JSON.stringify(orderData, null, 2)
                             );
+                            actions.redirect(`${process.env.NEXT_PUBLIC_WEBSITE_URL}/booking?paymentId=${transaction.id}`);
                         }
                     } catch (error) {
                         console.error(error);

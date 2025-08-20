@@ -11,7 +11,7 @@ import { calcCancelationFees } from "@/utils/payments/helpers";
 import { cookies } from 'next/headers';
 
 export async function POST(request) {
-    const { name, tripId, date, phone, numberOfSeats, time, offset, client_id, lang, numberOfChildren, numberOfInfants} = await request.json();
+    const { name, tripId, date, phone, numberOfSeats, time, offset, client_id, lang, numberOfChildren, numberOfInfants, gatewayName } = await request.json();
 
     const cookieStore = cookies();
     const currency = cookieStore.get('currency')?.value;
@@ -30,12 +30,12 @@ export async function POST(request) {
             const type = "auto"
 
             if(type == "auto"){
-                const payment = await initDepositPayment(result.data, getTrackingData(request), lang || 'ar', currency, refCode)
+                const payment = await initDepositPayment(result.data, getTrackingData(request), lang || 'ar', currency, refCode, gatewayName || 'kashier')
 
                 // 🟢 Send Meta Conversions API Event (InitiateCheckout)
                 await sendMetaIntiateCheckout(request, result, phone, numberOfSeats)
 
-                return NextResponse.json({ success: true, data: result.data, redirectUrl: payment.redirectUrl });
+                return NextResponse.json({ success: true, data: result.data, redirectUrl: payment.redirectUrl, paymentId: payment.paymentId });
 
             }else{
                 const payment = await initManualDepositPayment(result.data)

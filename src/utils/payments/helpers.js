@@ -125,7 +125,7 @@ export async function createDeposit(bookData, url, paymentId, type, tracking_dat
         release_date: releaseDate,
         tracking_data: tracking_data,
         referral_code: affiliate_ref,
-        affiliate_amount: affiliate_ref? calculateAffiliateAmount(bookData.total_price) : 0
+        affiliate_amount: affiliate_ref? calculateAffiliateAmount(bookData.total_price) : 0,
     }])
 
     if(error){

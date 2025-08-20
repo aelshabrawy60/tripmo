@@ -1,6 +1,7 @@
 import {createDeposit, AddRefund, fetchPaymentId} from './helpers'
 
 const KashierRedirect = require('./kashier');
+const Paypal = require('./paypal');
 
 const mode = "live"
 const paymentGateawayConfig = {
@@ -13,11 +14,20 @@ const paymentGateawayConfig = {
   mode: mode
 }
 
+const paypalMode = "test"
+const paypalGatewayConfig = {
+  name: "paypal",
+  type: "auto",
+  key_1: paypalMode == "live" ? process.env.PAYPAL_CLIENT_ID : process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID_TEST,
+  key_2: paypalMode == "live" ? process.env.PAYPAL_CLIENT_SECRET : process.env.PAYPAL_CLIENT_SECRET_TEST,
+  mode: paypalMode
+};
 
 class PaymentRedirectFlow {
   constructor(config) {
     this.gateways = {
       kashier: new KashierRedirect(config),
+      paypal: new Paypal(config),
       // Add other gateways as needed
     };
   }
@@ -83,7 +93,15 @@ class PaymentRedirectFlow {
 
     return await this.gateways[gatewayName].payout(payoutData);
   }
-  
+
+  async captureOrder(gatewayName, orderID){
+    if (!this.gateways[gatewayName]) {
+      throw new Error(`Gateway ${gatewayName} not configured`);
+    }
+
+    return await this.gateways[gatewayName].captureOrder(orderID);
+  }
+
   async getTransferStatus(gatewayName, transferId){
     if (!this.gateways[gatewayName]) {
       throw new Error(`Gateway ${gatewayName} not configured`);
@@ -108,7 +126,7 @@ class PaymentRedirectFlow {
  * @param {String} type - The type of payment (unused currently)
  * @returns {Object} - The redirect information
  */
-async function initDepositPayment(bookData, tracking_data = null, lang = 'ar', currency = "EGP", affiliate_ref = null, gatewayConfig = paymentGateawayConfig) {
+async function initDepositPayment(bookData, tracking_data = null, lang = 'ar', currency = "EGP", affiliate_ref = null, gatewayName = "kashier", gatewayConfig = paymentGateawayConfig) {
   // Ensure bookData has all required fields
   if (!bookData || !bookData.id || !bookData.deposite_price) {
     throw new Error("Invalid booking data. Missing required fields.");
@@ -125,6 +143,11 @@ async function initDepositPayment(bookData, tracking_data = null, lang = 'ar', c
   
   // Format the deposit price to ensure it has 2 decimal places
   paymentData.deposite_price = amount.toFixed(2);
+
+  if (gatewayName === "paypal") {
+    gatewayConfig = paypalGatewayConfig;
+    console.log("Using PayPal gateway configuration:", gatewayConfig);
+  }
     
   try {
     const paymentService = new PaymentRedirectFlow(gatewayConfig);
@@ -176,6 +199,13 @@ async function initPayout(payoutData, gatewayConfig = paymentGateawayConfig) {
   return payoutData_
 }
 
+async function initPaypalCapture(orderID){
+  const paymentService = new PaymentRedirectFlow(paypalGatewayConfig);
+  const captureData = await paymentService.captureOrder(paypalGatewayConfig.name, orderID);
+
+  return captureData;
+}
+
 async function getWithdrawStatus(transferId, gatewayConfig = paymentGateawayConfig) {
   const paymentService = new PaymentRedirectFlow(gatewayConfig);
   const transfareStatus = paymentService.getTransferStatus(gatewayConfig.name, transferId)
@@ -198,5 +228,6 @@ module.exports = {
   initManualRefund,
   initPayout,
   paymentGateawayConfig,
-  getWithdrawStatus
+  getWithdrawStatus,
+  initPaypalCapture
 };

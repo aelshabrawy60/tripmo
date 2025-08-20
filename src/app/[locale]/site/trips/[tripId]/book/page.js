@@ -7,6 +7,7 @@ import LoadingCirc from '@/components/Loading/LoadingCirc';
 import Loading from '@/components/Loading';
 import TermsAcceptance from '@/components/website/TermsAcceptance';
 import PaymentWays from '@/components/website/PaymentWays';
+import Paypal from '@/components/website/Paypal';
 
 function BookingPage() {
   const params = useParams();
@@ -295,6 +296,20 @@ function BookingPage() {
                 >
                   {isSubmitting ? t.processing[locale] : t.pay[locale]}
                 </button>
+                <Paypal OrderPayload={{
+                  name: clientData.clientName,
+                  phone: clientData.clientPhone,
+                  numberOfSeats: seats.adults,
+                  numberOfChildren: seats.children,
+                  numberOfInfants: seats.infants,
+                  date: day || new Date().toISOString().split('T')[0],
+                  time: timeState || null,
+                  tripId: tripId,
+                  offset: -new Date().getTimezoneOffset() / 60,
+                  client_id: clientData.clientId,
+                  lang: locale,
+                  gatewayName: "paypal"
+                }} />
                 <TermsAcceptance link={t.termsLink} locale={locale}/>
               </>
             )}
