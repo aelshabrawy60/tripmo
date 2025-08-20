@@ -1,19 +1,39 @@
 import MainHero from '@/components/Templates/Main/MainHero'
 import React from 'react'
+import { unstable_cache } from 'next/cache'
 import { TrendingDestinations, popularTrips } from '@/utils/trips_engine/trips_engine'
 import TopDestinations from '@/components/website/TopDestinations'
 import TripsStripSection from '@/components/website/TripsStripSection'
 import PaymentWays from '@/components/website/PaymentWays'
 import locales from '../../../../messages/locales'
+
 export const revalidate = 21600 // Revalidate every 6 hours
 
+// Cache the data fetching functions
+const getCachedDestinations = unstable_cache(
+  async (locale) => await TrendingDestinations(locale),
+  ['trending-destinations'],
+  {
+    revalidate: 21600, // 6 hours
+    tags: ['destinations']
+  }
+)
+
+const getCachedTrips = unstable_cache(
+  async (locale) => await popularTrips(locale),
+  ['popular-trips'],
+  {
+    revalidate: 21600, // 6 hours  
+    tags: ['trips']
+  }
+)
 
 async function page({params}) {
-
   const { locale } = params;
-  const topDestinations = await TrendingDestinations(locale)
-  const topTrips =  (await popularTrips(locale))
-
+  
+  // These will be cached on the server
+  const topDestinations = await getCachedDestinations(locale)
+  const topTrips = await getCachedTrips(locale)
 
   return (
     <>
