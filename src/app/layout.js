@@ -37,6 +37,24 @@ export default function RootLayout({ children }) {
             }}
           />
 
+          {/* Google Ads Conversion Tracking */}
+          <Script
+            strategy="afterInteractive"
+            src="https://www.googletagmanager.com/gtag/js?id=AW-17492859747"
+          />
+          <Script
+            id="google-ads"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'AW-17492859747');
+              `,
+            }}
+          />
+
           {/* Meta Pixel #1 */}
           <Script
             id="facebook-pixel-1"
