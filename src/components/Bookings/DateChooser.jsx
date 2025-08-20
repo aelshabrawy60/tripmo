@@ -237,7 +237,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
 
   if (tripData.availability_type === "fixed") {
     return (
-      <div className="w-full max-w-md min-w-[200px] flex-1 opacity-75">
+      <div className="w-full lg:max-w-md min-w-[200px] flex-1 opacity-75">
         <div className="relative">
           <div className="w-full flex items-center gap-2 px-3 py-3 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-sm cursor-not-allowed">
             <Calendar className="h-5 w-5 text-gray-400" />
@@ -249,7 +249,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
   }
 
   return (
-    <div className="w-full max-w-md min-w-[200px] flex-1">
+    <div className="w-full lg:max-w-md min-w-[200px] flex-1">
       <div className="relative">
         <button
           type="button"

@@ -107,7 +107,7 @@ function MainBookingCard({ tripData, locale }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-md w-full">
+    <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 lg:max-w-md w-full">
       <div className="space-y-6">
         <div className='flex flex-col gap-4'>
           {/* Date & Person Selectors */}
