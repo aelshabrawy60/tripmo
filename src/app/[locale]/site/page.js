@@ -14,7 +14,7 @@ const getCachedDestinations = unstable_cache(
   async (locale) => await TrendingDestinations(locale),
   ['trending-destinations'],
   {
-    revalidate: 21600, // 6 hours
+    revalidate: 1, // 6 hours
     tags: ['destinations']
   }
 )
@@ -23,7 +23,7 @@ const getCachedTrips = unstable_cache(
   async (locale) => await popularTrips(locale),
   ['popular-trips'],
   {
-    revalidate: 21600, // 6 hours  
+    revalidate: 1, // 6 hours  
     tags: ['trips']
   }
 )
