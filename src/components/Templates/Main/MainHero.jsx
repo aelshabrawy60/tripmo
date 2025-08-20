@@ -8,7 +8,7 @@ function MainHero({img, title, subtitle = null, locale}) {
   const [imageError, setImageError] = useState(false)
 
   return (
-    <div className='w-full h-screen relative rounded-2xl lg:rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black max-h-[520px] md:max-h-[320px] mb-16 sm:mb-20 md:mb-10'>
+    <div className='w-full h-screen relative rounded-2xl lg:rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black max-h-[520px] lg:max-h-[400px] xl:max-h-[320px] mb-16 sm:mb-20 md:mb-10'>
         {/* Background overlay for smooth transition */}
         <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/60 to-black/40 rounded-2xl lg:rounded-3xl transition-opacity duration-500 ${imageLoaded ? 'opacity-0' : 'opacity-100'} z-[1]`} />
         
