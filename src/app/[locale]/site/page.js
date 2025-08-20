@@ -7,7 +7,7 @@ import TripsStripSection from '@/components/website/TripsStripSection'
 import PaymentWays from '@/components/website/PaymentWays'
 import locales from '../../../../messages/locales'
 
-export const revalidate = 21600 // Revalidate every 6 hours
+export const revalidate = 21600 // Revalidate every 6 hours //
 
 // Cache the data fetching functions
 const getCachedDestinations = unstable_cache(
