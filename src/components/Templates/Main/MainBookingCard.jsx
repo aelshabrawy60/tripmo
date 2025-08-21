@@ -3,7 +3,7 @@
 import DateChooser from '@/components/Bookings/DateChooser'
 import PersonsNumChooser from '@/components/Bookings/PersonsNumChooser'
 import React, { useState, useEffect } from 'react'
-import { Check, X, Loader, ArrowRight } from 'lucide-react'
+import { Check, X, Loader, ArrowRight, MessageCircle } from 'lucide-react'
 import Cookies from 'js-cookie';
 import formatPrice from '@/utils/currency/PriceFormate';
 import TimeChooser from '@/components/Trips/TimeChooser'
@@ -28,7 +28,8 @@ function MainBookingCard({ tripData, locale }) {
     unavailable: locale === 'ar' ? 'غير متاح' : 'Unavailable',
     save: locale === 'ar' ? 'وفر' : 'SAVE',
     youSave: locale === 'ar' ? 'توفر' : 'You save',
-    sale: locale === 'ar' ? 'تخفيض!' : 'SALE!'
+    sale: locale === 'ar' ? 'تخفيض!' : 'SALE!',
+    chatWithUs: locale === 'ar' ? 'تحدث معنا' : 'Chat with us'
   }
 
   const Currency = Cookies.get('currency');
@@ -187,24 +188,40 @@ function MainBookingCard({ tripData, locale }) {
           </div>
         )}
 
-        {/* Book Button */}
-        {isAvail ? (
-          <a
-            href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum.adults}&time=${selectedTime}&children=${selectedSeatsNum.children}&infants=${selectedSeatsNum.infants}`}
-            className={`bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg`}
-          >
-            {t.bookNow}
-            <ArrowRight size={18} />
-          </a>
-        ) : (
-          <button
-            disabled
-            className="bg-gray-400 w-full text-gray-600 font-medium py-3 px-6 rounded-lg cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {t.bookNow}
-            <ArrowRight size={18} />
-          </button>
-        )}
+        {/* Book Button & Chat Link */}
+        <div className="space-y-3">
+          {/* Book Button */}
+          {isAvail ? (
+            <a
+              href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum.adults}&time=${selectedTime}&children=${selectedSeatsNum.children}&infants=${selectedSeatsNum.infants}`}
+              className={`bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg`}
+            >
+              {t.bookNow}
+              <ArrowRight size={18} />
+            </a>
+          ) : (
+            <button
+              disabled
+              className="bg-gray-400 w-full text-gray-600 font-medium py-3 px-6 rounded-lg cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {t.bookNow}
+              <ArrowRight size={18} />
+            </button>
+          )}
+
+          {/* Chat with us link */}
+          <div className="text-center">
+            <a
+              href="https://tawk.to/chat/689a083963e952192907c216/1j2cr084q"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200 hover:underline"
+            >
+              <MessageCircle size={16} />
+              {t.chatWithUs}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   )
