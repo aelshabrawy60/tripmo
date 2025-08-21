@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 export async function AffiliateWithdraw(affiliateId, withdraw_method_id, affiliateRef) {
-  const type = "manual"; // or "auto"
+  const type = "auto"; // or "auto"
   const currentDate = new Date().toISOString();
 
   // Step 1: Calculate balances
