@@ -49,6 +49,7 @@ class Paypal {
             intent: "CAPTURE",
             purchaseUnits: [
                 {
+                    referenceId: String(orderDetails.id),
                     amount: {
                         currencyCode: "USD",
                         value: amount,
@@ -140,25 +141,51 @@ class Paypal {
   }
 
   async verifyReturnedPayment(query) {
-    let queryString = '';
-    for (let key in query) {
-      if (key === 'signature' || key === 'mode') continue;
-      queryString += '&' + key + '=' + query[key];
+    console.log("Verifying returned payment:", query);
+    const paypalOrderId = query.paypalOrderId;
+
+    if (!paypalOrderId) {
+      console.error("Missing PayPal order ID");
+      return { success: false, isSignatureValid: false };
     }
-    let finalUrl = queryString.substr(1);
 
-    const calculatedSignature = crypto
-      .createHmac('sha256', this.apiKey)
-      .update(finalUrl)
-      .digest('hex');
+    try {
+      // Call PayPal Orders API to get details
+      const { result } = await this.OrdersController.getOrder({
+        id: paypalOrderId,
+      });
 
-    const isValid = calculatedSignature === query.signature;
+      console.log("PayPal Order Details:", JSON.stringify(result, null, 2));
 
-    return {
-      success: isValid && query.paymentStatus === 'SUCCESS',
-      isSignatureValid: isValid
-    };
+      // Validate order status
+      const orderStatus = result?.status;
+      let paymentCompleted = false;
+
+      if (orderStatus === "COMPLETED") {
+        paymentCompleted = result.purchaseUnits?.some(unit =>
+        unit.payments?.captures?.some(capture => capture.status === "COMPLETED")
+      );
+      }
+
+      return {
+        success: paymentCompleted,
+        isSignatureValid: true, // optionally add signature validation if using webhook
+        order: result,
+      };
+    } catch (error) {
+      if (error instanceof ApiError) {
+        console.error("PayPal API error:", error.result);
+      } else {
+        console.error("Unexpected error verifying payment:", error);
+      }
+
+      return {
+        success: false,
+        isSignatureValid: false,
+      };
+    }
   }
+
 
   async getStatusPayment(paymentId){
     const response = await fetch(`${this.kashierGetApi}/payment/sessions/${paymentId}/payment`, {

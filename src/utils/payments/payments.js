@@ -228,6 +228,7 @@ module.exports = {
   initManualRefund,
   initPayout,
   paymentGateawayConfig,
+  paypalGatewayConfig,
   getWithdrawStatus,
   initPaypalCapture
 };

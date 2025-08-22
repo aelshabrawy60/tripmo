@@ -14,7 +14,7 @@ function Paypal({OrderPayload}) {
 
     const initialOptions = {
         "client-id":
-            "AVlPPp8tVH66bgP064QAptT__9PQKbNMAMYjyfvpEtroWZIxJfVtlvmh9g3rBB-8t03F6r2VatOaIl9p",
+            process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID_TEST,
         "buyer-country": "EG",
         currency: "USD",
     };
@@ -100,7 +100,7 @@ function Paypal({OrderPayload}) {
                                 orderData,
                                 JSON.stringify(orderData, null, 2)
                             );
-                            actions.redirect(`${process.env.NEXT_PUBLIC_WEBSITE_URL}/booking?paymentId=${transaction.id}`);
+                            window.location.href = `${process.env.NEXT_PUBLIC_SITE_URL}/booking?merchantOrderId=${orderData.purchase_units[0].reference_id}&paypalOrderId=${data.orderID}`;
                         }
                     } catch (error) {
                         console.error(error);

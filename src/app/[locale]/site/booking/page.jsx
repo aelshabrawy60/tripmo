@@ -3,7 +3,7 @@ import { PaymentRedirectFlow } from '../../../../utils/payments/payments';
 import { confirmDeposit } from '@/utils/payments/helpers';
 import { supabaseAdmin } from '@/utils/supabase/service';
 import { Check, Calendar, Users, MapPin, Clock } from 'lucide-react';
-import { paymentGateawayConfig } from '../../../../utils/payments/payments';
+import { paymentGateawayConfig , paypalGatewayConfig} from '../../../../utils/payments/payments';
 import CancelBookClient from '@/components/Bookings/CancelBookClient';
 import CanceldOrder from '@/components/Bookings/CanceldOrder';
 import AddComment from '@/components/Templates/Main/AddComment';
@@ -14,7 +14,7 @@ import { formatTime } from '@/components/website/helpers';
 
 // Fetch booking data from Supabase
 async function fetchBookingData(id) {
-  const { data, error } = await supabaseAdmin.from("bookings").select("*, deposits(payment_id)").eq("id", id).single();
+  const { data, error } = await supabaseAdmin.from("bookings").select("*, deposits(payment_id, type)").eq("id", id).single();
   return data;
 }
 
@@ -258,9 +258,8 @@ export default async function Page({ searchParams, params }) {
       return <ConfirmationReceipt bookingData={bookingData} tripData={tripData} isBookRated={isBookRated_}qrDataUrl={qrDataUrl} locale={locale}/>;
 
     }else{
-      const paymentConfig = paymentGateawayConfig; // Use the default payment gateway config
-      //const paymentConfig = await fetchPaymentsOptions(groupId);
-      
+      const paymentConfig = bookingData.deposits[0]?.type === "paypal" ? paypalGatewayConfig : paymentGateawayConfig; // Use the default payment gateway config
+
       const paymentService = new PaymentRedirectFlow(paymentConfig);
       const verf = await paymentService.verifyPaymentReturn(paymentConfig.name, searchParams);
 

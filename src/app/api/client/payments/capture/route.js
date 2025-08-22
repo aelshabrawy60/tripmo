@@ -7,7 +7,9 @@ export async function POST(request) {
     const { orderID } = await request.json();
     const { jsonResponse, httpStatusCode } = await initPaypalCapture(orderID);
 
-    
+
+
+    console.log("Capture result:", jsonResponse);
     return NextResponse.json(jsonResponse, { status: httpStatusCode });
   } catch (error) {
     console.error("Failed to capture order:", error);
