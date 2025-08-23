@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Users, MapPin, Star, Calendar, ExternalLink, Shield } from 'lucide-react';
+import { Users, MapPin, Star, Calendar, ExternalLink, Shield, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import BlockTripModal from './BlockTripModal';
 import { useRouter } from 'next/navigation';
@@ -97,7 +97,6 @@ function TripAdminCard({ data, onStatusChange }) {
     }
   }
 
-
   const currentStatus = statusConfig[data.status] || statusConfig.private;
   const priceInfo = getPriceInfo();
   const isBlocked = data.status === 'blocked';
@@ -105,26 +104,28 @@ function TripAdminCard({ data, onStatusChange }) {
   return (
     <div
       onClick={() => router.push(`/trips/${data.id}`)}
-      className="group relative bg-white rounded-xl border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-lg hover:shadow-gray-100/50 overflow-hidden cursor-pointer"
+      className="group relative bg-white rounded-2xl border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/50 overflow-hidden cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
     >
-      <div className="p-5">
-        <div className="flex items-center justify-between gap-4">
-          {/* Left side - Trip info */}
-          <div className="flex items-center gap-4 flex-1 min-w-0">
-            {/* Trip thumbnail */}
+      {/* Mobile-first layout */}
+      <div className="p-4 sm:p-5">
+        {/* Header section */}
+        <div className="flex items-start justify-between gap-3 mb-4">
+          {/* Trip thumbnail and basic info */}
+          <div className="flex items-start gap-3 flex-1 min-w-0">
+            {/* Trip thumbnail - responsive sizing */}
             <div className="relative flex-shrink-0">
-              <div className="relative w-14 h-14 rounded-xl overflow-hidden ring-2 ring-gray-100 group-hover:ring-gray-200 transition-all duration-300">
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl overflow-hidden ring-2 ring-gray-100 group-hover:ring-gray-200 transition-all duration-300 shadow-sm">
                 <Image
                   src={data.images?.[0] || '/profile-fallback.jpg'}
                   alt={data.name || 'Trip thumbnail'}
-                  width={56}
-                  height={56}
-                  className="w-full h-full object-cover"
-                  sizes="56px"
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 640px) 48px, 64px"
                 />
                 {isBlocked && (
-                  <div className="absolute inset-0 bg-red-500 bg-opacity-20 flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-red-600" />
+                  <div className="absolute inset-0 bg-red-500 bg-opacity-30 backdrop-blur-sm flex items-center justify-center">
+                    <Shield className="w-4 h-4 sm:w-6 sm:h-6 text-red-600" />
                   </div>
                 )}
               </div>
@@ -132,109 +133,107 @@ function TripAdminCard({ data, onStatusChange }) {
 
             {/* Trip details */}
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 text-base leading-tight mb-2 truncate">
+              <h3 className="font-bold text-gray-900 text-sm sm:text-base leading-tight mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
                 {data.name}
               </h3>
-              <div className="flex items-center gap-3 text-sm text-gray-500">
+              
+              {/* Mobile: Show only essential info */}
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-1">
                 <div className="flex items-center gap-1">
-                  <Users className="w-3.5 h-3.5" />
-                  <span>الحد الأقصى: {data.max_clients}</span>
+                  <Users className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  <span className="hidden sm:inline">الحد الأقصى:</span>
+                  <span>{data.max_clients}</span>
                 </div>
                 <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
                 <div className="flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5" />
+                  <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   <span>{getAvailabilityText()}</span>
                 </div>
               </div>
-              {priceInfo && (
-                <>
-                  <div className="flex items-center gap-3 text-sm mt-1">
-                    <span className="font-semibold text-gray-900">
-                      السعر للفرد: {formatAmount(priceInfo.basePrice)}
-                    </span>
-                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                    <span className="text-blue-600 font-medium">
-                      الدفع المسبق: {priceInfo.advancePayment}%
-                    </span>
-                  </div>
-                  {(priceInfo.weeklyDaysPricing.length > 0 || priceInfo.personsPricing.length > 0) && (
-                    <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
-                      {priceInfo.weeklyDaysPricing.length > 0 && (
-                        <span>أسعار خاصة للأيام: {priceInfo.weeklyDaysPricing.length}</span>
-                      )}
-                      {priceInfo.weeklyDaysPricing.length > 0 && priceInfo.personsPricing.length > 0 && (
-                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                      )}
-                      {priceInfo.personsPricing.length > 0 && (
-                        <span>أسعار خاصة للمجموعات: {priceInfo.personsPricing.length}</span>
-                      )}
-                    </div>
-                  )}
-                </>
-              )}
             </div>
           </div>
 
-          {/* Status badge and actions */}
-          <div className="flex items-center gap-3">
-            {/* Status badge */}
-            <div className={`px-3 py-1.5 rounded-lg text-xs font-medium border flex items-center gap-2 ${currentStatus.color} ${currentStatus.ring} ring-1`}>
-              <div className={`w-1.5 h-1.5 rounded-full ${currentStatus.dot}`}></div>
-              <span>{currentStatus.label}</span>
-            </div>
-
-            {/* Block/Unblock component */}
-            <div onClick={handleBlockComponentClick}>
-              <BlockTripModal 
-                tripData={data} 
-                onStatusChange={onStatusChange}
-              />
-            </div>
-
-            <button
-              className='px-3 py-1.5 rounded-md cursor-pointer hover:bg-gray-100 text-xs font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
-              onClick={(e) => addToCatalouge(e, data.id)}
-              disabled={isLoading}
-            >
-              {isLoading ? 'جارٍ الإضافة...' : 'catalouge +'}
-            </button>
-
+          {/* Status badge - always visible */}
+          <div className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs font-medium border flex items-center gap-1.5 ${currentStatus.color} ${currentStatus.ring} ring-1 shadow-sm`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${currentStatus.dot}`}></div>
+            <span className="hidden sm:inline">{currentStatus.label}</span>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="my-4 border-t border-gray-50"></div>
-
-        {/* Bottom section - Additional info */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* Location */}
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <MapPin className="w-3.5 h-3.5" />
-              <span>{data.depature_city} إلى {data.dest_city}</span>
+        {/* Pricing section - responsive layout */}
+        {priceInfo && (
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 sm:p-4 mb-4 border border-blue-100">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm text-gray-600">السعر للفرد:</span>
+                <span className="font-bold text-gray-900 text-sm sm:text-base">
+                  {formatAmount(priceInfo.basePrice)}
+                </span>
+              </div>
+              <div className="hidden sm:block w-1 h-1 bg-gray-300 rounded-full"></div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm text-blue-600">الدفع المسبق:</span>
+                <span className="font-semibold text-blue-700 text-sm sm:text-base">
+                  {priceInfo.advancePayment}%
+                </span>
+              </div>
             </div>
-          </div>
-
-          {/* Rating */}
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            {data.rates_count > 0 && (
-              <div className="flex items-center gap-1">
-                <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-                <span>{data.score.toFixed(1)} ({data.rates_count})</span>
+            
+            {/* Special pricing indicators */}
+            {(priceInfo.weeklyDaysPricing.length > 0 || priceInfo.personsPricing.length > 0) && (
+              <div className="flex flex-wrap items-center gap-2 mt-2 pt-2 border-t border-blue-200">
+                {priceInfo.weeklyDaysPricing.length > 0 && (
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                    أسعار خاصة للأيام: {priceInfo.weeklyDaysPricing.length}
+                  </span>
+                )}
+                {priceInfo.personsPricing.length > 0 && (
+                  <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full">
+                    أسعار المجموعات: {priceInfo.personsPricing.length}
+                  </span>
+                )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Location and Rating section */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+            <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+            <span className="truncate">{data.depature_city} إلى {data.dest_city}</span>
+          </div>
+
+          {data.rates_count > 0 && (
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm bg-yellow-50 text-yellow-700 rounded-lg px-3 py-2 border border-yellow-200">
+              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-500 fill-yellow-500" />
+              <span className="font-medium">{data.score.toFixed(1)}</span>
+              <span className="text-yellow-600">({data.rates_count})</span>
+            </div>
+          )}
+        </div>
+
+        {/* Action buttons - responsive layout */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          {/* Block/Unblock component */}
+          <div onClick={handleBlockComponentClick} className="flex-1 sm:flex-initial">
+            <BlockTripModal 
+              tripData={data} 
+              onStatusChange={onStatusChange}
+            />
           </div>
         </div>
       </div>
 
-      {/* View trip link */}
+      {/* View trip button - repositioned for mobile */}
       <button
         onClick={handleExternalLinkClick}
-        className="absolute top-3 left-3 p-1.5 bg-gray-100 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-200"
+        className="absolute top-2 left-2 sm:top-3 sm:left-3 p-2 bg-white/90 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white shadow-lg border border-gray-100 hover:scale-105"
         title="View trip in new tab"
       >
-        <ExternalLink className="w-4 h-4 text-gray-500" />
+        <ExternalLink className="w-4 h-4 text-gray-600" />
       </button>
+
     </div>
   );
 }
