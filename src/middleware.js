@@ -134,7 +134,7 @@ export function middleware(request) {
       const detectedLocale = detectLocale(request)
       console.log(`[MIDDLEWARE] Root path, redirecting to /${detectedLocale}`)
       url.pathname = `/${detectedLocale}`
-      response = NextResponse.redirect(url)
+      response = NextResponse.redirect(url, 301)
     }
     
     // Handle locale-only paths (e.g., /en, /ar)
@@ -156,7 +156,7 @@ export function middleware(request) {
         const detectedLocale = detectLocale(request)
         console.log(`[MIDDLEWARE] Path without locale ${url.pathname}, redirecting to /${detectedLocale}${url.pathname}`)
         url.pathname = `/${detectedLocale}${url.pathname}`
-        response = NextResponse.redirect(url)
+        response = NextResponse.redirect(url, 301)
       } else {
         response = NextResponse.next({
           request: {
