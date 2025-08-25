@@ -48,10 +48,14 @@ export async function generateMetadata({ params }) {
         ],
         type: 'article',
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/${params.slug}`,
-        siteName: 'رحلة ناو',
+        siteName: 'Rehla Now | رحلة ناو',
       },
       alternates: {
         canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/${params.slug}`,
+        languages: {
+          'en': `${process.env.NEXT_PUBLIC_SITE_URL}/en/trips/${params.slug}`,
+          'ar': `${process.env.NEXT_PUBLIC_SITE_URL}/ar/trips/${params.slug}`,
+        },
       },
       robots: {
         index: true,
