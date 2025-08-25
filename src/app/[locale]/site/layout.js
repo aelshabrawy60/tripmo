@@ -6,24 +6,53 @@ import MainFooter from "@/components/Templates/Main/MainFooter";
 import { footerPages, pages, socialMedia } from "./data";
 import AffiliateTracker from "@/components/Affiliate/AffiliateTracker";
 
-export const metadata = {
-  title: "Rehla Now | رحلة ناو | احجز رحلتك القادمة" ,
-  description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now. عروض رائعة، وجهات مميزة، وتجربة سفر لا مثيل لها.",
-  keywords: ["رحلات", "حجوزات", "سياحة", "سفر", "مغامرات", "رحلات مصر", "رحلات شرم الشيخ", "Rehla Now", "رحلة ناو", "استكشاف", "عروض سفر", "حجز رحلات"],
-  openGraph: {
-    title: "رحلات - استكشف، احجز واستمتع بأفضل العروض",
-    description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now.",
-    url: "https://rehlanow.com",
-    siteName: "Rehla Now",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "رحلات - استكشف، احجز واستمتع بأفضل العروض",
-    description: "اكتشف أفضل الرحلات في مصر مع Rehla Now.",
-    images: ["https://rehlanow.com/og-image.jpg"],
-  },
-};
+// Dynamic metadata generation function
+export async function generateMetadata({ params }) {
+  const { locale } = params;
+  
+  if (locale === 'en') {
+    return {
+      title: "Rehla Now | Book Your Next Adventure",
+      description: "Discover the best trips in Egypt, book your journey easily, and embark on an unforgettable adventure with Rehla Now. Amazing deals, unique destinations, and unparalleled travel experience.",
+      keywords: ["trips", "bookings", "tourism", "travel", "adventures", "Egypt trips", "Sharm El Sheikh trips", "Rehla Now", "exploration", "travel deals", "trip booking"],
+      openGraph: {
+        title: "Trips - Explore, Book and Enjoy the Best Deals",
+        description: "Discover the best trips in Egypt, book your journey easily, and embark on an unforgettable adventure with Rehla Now.",
+        url: "https://rehlanow.com/en",
+        siteName: "Rehla Now",
+        type: "website",
+        locale: "en_US",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "Trips - Explore, Book and Enjoy the Best Deals",
+        description: "Discover the best trips in Egypt with Rehla Now.",
+        images: ["https://rehlanow.com/og-image.jpg"],
+      },
+    };
+  } else {
+    // Arabic metadata (default)
+    return {
+      title: "Rehla Now | رحلة ناو | احجز رحلتك القادمة",
+      description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now. عروض رائعة، وجهات مميزة، وتجربة سفر لا مثيل لها.",
+      keywords: ["رحلات", "حجوزات", "سياحة", "سفر", "مغامرات", "رحلات مصر", "رحلات شرم الشيخ", "Rehla Now", "رحلة ناو", "استكشاف", "عروض سفر", "حجز رحلات"],
+      openGraph: {
+        title: "رحلات - استكشف، احجز واستمتع بأفضل العروض",
+        description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now.",
+        url: "https://rehlanow.com/ar",
+        siteName: "Rehla Now",
+        type: "website",
+        locale: "ar_EG",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "رحلات - استكشف، احجز واستمتع بأفضل العروض",
+        description: "اكتشف أفضل الرحلات في مصر مع Rehla Now.",
+        images: ["https://rehlanow.com/og-image.jpg"],
+      },
+    };
+  }
+}
 
 // Function to check if navbar should be hidden
 const shouldHideNavbarForPath = (pathname) => {
