@@ -10,8 +10,8 @@ export async function filterTripsByLocation(depatureLoctionId, destLocationId) {
             .from("trips")
             .select(
               `* , 
-              dest:dest_city (name),
-              depature:depature_city (name)`
+              dest:dest_city (name, name_en),
+              depature:depature_city (name, name_en)`
             )
             .eq("status", "active")
             .or(`available_day.is.null,available_day.gte.${today}`);

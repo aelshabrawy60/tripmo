@@ -15,8 +15,6 @@ export async function GET(request) {
     const query = url.searchParams.get("q");
     const adminKey = url.searchParams.get("admin_key")
 
-    console.log("depature_city", departureCity)
-    console.log("destCity", destCity)
 
     if(tripSlug){
       const trip = await getTrip(tripSlug, true, true);
