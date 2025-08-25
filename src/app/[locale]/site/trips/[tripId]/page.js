@@ -34,7 +34,7 @@ export async function generateMetadata({ params }) {
     return {
       title: `${tripData.name}`,
       description: tripData.about,
-      keywords: `${tripData.about}`,
+      keywords: `${tripData.about} ${tripData.dest_city.name_en} trips, ${tripData.dest_city.name_en} travel, ${tripData.dest_city.country_en} tours, travel packages, adventure travel, cultural tours`,
       openGraph: {
         title: tripData.name,
         description: tripData.about,
