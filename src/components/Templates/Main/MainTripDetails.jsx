@@ -76,10 +76,10 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
     <div>
         <TranslationIndicator />
         
-        <div className='text-2xl md:text-3xl font-bold gap-2 mb-2 mt-0 flex items-center flex-wrap'>
+        <h1 className='text-2xl md:text-3xl font-bold gap-2 mb-2 mt-0 flex items-center flex-wrap'>
           {displayName}
-        </div>
-        
+        </h1>
+
         <div className='mb-2'>
           <FromTo from={depature_city} to={dest_city} locale={locale}/>
         </div>
