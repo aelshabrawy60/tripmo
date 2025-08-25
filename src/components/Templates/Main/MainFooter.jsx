@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone, FileText } from 'lucide-react';
 import { phoneNumber , addressEn, addressAr} from '../../../app/[locale]/site/data'
 import locales from '../../../../messages/locales';
 
@@ -20,7 +20,8 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
   const defaultContactInfo = {
     address: locale == "en" ? addressEn : addressAr,
     phone: phoneNumber,
-    email: "info@rehlanow.com"
+    email: "info@rehlanow.com",
+    taxNumber: "774894687" // Add default tax number
   };
 
   // Use provided contact info or fallback to defaults
@@ -70,7 +71,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
           <div className="mb-6 md:mb-0 md:w-1/4">
             <h3 className="text-lg font-bold mb-4" style={{ color: theme }}>{locale == "en"? locales.Footer.links.en: locales.Footer.links.ar}</h3>
             <ul className="space-y-2">
-              {pages && pages.map((page, index) => (
+              {pages && pages.slice(0,4).map((page, index) => (
                 <li key={index}>
                   <a 
                     href={page.link || "#"} 
@@ -85,7 +86,27 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
               ))}
             </ul>
           </div>
-          
+
+          {/*Quick Links 2 */}
+          <div className="mb-6 md:mb-0 md:w-1/4">
+            <h3 className="text-lg font-bold mb-4" style={{ color: theme }}>{locale == "en"? locales.Footer.links.en: locales.Footer.links.ar}</h3>
+            <ul className="space-y-2">
+              {pages && pages.slice(4).map((page, index) => (
+                <li key={index}>
+                  <a 
+                    href={page.link || "#"} 
+                    className="text-gray-600 hover:opacity-80 transition duration-300"
+                    style={{ 
+                      ':hover': { color: theme } 
+                    }}
+                  >
+                    {locale == "en" ? page.name.en : page.name.ar}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Contact Info */}
           <div className="md:w-1/3">
             <h3 className="text-lg font-bold mb-4" style={{ color: theme }}>{locale == "en"? locales.Footer.contactUs.en: locales.Footer.contactUs.ar}</h3>
@@ -102,6 +123,14 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
                 <Mail size={20} style={{ color: theme }} className="flex-shrink-0" />
                 <span className="text-gray-600">{contact.email}</span>
               </div>
+              {contact.taxNumber && (
+                <div className="flex items-center space-x-3">
+                  <FileText size={20} style={{ color: theme }} className="flex-shrink-0" />
+                  <span className="text-gray-600">
+                    {locale == "en" ? "Tax No: " : "الرقم الضريبي: "}{contact.taxNumber}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

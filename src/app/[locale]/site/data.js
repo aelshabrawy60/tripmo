@@ -49,6 +49,13 @@ export const footerPages = [
     }, 
     link: "/terms#cancellation-policy" 
   },
+  { 
+    name: {
+      ar:"المقالات",
+      en: "blog"
+    }, 
+    link: "/blog" 
+  },
 ];
 
 export const socialMedia = [
