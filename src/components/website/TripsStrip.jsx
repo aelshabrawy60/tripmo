@@ -120,7 +120,7 @@ function TripsStrip({ tripsData , locale}) {
       {/* Left Arrow */}
 
       <button
-        className="absolute left-0 -top-10 z-10 flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-md focus:outline-none hover:bg-gray-100"
+        className={`absolute ${locale == "ar" ? "left-0" : "right-20"} -top-10 z-10 flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-md focus:outline-none hover:bg-gray-100`}
         onClick={() => scroll('left')}
       >
         <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@ function TripsStrip({ tripsData , locale}) {
       </button>
       {/* Right Arrow */}
       <button
-        className="absolute left-20 z-10 -top-10 flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-md focus:outline-none hover:bg-gray-100"
+        className={`absolute ${locale == "ar" ? "left-20" : "right-0"} -top-10 z-10 flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-md focus:outline-none hover:bg-gray-100`}
         onClick={() => scroll('right')}
       >
         <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
