@@ -1,10 +1,25 @@
 import "../../globals.css";
 import { headers } from 'next/headers';
+import { Poppins } from "next/font/google";
+import { Tajawal } from "next/font/google";
 import MainLayout from "@/components/Templates/Main/MainLayout";
 import MainNavbar from "@/components/Templates/Main/MainNavbar";
 import MainFooter from "@/components/Templates/Main/MainFooter";
 import { footerPages, pages, socialMedia } from "./data";
 import AffiliateTracker from "@/components/Affiliate/AffiliateTracker";
+
+const poppins = Poppins({
+  variable: '--font-poppins',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+});
+
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
+  weight: ['200', '300', '400', '500', '700', '800', '900'],
+  subsets: ['arabic', 'latin'],
+});
+
 
 // Dynamic metadata generation function
 export async function generateMetadata({ params }) {
