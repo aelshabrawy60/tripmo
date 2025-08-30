@@ -28,4 +28,10 @@ const blogs = [
         img: "/blog1.jpg",
         slug: "egypt-tours-the-ultimate-guide-to-an-unforgettable-adventure"
     },
+    {
+        title: "Egypt Tour Packages: Your Complete Guide for 2025/2026",
+        date: "September 5, 2025",
+        img: "/Egypt-tour-guide-at-temple.jpg",
+        slug: "egypt-tours-packages"
+    }
 ]
