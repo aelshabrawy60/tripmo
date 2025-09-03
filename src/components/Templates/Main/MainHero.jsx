@@ -54,13 +54,13 @@ function MainHero({img, title, subtitle = null, locale}) {
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 translate-y-4'
         }`}>
-          <div className='text-4xl mb-3 md:mb-5 md:text-5xl text-center text-white font-bold drop-shadow-2xl'>
+          <h1 className='text-4xl mb-3 md:mb-5 md:text-5xl text-center text-white font-bold drop-shadow-2xl'>
             {title}
-          </div>
+          </h1>
           {subtitle && (
-            <div className='text-md md:text-xl text-center text-gray-300 drop-shadow-lg mb-4'>
+            <p className='text-md md:text-xl text-center text-gray-300 drop-shadow-lg mb-4'>
               {subtitle}
-            </div>
+            </p>
           )}
         </div>
         

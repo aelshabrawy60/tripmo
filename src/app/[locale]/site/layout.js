@@ -28,11 +28,11 @@ export async function generateMetadata({ params }) {
   if (locale === 'en') {
     return {
       title: "Rehla Now | Book Your Next Adventure",
-      description: "Discover the best trips in Egypt, book your journey easily, and embark on an unforgettable adventure with Rehla Now. Amazing deals, unique destinations, and unparalleled travel experience.",
+      description: "Discover the best trips and tours in Egypt, book your journey easily, and embark on an unforgettable adventure with Rehla Now.",
       keywords: ["trips", "bookings", "tourism", "travel", "adventures", "Egypt trips", "Sharm El Sheikh trips", "Rehla Now", "exploration", "travel deals", "trip booking"],
       openGraph: {
         title: "Trips - Explore, Book and Enjoy the Best Deals",
-        description: "Discover the best trips in Egypt, book your journey easily, and embark on an unforgettable adventure with Rehla Now.",
+        description: "Discover the best trips and tours in Egypt, book your journey easily, and embark on an unforgettable adventure with Rehla Now.",
         url: "https://rehlanow.com/en",
         siteName: "Rehla Now",
         type: "website",
@@ -96,7 +96,7 @@ export default function RootLayout({ children, params }) {
 
   return (
     <>
-      <div style={{direction: locale == "en" ? "ltr" : "rtl"}}>
+      <div style={{direction: locale == "en" ? "ltr" : "rtl"}} lang={locale}>
         <MainLayout>
           <AffiliateTracker/>
           {!shouldHideNavbar && <MainNavbar pages={pages} locale={locale}/>}
