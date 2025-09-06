@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react"
 import MainTripCard from "../Templates/Main/MainTripCard"
+import NewTripCard from "./NewTripCard"
 
 function TripsStrip({ tripsData , locale}) {
   const [showLeftArrow, setShowLeftArrow] = useState(false)
@@ -141,7 +142,7 @@ function TripsStrip({ tripsData , locale}) {
       {/* Scrollable Container */}
       <div 
         ref={scrollContainerRef}
-        className="flex gap-2 md:gap-6 overflow-x-auto scrollbar-hide scroll-smooth"
+        className="flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
@@ -151,9 +152,9 @@ function TripsStrip({ tripsData , locale}) {
         {tripsData.map((trip, index) => (
           <div
             key={trip.id || index}
-            className="flex-shrink-0 w-64 md:w-68 "
+            className="flex-shrink-0 w-68 md:w-74"
           >
-            <MainTripCard tripData={trip} locale={locale}/>
+            <NewTripCard tripData={trip} locale={locale}/>
           </div>
         ))}
       </div>

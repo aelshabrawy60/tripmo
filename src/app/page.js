@@ -1,6 +1,7 @@
 "use client"
 import MainLayout from "@/components/Templates/Main/MainLayout";
 import ImgUploader from "@/components/Trips/ImgUploader";
+import NewTripCard from "@/components/website/NewTripCard";
 import { useState } from "react";
 
 export default function Home() {

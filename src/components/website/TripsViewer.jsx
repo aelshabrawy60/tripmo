@@ -1,6 +1,7 @@
 import React from 'react'
 import MainTripCard from '../Templates/Main/MainTripCard'
 import NoTripsFound from './NoTripsFound'
+import NewTripCard from './NewTripCard'
 
 function TripsViewer({ trips, isLoading = false, language = 'ar' }) {
   // Handle loading state
@@ -35,7 +36,7 @@ function TripsViewer({ trips, isLoading = false, language = 'ar' }) {
   return (
     <div className={`w-full max-w-7xl mx-auto py-6 ${directionClass}`} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Responsive grid container with RTL support */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6 lg:gap-4">
         {trips.map((trip, index) => {
           // Skip invalid trip data
           if (!trip || typeof trip !== 'object') {
@@ -47,7 +48,7 @@ function TripsViewer({ trips, isLoading = false, language = 'ar' }) {
               key={trip?.id || trip?.tripId || `trip-${index}`}
               className="w-full"
             >
-              <MainTripCard 
+              <NewTripCard 
                 tripData={trip} 
                 language={language}
                 isRTL={isRTL}
