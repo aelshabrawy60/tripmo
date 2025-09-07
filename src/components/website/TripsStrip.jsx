@@ -152,7 +152,7 @@ function TripsStrip({ tripsData , locale}) {
         {tripsData.map((trip, index) => (
           <div
             key={trip.id || index}
-            className="flex-shrink-0 w-68 md:w-74"
+            className="flex-shrink-0 w-70 md:w-74"
           >
             <NewTripCard tripData={trip} locale={locale}/>
           </div>

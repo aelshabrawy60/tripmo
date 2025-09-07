@@ -51,7 +51,7 @@ function NewTripCard({tripData, locale = "ar"}) {
   return (
     <Link
         href={`/trips/${slug}`}
-        className="bg-[#FAFAFA] h-[370px] rounded-md overflow-hidden shadow-xs m-2 border border-gray-100 flex flex-col"
+        className="bg-[#F7F7F7] h-[370px] rounded-lg overflow-hidden shadow-xs m-2 border border-gray-100 flex flex-col"
       >
         {/* Image section */}
         <div className="relative h-48 md:h-50 overflow-hidden">

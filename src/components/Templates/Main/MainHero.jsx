@@ -10,11 +10,11 @@ function MainHero({img, title, subtitle = null, locale}) {
   return (
     <div className='w-full h-screen relative rounded-2xl lg:rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black max-h-[520px] lg:max-h-[400px] xl:max-h-[320px] mb-16 sm:mb-20 md:mb-10'>
         {/* Background overlay for smooth transition */}
-        <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/60 to-black/40 rounded-2xl lg:rounded-3xl transition-opacity duration-500 ${imageLoaded ? 'opacity-0' : 'opacity-100'} z-[1]`} />
+        <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/60 to-black/40 rounded-2xl lg:rounded-3xl opacity-0 z-[1]`} />
         
         {/* Loading skeleton */}
-        <div className={`absolute inset-0 rounded-2xl lg:rounded-3xl transition-opacity duration-300 ${imageLoaded ? 'opacity-0' : 'opacity-100'} z-[2]`}>
-          <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 rounded-2xl lg:rounded-3xl animate-pulse" />
+        <div className={`absolute inset-0 rounded-2xl lg:rounded-3xl opacity-0 z-[2]`}>
+          <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 rounded-2xl lg:rounded-3xl" />
         </div>
 
         {/* Main image container */}
@@ -23,11 +23,7 @@ function MainHero({img, title, subtitle = null, locale}) {
             src={img} 
             alt={title || 'Hero background'}
             fill
-            className={`object-cover rounded-2xl lg:rounded-3xl transition-all duration-700 ease-out ${
-              imageLoaded 
-                ? 'opacity-40 scale-100 blur-0' 
-                : 'opacity-0 scale-105 blur-sm'
-            }`}
+            className={`object-cover rounded-2xl lg:rounded-3xl opacity-40 scale-100 blur-0`}
             priority
             quality={85}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
@@ -49,11 +45,7 @@ function MainHero({img, title, subtitle = null, locale}) {
         )}
         
         {/* Hero Content - Enhanced with smooth entrance */}
-        <div className={`absolute min-w-[300px] top-1/5 sm:top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-800 ease-out ${
-          imageLoaded 
-            ? 'opacity-100 translate-y-0' 
-            : 'opacity-0 translate-y-4'
-        }`}>
+        <div className={`absolute min-w-[300px] top-1/5 sm:top-1/3 left-1/2 transform -translate-x-1/2 z-20 opacity-100 translate-y-0`}>
           <h1 className='text-4xl mb-3 md:mb-5 md:text-5xl text-center text-white font-bold drop-shadow-2xl'>
             {title}
           </h1>
@@ -65,11 +57,7 @@ function MainHero({img, title, subtitle = null, locale}) {
         </div>
         
         {/* Filter - Enhanced entrance animation */}
-        <div className={`absolute -bottom-16 sm:-bottom-20 md:-bottom-10 left-1/2 transform -translate-x-1/2 w-full max-w-6xl z-30 transition-all duration-800 delay-100 ease-out ${
-          imageLoaded 
-            ? 'opacity-100 translate-y-0' 
-            : 'opacity-0 translate-y-8'
-        }`}>
+        <div className={`absolute -bottom-16 sm:-bottom-20 md:-bottom-10 left-1/2 transform -translate-x-1/2 w-full max-w-6xl z-30 opacity-100 translate-y-0`}>
           <TripsMainFilter locale={locale}/>
         </div>
         
