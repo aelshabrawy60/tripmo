@@ -1,17 +1,17 @@
 import "../../globals.css";
 import { headers } from 'next/headers';
-import { Poppins } from "next/font/google";
 import { Tajawal } from "next/font/google";
+import { Roboto } from "next/font/google";
 import MainLayout from "@/components/Templates/Main/MainLayout";
 import MainNavbar from "@/components/Templates/Main/MainNavbar";
 import MainFooter from "@/components/Templates/Main/MainFooter";
 import { footerPages, pages, socialMedia } from "./data";
 import AffiliateTracker from "@/components/Affiliate/AffiliateTracker";
 
-const poppins = Poppins({
-  variable: '--font-poppins',
+const roboto = Roboto({
+  variable: '--font-roboto',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '700'],
 });
 
 const tajawal = Tajawal({
@@ -88,21 +88,35 @@ const shouldHideNavbarForPath = (pathname) => {
 };
 
 export default function RootLayout({ children, params }) {
-  const { locale } = params
+  const { locale } = params;
   const headersList = headers();
-  const pathname = headersList.get('x-pathname') || '';
-  
+  const pathname = headersList.get("x-pathname") || "";
+
   const shouldHideNavbar = shouldHideNavbarForPath(pathname);
+
+  // 👇 choose font depending on locale
+  const fontClass = locale === "ar" ? tajawal.className : roboto.className;
 
   return (
     <>
-      <div style={{direction: locale == "en" ? "ltr" : "rtl"}} lang={locale}>
+      <div
+        className={fontClass}
+        style={{ direction: locale === "en" ? "ltr" : "rtl" }}
+        lang={locale}
+      >
         <MainLayout>
-          <AffiliateTracker/>
-          {!shouldHideNavbar && <MainNavbar pages={pages} locale={locale}/>}
+          <AffiliateTracker />
+          {!shouldHideNavbar && <MainNavbar pages={pages} locale={locale} />}
           <div>{children}</div>
         </MainLayout>
-        {!shouldHideNavbar && <MainFooter logo={'/logo.png'} pages={footerPages} socialMedia={socialMedia} locale={locale} />}
+        {!shouldHideNavbar && (
+          <MainFooter
+            logo={"/logo.png"}
+            pages={footerPages}
+            socialMedia={socialMedia}
+            locale={locale}
+          />
+        )}
       </div>
     </>
   );
