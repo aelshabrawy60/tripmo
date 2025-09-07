@@ -1,5 +1,4 @@
 import React from 'react'
-import MainTripCard from '../Templates/Main/MainTripCard'
 import NoTripsFound from './NoTripsFound'
 import NewTripCard from './NewTripCard'
 
@@ -53,6 +52,7 @@ function TripsViewer({ trips, isLoading = false, language = 'ar' }) {
                 language={language}
                 isRTL={isRTL}
                 locale={language}
+                type={1}
               />
             </div>
           )

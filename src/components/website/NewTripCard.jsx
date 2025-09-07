@@ -7,7 +7,7 @@ import RateShow from '@/components/website/RateShow';
 import { Clock, Clock1, RotateCcw } from 'lucide-react';
 
 
-function NewTripCard({tripData, locale = "ar"}) {
+function NewTripCard({tripData, locale = "ar", type = 0}) {
 
   const {
     name,
@@ -47,6 +47,172 @@ function NewTripCard({tripData, locale = "ar"}) {
   };
 
   const { finalPrice, originalPrice, hasSale } = calculatePrices();
+  
+
+  if (type === 1) {
+    return (
+      <>
+      <Link
+        href={`/trips/${slug}`}
+        className="bg-[#F7F7F7] rounded-md overflow-hidden border-b m-2 border-gray-200 flex sm:hidden"
+      >
+        {/* Image section */}
+        <div className="relative h-35 w-35 min-w-35 overflow-hidden mb-2">
+          <Image
+            src={firstImage}
+            alt={name_}
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover rounded-md h-full transition-transform duration-500 hover:scale-105"
+          />
+          {ratingAverage && (
+            <div className="absolute bottom-2 right-2 bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm">
+              <RateShow
+                rate={ratingAverage.toFixed(1)}
+                count={rates_count}
+                type={1}
+                size={3}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Text area takes the remaining height */}
+        <div className="p-3.5 pt-0 flex flex-col flex-grow justify-between">
+          <div>
+            <div className="text-md font-bold text-gray-800">{name_}</div>
+            <div className="text-sm text-gray-500 mb-2">{location}</div>
+            <div className='flex items-center gap-2 flex-wrap'>
+              {duration && (
+                <div className='flex items-center gap-1 text-sm'>
+                  <Clock1 className="inline-block w-3 h-3 text-gray-500" />
+                  <span className="text-xs text-gray-500">
+                    {duration <=24 ? duration : duration / 24} {locale === "ar" ? "ساعة" : duration <= 24 ? "hours" : "days"}
+                  </span>
+                </div>
+              )}
+              {cancellation_policy?.type != "no_refund" && (
+                <div className='flex items-center gap-1 text-sm'>
+                  <RotateCcw className="inline-block w-3 h-3 text-gray-500" />
+                  <span className="text-xs text-gray-500">
+                    {locale === "ar" ? "إلغاء مجاني" : "Free cancellation"}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div id="pricing" className="mt-2">
+            {pricing && (
+              <div className="font-bold flex flex-col items-start">
+                {hasSale ? (
+                  <>
+                    <span className="text-gray-500 line-through decoration-red-500 decoration-1 text-[12px]">
+                      {formatPrice(originalPrice, Currency)}
+                    </span>
+                    <span className="text-gray-800">
+                      {formatPrice(finalPrice, Currency)}{" "}
+                      <span className="text-xs font-medium text-gray-500 mx-0.5">
+                        {locale === "ar" ? "للفرد" : "per person"}
+                      </span>
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-gray-800">
+                    {formatPrice(finalPrice, Currency)}{" "}
+                    <span className="text-xs font-medium text-gray-500 mx-0.5">
+                      {locale === "ar" ? "للفرد" : "per person"}
+                    </span>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </Link>
+
+
+      <Link
+        href={`/trips/${slug}`}
+        className="bg-[#F7F7F7] h-[370px] rounded-md overflow-hidden shadow-xs m-2 border border-gray-100 flex-col hidden sm:flex"
+      >
+        {/* Image section */}
+        <div className="relative h-48 md:h-50 overflow-hidden">
+          <Image
+            src={firstImage}
+            alt={name_}
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover h-full transition-transform duration-500 hover:scale-105"
+          />
+          {ratingAverage && (
+            <div className="absolute bottom-2 right-2 bg-white text-gray-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm">
+              <RateShow
+                rate={ratingAverage.toFixed(1)}
+                count={rates_count}
+                type={1}
+                size={3}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Text area takes the remaining height */}
+        <div className="p-3.5 flex flex-col flex-grow justify-between">
+          <div>
+            <div className="text-md font-bold text-gray-800">{name_}</div>
+            <div className="text-sm text-gray-500 mb-2">{location}</div>
+            <div className='flex items-center gap-2'>
+              {duration && (
+                <div className='flex items-center gap-1 text-sm'>
+                  <Clock1 className="inline-block w-3.5 h-3.5 text-gray-500" />
+                  <span className="text-sm text-gray-500">
+                    {duration <=24 ? duration : duration / 24} {locale === "ar" ? "ساعة" : duration <= 24 ? "hours" : "days"}
+                  </span>
+                </div>
+              )}
+              {cancellation_policy?.type != "no_refund" && (
+                <div className='flex items-center gap-1 text-sm'>
+                  <RotateCcw className="inline-block w-3.5 h-3.5 text-gray-500" />
+                  <span className="text-sm text-gray-500">
+                    {locale === "ar" ? "إلغاء مجاني" : "Free cancellation"}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div id="pricing" className="mt-auto">
+            {pricing && (
+              <div className="font-bold flex flex-col items-start">
+                {hasSale ? (
+                  <>
+                    <span className="text-gray-500 line-through decoration-red-500 decoration-1 text-[12px]">
+                      {formatPrice(originalPrice, Currency)}
+                    </span>
+                    <span className="text-gray-800">
+                      {formatPrice(finalPrice, Currency)}{" "}
+                      <span className="text-xs font-medium text-gray-500 mx-0.5">
+                        {locale === "ar" ? "للفرد" : "per person"}
+                      </span>
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-gray-800">
+                    {formatPrice(finalPrice, Currency)}{" "}
+                    <span className="text-xs font-medium text-gray-500 mx-0.5">
+                      {locale === "ar" ? "للفرد" : "per person"}
+                    </span>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </Link>
+      </>
+    )
+  }
 
   return (
     <Link
@@ -127,7 +293,6 @@ function NewTripCard({tripData, locale = "ar"}) {
           </div>
         </div>
       </Link>
-
   )
 }
 

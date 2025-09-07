@@ -154,7 +154,7 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
             {shouldShowReadMore && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className='text-blue-500 hover:text-blue-600 text-sm underline underline-offset-4 cursor-pointer focus:outline-none'
+                className='hover:text-blue-600 underline underline-offset-4 cursor-pointer focus:outline-none'
               >
                 {isExpanded 
                   ? (locale == "en" ? "Show less" : "عرض أقل")
