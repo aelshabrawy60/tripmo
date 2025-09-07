@@ -52,6 +52,7 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
   const [showDropdown, setShowDropdown] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
+  const [isInputFocused, setIsInputFocused] = useState(false)
   const inputRef = useRef(null)
   const dropdownRef = useRef(null)
 
@@ -135,7 +136,21 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
     fetchCities()
   }, [])
 
+  // Enhanced filtering effect
   useEffect(() => {
+    // If input is focused and no text, show all cities (limited to first 10)
+    if (isInputFocused && inputValue.trim() === '') {
+      const citiesToShow = cities.slice(0, 5);
+      setFilteredCities(citiesToShow);
+      if (citiesToShow.length > 0) {
+        updateDropdownPosition();
+        setShowDropdown(true);
+      }
+      setHighlightedIndex(-1);
+      return;
+    }
+
+    // If no input text and not focused, hide dropdown
     if (inputValue.trim() === '') {
       setFilteredCities([])
       setShowDropdown(false)
@@ -170,7 +185,7 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
       setShowDropdown(false)
     }
     setHighlightedIndex(-1)
-  }, [inputValue, cities, selectedCity])
+  }, [inputValue, cities, selectedCity, isInputFocused])
 
   // Update position on window resize/scroll
   useEffect(() => {
@@ -257,13 +272,12 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
   }
 
   const handleInputFocus = () => {
-    if (inputValue.trim() !== '' && filteredCities.length > 0) {
-      updateDropdownPosition()
-      setShowDropdown(true)
-    }
+    setIsInputFocused(true);
+    // The useEffect will handle showing the dropdown based on the new focus state
   }
 
   const handleInputBlur = () => {
+    setIsInputFocused(false);
     setTimeout(() => {
       if (
         dropdownRef.current && !dropdownRef.current.contains(document.activeElement) &&
@@ -284,6 +298,7 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
       ) {
         setShowDropdown(false)
         setHighlightedIndex(-1)
+        setIsInputFocused(false)
       }
     }
 

@@ -1,7 +1,10 @@
 import { supabaseAdmin } from "@/utils/supabase/service";
 
 export async function getAllCities(locale = "ar") {
-    const { data, error } = await supabaseAdmin.from("cities").select("*");
+    const { data, error } = await supabaseAdmin
+    .from("cities")
+    .select("*")
+    .order("score", { ascending: false }); // sort by highest score first
 
     if (error) {
         throw new Error(`Error fetching cities: ${error.message}`);
