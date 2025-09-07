@@ -138,7 +138,7 @@ function GalleryViewer({ images = [] , locale = 'ar'}) {
                   {hasMoreImages && index === visibleImages.length - 2 && (
                     <div className="absolute inset-0 bg-black/40 bg-opacity-40 flex items-center justify-center z-10">
                       <span className="text-white font-medium text-lg">
-                        +{images.length - 4} صور
+                        +{images.length - 4} {locale == "ar" ? 'صور' : 'Image'} 
                       </span>
                     </div>
                   )}
