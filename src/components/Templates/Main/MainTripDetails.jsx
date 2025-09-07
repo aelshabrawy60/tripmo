@@ -87,7 +87,9 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
         <div className='mt-8'>
           {duration !== null && duration != 0?
             <div className='flex gap-3'>
-              <Clock size={25}/>
+              <div className='min-w-[25px]'>
+                <Clock size={25}/>
+              </div>
               <div>
                 <div className='font-medium'>{locale == "en"? "duration": "المدة"}</div>
                 <div className='text-sm text-gray-600'>
@@ -106,7 +108,9 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
 
           {startLocation?.type == "pickup" && startLocation?.description ? 
             <div className='flex gap-3 mt-4'>
-              <BusFront size={25}/>
+              <div className='min-w-[25px]'>
+                <BusFront size={25}/>
+              </div>
               <div>
                 <div className='font-medium mb-2 flex items-center flex-wrap'>
                   {locale == "en"? "Pickup included" : "متاح استقبالك من مكان اقامتك"}
@@ -123,7 +127,9 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
           {
             guideLangs && guideLangs.length > 0 ?
             <div className='flex gap-3 mt-4'>
-              <Languages size={25}/>
+              <div className='min-w-[25px]'>
+                <Languages size={25}/>
+              </div>
               <div>
                 <div className='font-medium mb-2 flex items-center flex-wrap'>
                   {locale == "en"? "Guide languages" : "لغات المرشدين"}

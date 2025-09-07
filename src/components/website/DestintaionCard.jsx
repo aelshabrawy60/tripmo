@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 function DestinationCard({ data }) {
   return (
-    <a href={`/trips?dest_city=${data.id}`} className="relative w-full h-64 p-6 rounded-xl overflow-hidden group cursor-pointer transform transition-all duration-300">
+    <a href={`/trips?dest_city=${data.id}`} className="relative w-full h-64 p-6 rounded-lg overflow-hidden group cursor-pointer transform transition-all duration-300">
       {/* Background Image */}
       <Image
         src={data.image}
