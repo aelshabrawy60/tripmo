@@ -28,6 +28,7 @@ export async function generateMetadata({ params }) {
   if (locale === 'en') {
     return {
       title: "Rehla Now | Book Your Next Adventure",
+      lang: "en",
       description: "Discover the best trips and tours in Egypt, book your journey easily, and embark on an unforgettable adventure with Rehla Now.",
       keywords: ["trips", "bookings", "tourism", "travel", "adventures", "Egypt trips", "Sharm El Sheikh trips", "Rehla Now", "exploration", "travel deals", "trip booking"],
       openGraph: {
@@ -49,6 +50,7 @@ export async function generateMetadata({ params }) {
     // Arabic metadata (default)
     return {
       title: "Rehla Now | رحلة ناو | احجز رحلتك القادمة",
+      lang: "ar",
       description: "اكتشف أفضل الرحلات في مصر، احجز رحلتك بسهولة، وانطلق في مغامرة لا تُنسى مع Rehla Now. عروض رائعة، وجهات مميزة، وتجربة سفر لا مثيل لها.",
       keywords: ["رحلات", "حجوزات", "سياحة", "سفر", "مغامرات", "رحلات مصر", "رحلات شرم الشيخ", "Rehla Now", "رحلة ناو", "استكشاف", "عروض سفر", "حجز رحلات"],
       openGraph: {

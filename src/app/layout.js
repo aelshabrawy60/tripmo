@@ -2,6 +2,7 @@ import { Tajawal } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Script from "next/script";
+import { headers } from 'next/headers'
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -15,9 +16,17 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
+  // Get language from URL params, headers, or other sources
+  const headersList = headers()
+  const pathname = headersList.get('x-pathname') || ''
+  
+  // Extract language from URL (e.g., /en/about, /fr/about)
+  const lang = pathname.split('/')[1] || 'ar'
+
   return (
     <AuthProvider>
-      <html>
+      <html lang={lang}>
         <body className={`${tajawal.className} antialiased`}>
           {/* Google Tag */}
           <Script
