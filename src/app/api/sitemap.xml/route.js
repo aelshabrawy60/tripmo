@@ -66,12 +66,21 @@ async function generateSitemap() {
 
   <!-- Dynamic Trip Pages -->
   ${trips.map(trip => `
-  <url>
-    <loc>https://www.rehlanow.com/trips/${trip.slug || trip.id}</loc>
-    <lastmod>${trip.updatedAt?.split('T')[0] || currentDate}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>`).join('')}
+    <url>
+      <loc>https://www.rehlanow.com/en/trips/${trip.slug || trip.id}</loc>
+      <lastmod>${trip.updatedAt?.split('T')[0] || currentDate}</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>`).join('')
+  }
+  ${trips.map(trip => `
+    <url>
+      <loc>https://www.rehlanow.com/ar/trips/${trip.slug || trip.id}</loc>
+      <lastmod>${trip.updatedAt?.split('T')[0] || currentDate}</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>`).join('')
+  }
 </urlset>`;
 }
 

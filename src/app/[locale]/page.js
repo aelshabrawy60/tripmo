@@ -5,7 +5,7 @@ import { TrendingDestinations, popularTrips } from '@/utils/trips_engine/trips_e
 import TopDestinations from '@/components/website/TopDestinations'
 import TripsStripSection from '@/components/website/TripsStripSection'
 import PaymentWays from '@/components/website/PaymentWays'
-import locales from '../../../../messages/locales'
+import locales from '../../../messages/locales'
 
 export const revalidate = 21600 // Revalidate every 6 hours //
 

@@ -139,8 +139,8 @@ export function middleware(request) {
     
     // Handle locale-only paths (e.g., /en, /ar)
     else if (hasLocale && pathSegments.length === 1) {
-      console.log(`[MIDDLEWARE] Locale-only path /${potentialLocale}, rewriting to /${potentialLocale}/site`)
-      url.pathname = `/${potentialLocale}/site`
+      console.log(`[MIDDLEWARE] Locale-only path /${potentialLocale}, rewriting to /${potentialLocale}`)
+      url.pathname = `/${potentialLocale}`
       response = NextResponse.rewrite(url, {
         request: {
           headers: requestHeaders,
@@ -172,7 +172,7 @@ export function middleware(request) {
       const excludedPaths = ['site', '_next', 'api', 'favicon.ico', 'robots.txt', 'sitemap.xml', 'admin', 'manifest.json']
       
       if (!excludedPaths.some(path => restPath.startsWith(path))) {
-        const rewritePath = `/${potentialLocale}/site/${restPath}`
+        const rewritePath = `/${potentialLocale}/${restPath}`
         console.log(`[MIDDLEWARE] Localized path ${url.pathname}, rewriting to ${rewritePath}`)
         url.pathname = rewritePath
         response = NextResponse.rewrite(url, {
@@ -188,33 +188,6 @@ export function middleware(request) {
         })
       }
     }
-    
-    // Handle direct /site/* paths (in case someone accesses them directly)
-    else if (url.pathname.startsWith('/site')) {
-      console.log(`[MIDDLEWARE] Direct /site path access: ${url.pathname}`)
-      response = NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      })
-    }
-    
-    // Handle direct localized /site paths (e.g., /en/site/about)
-    else if (hasLocale && url.pathname.startsWith(`/${potentialLocale}/site`)) {
-      console.log(`[MIDDLEWARE] Direct localized /site path access: ${url.pathname}`)
-      response = NextResponse.next({
-        request: {
-          headers: requestHeaders,
-        },
-      })
-    }
-  }
-
-  // For any other subdomain trying to access /site/* paths, redirect to main domain
-  else if (url.pathname.startsWith('/site')) {
-    console.log(`[MIDDLEWARE] Redirecting /site path from subdomain to main domain`)
-    const mainDomainUrl = new URL(url.pathname, `https://${domainParts.slice(-2).join('.')}`)
-    response = NextResponse.redirect(mainDomainUrl)
   }
 
   // Block /admin/* paths on non-admin subdomains (let them 404 naturally)

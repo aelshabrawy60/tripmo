@@ -1,6 +1,6 @@
 import React from 'react';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone, FileText } from 'lucide-react';
-import { phoneNumber , addressEn, addressAr} from '../../../app/[locale]/site/data'
+import { phoneNumber , addressEn, addressAr} from '../../../app/[locale]/data'
 import locales from '../../../../messages/locales';
 
 export default function MainFooter({ logo, pages, socialMedia, contactInfo, theme = "#3B82F6", locale }) {

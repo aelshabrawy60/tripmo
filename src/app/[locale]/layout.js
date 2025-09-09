@@ -1,4 +1,4 @@
-import "../../globals.css";
+import "../globals.css";
 import { headers } from 'next/headers';
 import { Tajawal } from "next/font/google";
 import { Roboto } from "next/font/google";
