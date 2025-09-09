@@ -127,6 +127,72 @@ export async function popularTrips(locale = "ar") {
   };
 }
 
+export async function egyptToursPageData(locale = "ar") {
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+  const { data, error } = await supabaseAdmin
+    .from("trips")
+    .select(`
+      *,
+      dest:dest_city (name, name_en),
+      depature:depature_city (name, name_en)
+    `)
+    .eq("status", "active")
+    .neq("audience", "locals")
+    .or(`available_day.is.null,available_day.gte.${today}`)
+    .order("score", { ascending: false })
+    .limit(30);
+
+    if (error) {
+      console.error("Error fetching top trips:", error);
+      return {};
+    }
+
+  // fetch trips in specific cities
+  const citiesIds = [12, 3, 5, 10]; // Example city IDs for Cairo, Luxor, Aswan
+
+  const { data: cityTrips, error: cityTripsError } = await supabaseAdmin
+    .from("trips")
+    .select(`
+      *,
+      dest:dest_city (name, name_en),
+      depature:depature_city (name, name_en)
+    `)
+    .eq("status", "active")
+    .or(`available_day.is.null,available_day.gte.${today}`)
+    .or(`dest_city.in.(${citiesIds.join(',')}),depature_city.in.(${citiesIds.join(',')})`)
+    .order("score", { ascending: false })
+    .limit(100);
+
+  if (cityTripsError) {
+    console.error("Error fetching city trips:", cityTripsError);
+    return {};
+  }
+
+  // Group remaining trips by destination city
+  const cityGroups = {};
+  cityTrips.forEach(trip => {
+    const cityName = locale === "en" ? trip.dest?.name_en : trip.dest?.name || `Unknown City`;
+    if (!cityGroups[cityName]) {
+      cityGroups[cityName] = [];
+    }
+    cityGroups[cityName].push(trip);
+  });
+
+  // Filter out categories with less than 5 elements and format the result
+  const categories = Object.entries(cityGroups)
+    .filter(([city, trips]) => trips.length >= 1)
+    .map(([city, trips]) => ({
+      city: city,
+      trips: trips
+    }));
+
+  
+  return {    
+    top: data || [],
+    categories: categories
+  };
+}
+
 export async function getSimilarTrips(tripId) {
   const { data, error } = await supabaseAdmin.rpc('get_similar_trips_optimized', {
     input_trip_id: tripId

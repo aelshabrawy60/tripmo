@@ -198,7 +198,7 @@ const EgyptToursBlog = () => {
         <p className="max-w-2xl mx-auto text-slate-600 mb-8">
           An <strong className="font-bold">Egypt tour</strong> is more than a vacation; it's a profound journey through time. By choosing a guided tour, you not only ensure a smooth and safe experience but also gain a deeper connection to the incredible history that shaped our world. Browse our expertly curated <strong className="font-bold">Egypt tours</strong> and start planning your unforgettable adventure today.
         </p>
-        <a href="/trips" className="inline-block bg-tripmo-400 text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg hover:bg-tripmo-500 transition-transform transform hover:scale-105 duration-300">
+        <a href="/egypt-tours" className="inline-block bg-tripmo-400 text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg hover:bg-tripmo-500 transition-transform transform hover:scale-105 duration-300">
           Browse Egypt Tours
         </a>
       </section>
