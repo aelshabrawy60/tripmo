@@ -1,9 +1,9 @@
 import React from 'react';
-import { PaymentRedirectFlow } from '../../../../utils/payments/payments';
+import { PaymentRedirectFlow } from '../../../utils/payments/payments';
 import { confirmDeposit } from '@/utils/payments/helpers';
 import { supabaseAdmin } from '@/utils/supabase/service';
 import { Check, Calendar, Users, MapPin, Clock } from 'lucide-react';
-import { paymentGateawayConfig } from '../../../../utils/payments/payments';
+import { paymentGateawayConfig } from '../../../utils/payments/payments';
 import CancelBookClient from '@/components/Bookings/CancelBookClient';
 import CanceldOrder from '@/components/Bookings/CanceldOrder';
 import AddComment from '@/components/Templates/Main/AddComment';
