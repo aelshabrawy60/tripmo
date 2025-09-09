@@ -69,7 +69,7 @@ const getCachedEgyptToursPageData = unstable_cache(
 async function page() {
 
   const topDestinations = await getCachedDestinations("en")
-  const topTrips = await egyptToursPageData("en")
+  const topTrips = await getCachedEgyptToursPageData("en")
   
   console.log("Top Trips Data:", topTrips.categories); // Debugging line to check the structure of topTrips
   const cairoTrips = topTrips.categories.find(category => category.city === "Cairo");
