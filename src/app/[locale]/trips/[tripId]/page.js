@@ -51,7 +51,7 @@ export async function generateMetadata({ params }) {
         siteName: 'Rehla Now | رحلة ناو',
       },
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/en/${tripData.slug}`,
+        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/en/trips/${tripData.slug}`,
         languages: {
           'en': `${process.env.NEXT_PUBLIC_SITE_URL}/en/trips/${tripData.slug}`,
           'ar': `${process.env.NEXT_PUBLIC_SITE_URL}/ar/trips/${tripData.slug}`,
