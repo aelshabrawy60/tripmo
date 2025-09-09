@@ -10,7 +10,7 @@ import EgyptToursFAQ from './components/FAQ'
 // SEO Metadata
 export const metadata = {
   title: 'Book Egypt Tours: See the Pyramids & Cruise the Nile',
-  description: 'Discover the magic of Egypt, hassle-free. Rela Now has all-inclusive tours cover everything from luxury hotels and Nile cruises to private guides. Explore our packages and book today.',
+  description: 'Egypt tours made easy with Rehla Now. Enjoy luxury hotels, Nile cruises, and private guides in our all-inclusive packages. Book your Egypt tour today.',
   keywords: 'Egypt tours, Egypt travel guide, Nile cruise, Cairo tours, Luxor tours, Aswan tours, Pyramids of Giza, best Egypt tours, Egypt vacation packages, Egypt travel tips',
   
   // Open Graph tags for social media
