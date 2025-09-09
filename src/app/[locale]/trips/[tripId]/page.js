@@ -47,14 +47,14 @@ export async function generateMetadata({ params }) {
           }
         ],
         type: 'article',
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/${params.slug}`,
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/${tripData.slug}`,
         siteName: 'Rehla Now | رحلة ناو',
       },
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/${params.slug}`,
+        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/trips/en/${tripData.slug}`,
         languages: {
-          'en': `${process.env.NEXT_PUBLIC_SITE_URL}/en/trips/${params.slug}`,
-          'ar': `${process.env.NEXT_PUBLIC_SITE_URL}/ar/trips/${params.slug}`,
+          'en': `${process.env.NEXT_PUBLIC_SITE_URL}/en/trips/${tripData.slug}`,
+          'ar': `${process.env.NEXT_PUBLIC_SITE_URL}/ar/trips/${tripData.slug}`,
         },
       },
       robots: {
@@ -103,6 +103,7 @@ export default async function Page({ params }) {
   const locale = params.locale
   let tripData;
   let similarTripsData;
+
   
   try {
     tripData = await fetchTripData(params.tripId);
@@ -117,7 +118,6 @@ export default async function Page({ params }) {
   }
 
   const structuredData = generateStructuredData(tripData);
-
   
   return (
     <div>
