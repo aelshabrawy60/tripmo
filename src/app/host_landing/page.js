@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import MainLayout from '@/components/Templates/Main/MainLayout';
 import MainNavbar from '@/components/Templates/Main/MainNavbar';
-import { email, footerPages, pages, phoneNumber, socialMedia } from '../data';
+import { email, footerPages, pages, phoneNumber, socialMedia } from '../[locale]/data';
 import MainFooter from '@/components/Templates/Main/MainFooter';
 import HostHero from '@/components/HostLanding/HostHero';
 import { signInWithGoogle } from "@/lib/auth-actions";
