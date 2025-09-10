@@ -5,22 +5,21 @@ import React from 'react'
 
 // SEO Metadata
 export const metadata = {
-  title: 'Egypt Tours: The Ultimate Guide to an Unforgettable Adventure (2025/2026)',
-  description: 'Discover the best Egypt tours for 2025/2026. Expert guide to Cairo, Luxor, Aswan, Nile cruises, and must-see destinations. Find luxury, budget, and custom tour packages.',
-  keywords: 'Egypt tours, Egypt travel guide, Nile cruise, Cairo tours, Luxor tours, Aswan tours, Pyramids of Giza, best Egypt tours, Egypt vacation packages, Egypt travel tips',
+  title: '12 Best Souvenirs from Egypt: What to Buy & Where to Find It',
+  description: 'Discover the 12 best souvenirs from Egypt, from traditional handicrafts to unique treasures. Learn what to buy and the best places to find authentic Egyptian gifts.',
+  keywords: 'Egypt souvenirs, best souvenirs from Egypt, what to buy in Egypt, unique souvenirs from Egypt, authentic Egyptian gifts, traditional Egyptian souvenirs, where to buy souvenirs in Egypt, shopping in Egypt',
   
   // Open Graph tags for social media
   openGraph: {
-    title: 'Egypt Tours: The Ultimate Guide to an Unforgettable Adventure (2025/2026)',
-    description: 'Discover the best Egypt tours for 2025/2026. Expert guide to Cairo, Luxor, Aswan, Nile cruises, and must-see destinations.',
+    title: '12 Best Souvenirs from Egypt: What to Buy & Where to Find It',
+    description: 'Discover the 12 best souvenirs from Egypt, from traditional handicrafts to unique treasures. Learn what to buy and the best places to find authentic Egyptian gifts.',
     type: 'article',
-    url: 'https://www.rehlanow.com/en/blog/egypt-tours-the-ultimate-guide-to-an-unforgettable-adventure', // Update with your actual URL
+    url: 'https://www.rehlanow.com/en/blog/best-souvenirs-from-egypt', // Update with your actual URL
     images: [
       {
-        url: '/blog1.jpg', // Update with full URL in production
+        url: '/soviners-blog/soviners1.jpg', // Update with full URL in production
         width: 1200,
         height: 630,
-        alt: 'Egypt Tours Guide - Pyramids and Ancient Wonders',
       }
     ],
     locale: 'en_US',
@@ -29,7 +28,7 @@ export const metadata = {
   
   // Additional SEO tags
   alternates: {
-    canonical: 'https://www.rehlanow.com/en/blog/egypt-tours-the-ultimate-guide-to-an-unforgettable-adventure', // Update with your actual URL
+    canonical: 'https://www.rehlanow.com/en/blog/best-souvenirs-from-egypt', // Update with your actual URL
   },
   
   // Article specific metadata
