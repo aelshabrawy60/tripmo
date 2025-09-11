@@ -29,6 +29,12 @@ const blogs = [
         slug: "best-souvenirs-from-egypt"
     },
     {
+        title: "Best Time to Visit Egypt: The Ultimate Guide",
+        date: "September 11, 2025",
+        img: "/hero5.jpg",
+        slug: "best-time-to-visit-egypt"
+    },
+    {
         title: "Egypt Tours: The Ultimate Guide to an Unforgettable Adventure (2025/2026)",
         date: "August 25, 2025",
         img: "/blog1.jpg",
