@@ -167,6 +167,7 @@ const BestTimeToVisitEgypt = () => {
       <p className="mb-6 text-lg">
         While Egypt's ancient wonders are awe-inspiring any day of the year, the best time to visit for ideal weather, manageable crowds, and fair prices is during the shoulder seasons of March–April and October–November. Whenever you go, prepare to be captivated by a land where history is not just learned, but lived.
       </p>
+      <a href="/trips" className="text-blue-600 hover:underline">Discover Trending Egypt Tours</a>
     </div>
   );
 };
