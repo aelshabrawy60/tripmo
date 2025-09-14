@@ -28,11 +28,23 @@ const blogs = [
         img: "/soviners-blog/soviners11.jpg",
         slug: "best-souvenirs-from-egypt"
     },
+    {   
+        title: "Cairo Travel Tips: 35 Essential First-Timer's Survival Guide",
+        date: "September 14, 2025",
+        img: "/soviners-blog/hero7.jpg",
+        slug: "cairo-travel-tips"
+    },
     {
         title: "Best Time to Visit Egypt: The Ultimate Guide",
         date: "September 11, 2025",
         img: "/hero5.jpg",
         slug: "best-time-to-visit-egypt"
+    },
+    {
+        title: "Is Egypt Safe to Visit? A Realistic Guide for Travelers",
+        date: "September 14, 2025",
+        img: "/soviners-blog/hero6.jpg",
+        slug: "is-egypt-safe-to-visit"
     },
     {
         title: "Egypt Tours: The Ultimate Guide to an Unforgettable Adventure (2025/2026)",

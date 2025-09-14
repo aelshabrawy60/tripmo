@@ -1,7 +1,7 @@
 export const pages = [
   { name: {
       "ar":'من نحن', 
-      "en": 'about us'
+      "en": 'About us'
     }, 
     link: `/about` 
   },
@@ -32,27 +32,27 @@ export const footerPages = [
   { 
     name: {
       ar: "الشروط والأحكام",
-      en: "terms and conditions"
+      en: "Terms and conditions"
     }, 
     link: "/terms" 
   },
   { 
     name: {
       ar:"سياسة الخصوصية",
-      en: "privacy policy"
+      en: "Privacy policy"
     }, 
     link: "/privacy-policy" },
   { 
     name: {
       ar:"سياسة الاسترداد",
-      en: "refund policy"
+      en: "Refund policy"
     }, 
     link: "/terms#cancellation-policy" 
   },
   { 
     name: {
       ar:"المقالات",
-      en: "blog"
+      en: "Blog"
     }, 
     link: "/blog" 
   },
