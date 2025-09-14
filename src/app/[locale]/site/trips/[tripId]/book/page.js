@@ -50,8 +50,8 @@ function BookingPage() {
       en: "Processing...",
     },
     pay: {
-      ar: "دفع",
-      en: "Pay",
+      ar: "بطاقة ائتمانية",
+      en: "Credit/Debit Card",
     },
     errorFallback: {
       ar: "فشل في إضافة الحجز. يرجى المحاولة مرة أخرى.",

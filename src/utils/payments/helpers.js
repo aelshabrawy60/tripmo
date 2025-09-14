@@ -197,7 +197,8 @@ export async function confirmDeposit(bookId) {
     if (booking?.status === "active") {
         return { 
             message: "Booking is already confirmed",
-            bookingData: booking
+            bookingData: booking,
+            confirmationSkipped: true
          };
     }
 
@@ -233,7 +234,8 @@ export async function confirmDeposit(bookId) {
 
     return { 
         depositData: depositResult.data, 
-        bookingData: bookingResult.data 
+        bookingData: bookingResult.data,
+        confirmationSkipped: false
     };
 }
 

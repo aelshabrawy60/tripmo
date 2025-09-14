@@ -17,6 +17,7 @@ function Paypal({OrderPayload}) {
             process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID_TEST,
         "buyer-country": "EG",
         currency: "USD",
+        "disable-funding": "card",
     };
   return (
     <div>

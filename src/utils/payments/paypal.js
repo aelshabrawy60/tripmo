@@ -50,6 +50,7 @@ class Paypal {
             purchaseUnits: [
                 {
                     referenceId: String(orderDetails.id),
+                    customId: String(orderDetails.id),
                     amount: {
                         currencyCode: "USD",
                         value: amount,
@@ -206,63 +207,70 @@ class Paypal {
     return false
   }
 
+  
   async createRefund(paymentId, amount = null) {
-    const orderId = paymentId;
-    let reason = "Refund requested by customer";
-
     try {
-      // Validate required parameters
-      if (!orderId) {
-        throw new Error('Order ID is required');
-      }
+      // First, we need to get the order details to find the capture ID
+      const orderDetails = await this.OrdersController.getOrder({
+        id: paymentId,
+      });
 
-      if (!this.secretKey) {
-        throw new Error('Secret key is required');
-      }
+      console.log("Order details for refund:", JSON.stringify(orderDetails.result, null, 2));
 
-      // Prepare request body
-      const requestBody = {
-        apiOperation: 'REFUND',
-        reason: reason
-      };
-
-      // Add amount for partial refunds
-      if (amount !== null) {
-        if (amount <= 0) {
-          throw new Error('Refund amount must be greater than 0');
-        }
-        requestBody.transaction = { amount: amount };
-      }
-
-      // Prepare request options
-      const requestOptions = {
-        method: 'PUT',
-        headers: {
-          'Authorization': this.secretKey,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      };
-
-      // Make API request
-      const response = await fetch(`${this.kashierCreateRefund}/orders/${orderId}`, requestOptions);
+      // Extract capture ID from the order
+      const captureId = orderDetails.result?.purchaseUnits?.[0]?.payments?.captures?.[0]?.id;
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!captureId) {
+        throw new Error("No capture found for this order. Cannot process refund.");
       }
 
-      const data = await response.json();
-            
+      // Prepare refund request
+      const refundRequest = {
+        id: captureId,
+        body: {}
+      };
+
+      // If amount is specified, add it to the request
+      if (amount !== null) {
+        const refundAmount = parseFloat(amount).toFixed(2);
+        refundRequest.body.amount = {
+          currencyCode: "USD", // Should match the original transaction currency
+          value: refundAmount
+        };
+      }
+
+      // Optional: Add note about the refund
+      refundRequest.body.noteToPayer = "Refund processed";
+
+      console.log("Processing refund with request:", JSON.stringify(refundRequest, null, 2));
+
+      // Process the refund using PayPal's Payments Controller
+      const { body, ...httpResponse } = await this.PaymentsController.refundCapture(
+        refundRequest
+      );
+
+      const refundData = typeof body === "string" ? JSON.parse(body) : body;
+
+      console.log("Refund result:", JSON.stringify(refundData, null, 2));
+
       return {
         success: true,
-        data: data,
-        status: data.status,
-        message: data.messages
+        data: refundData,
+        status: refundData.status,
+        refundId: refundData.id,
+        amount: refundData.amount,
+        message: "Refund processed successfully"
       };
 
     } catch (error) {
-      throw new error(error.message || 'An error occurred while creating the refund');
+      console.error("Error creating PayPal refund:", error);
+      
+      if (error instanceof ApiError) {
+        console.error("PayPal API error details:", error.result);
+        throw new Error(`PayPal refund failed: ${error.message}`);
+      }
+      
+      throw new Error(error.message || 'An error occurred while creating the refund');
     }
   }
 

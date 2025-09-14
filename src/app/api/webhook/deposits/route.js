@@ -59,12 +59,7 @@ export async function POST(request) {
 
       // TODO: update DB or perform business logic
       console.log(`[Payment Success] Order: ${merchantOrderId}, TX: ${transactionId}, Amount: ${amount}`);
-      const bookingData = await confirmDeposit(merchantOrderId)
-      
-      // 🟢 Send Meta Conversions API Event (Purchase)
-      await sendMetaPurchase(bookingData.bookingData.total_price, bookingData.bookingData.client_phone, bookingData.bookingData.persons, bookingData.bookingData.id , bookingData.bookingData.deposits.tracking_data, bookingData.bookingData?.trips)
-
-      await updateTripScore(bookingData.bookingData.bookable_id)
+      await confirmBookingDeposit(merchantOrderId);
     }
 
     return NextResponse.json({ success: true });
@@ -72,4 +67,18 @@ export async function POST(request) {
     console.error('❌ Webhook error:', error);
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
+}
+
+
+export async function confirmBookingDeposit(merchantOrderId) {
+  const bookingData = await confirmDeposit(merchantOrderId)
+
+  if (bookingData.confirmationSkipped) {
+    return
+  }
+
+  // 🟢 Send Meta Conversions API Event (Purchase)
+  await sendMetaPurchase(bookingData.bookingData.total_price, bookingData.bookingData.client_phone, bookingData.bookingData.persons, bookingData.bookingData.id , bookingData.bookingData.deposits.tracking_data, bookingData.bookingData?.trips)
+
+  await updateTripScore(bookingData.bookingData.bookable_id)
 }
