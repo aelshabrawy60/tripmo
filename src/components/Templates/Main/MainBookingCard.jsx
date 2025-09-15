@@ -3,11 +3,10 @@
 import DateChooser from '@/components/Bookings/DateChooser'
 import PersonsNumChooser from '@/components/Bookings/PersonsNumChooser'
 import React, { useState, useEffect } from 'react'
-import { Check, X, Loader, ArrowRight, MessageCircle } from 'lucide-react'
+import { Check, X, Loader, ArrowRight, MessageCircle, Clock } from 'lucide-react'
 import Cookies from 'js-cookie';
 import formatPrice from '@/utils/currency/PriceFormate';
 import TimeChooser from '@/components/Trips/TimeChooser'
-
 
 function MainBookingCard({ tripData, locale }) {
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -18,6 +17,14 @@ function MainBookingCard({ tripData, locale }) {
   const [isAvail, setIsAvail] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+  
+  // FOMO Countdown states
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  })
+  const [showCountdown, setShowCountdown] = useState(false)
 
   const t = {
     available: locale === 'ar' ? 'متوفر!' : 'Available!',
@@ -29,10 +36,57 @@ function MainBookingCard({ tripData, locale }) {
     save: locale === 'ar' ? 'وفر' : 'SAVE',
     youSave: locale === 'ar' ? 'توفر' : 'You save',
     sale: locale === 'ar' ? 'تخفيض!' : 'SALE!',
-    chatWithUs: locale === 'ar' ? 'تحدث معنا' : 'Chat with us'
+    chatWithUs: locale === 'ar' ? 'تحدث معنا' : 'Chat with us',
+    limitedOffer: locale === 'ar' ? 'عرض محدود!' : 'Limited Time Offer!',
+    offerEnds: locale === 'ar' ? 'ينتهي العرض في:' : 'Offer ends in:',
+    hours: locale === 'ar' ? 'ساعة' : 'h',
+    minutes: locale === 'ar' ? 'دقيقة' : 'm',
+    seconds: locale === 'ar' ? 'ثانية' : 's',
+    onlyLeft: locale === 'ar' ? 'متبقي فقط' : 'spots left!',
+    hurryUp: locale === 'ar' ? 'أسرع! مقاعد محدودة' : 'Limited seats',
   }
 
   const Currency = Cookies.get('currency');
+
+  useEffect(() => {
+    const savedEndTime = localStorage.getItem(`offer-countdown-${tripData.id}`)
+    let endTime
+
+    if (savedEndTime) {
+      endTime = new Date(savedEndTime)
+      // If saved time has passed, create a new 62-hour countdown
+      if (endTime <= new Date()) {
+        endTime = new Date(Date.now() + 62 * 60 * 60 * 1000)
+        localStorage.setItem(`offer-countdown-${tripData.id}`, endTime.toISOString())
+      }
+    } else {
+      // Create new 62-hour countdown
+      endTime = new Date(Date.now() + 62 * 60 * 60 * 1000)
+      localStorage.setItem(`offer-countdown-${tripData.id}`, endTime.toISOString())
+    }
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime()
+      const distance = endTime.getTime() - now
+
+      if (distance > 0) {
+        const hours = Math.floor(distance / (1000 * 60 * 60))
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+
+        setTimeLeft({ hours, minutes, seconds })
+        setShowCountdown(true)
+      } else {
+        // Timer expired, create new 62-hour countdown
+        const newEndTime = new Date(Date.now() + 62 * 60 * 60 * 1000)
+        localStorage.setItem(`offer-countdown-${tripData.id}`, newEndTime.toISOString())
+        setShowCountdown(false)
+        clearInterval(timer)
+      }
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [tripData.id])
 
   // Calculate prices for sale display
   const calculatePrices = () => {
@@ -110,6 +164,7 @@ function MainBookingCard({ tripData, locale }) {
   return (
     <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 lg:max-w-md w-full">
       <div className="space-y-6">
+
         <div className='flex flex-col gap-4'>
           {/* Date & Person Selectors */}
           <div className="flex gap-2 rounded-lg">
@@ -141,6 +196,28 @@ function MainBookingCard({ tripData, locale }) {
           </div>
         )}
 
+        {/* FOMO Countdown Banner */}
+        {showCountdown && isAvail && (hasSale || tripData.id === 125) && (
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-3 rounded-lg shadow-lg">
+            <div className={` ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+              <div className="text-xs mb-1">{t.offerEnds}</div>
+              <div className="flex items-center gap-1 font-mono font-bold">
+                <span className="bg-white/20 px-2 py-1 rounded text-sm">
+                  {String(timeLeft.hours).padStart(2, '0')}{t.hours}
+                </span>
+                <span>:</span>
+                <span className="bg-white/20 px-2 py-1 rounded text-sm">
+                  {String(timeLeft.minutes).padStart(2, '0')}{t.minutes}
+                </span>
+                <span>:</span>
+                <span className="bg-white/20 px-2 py-1 rounded text-sm">
+                  {String(timeLeft.seconds).padStart(2, '0')}{t.seconds}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Availability */}
         {isAvail && !isLoading && totalPrice && (
           <div className="bg-blue-50 p-4 rounded-lg relative overflow-hidden">
@@ -157,14 +234,15 @@ function MainBookingCard({ tripData, locale }) {
               <h3 className="font-semibold text-blue-800">{t.available}</h3>
             </div>
 
-            {
-              tripData.id == 125 && (
-                <div className="h-fit px-1 py-1 text-blue-800 rounded-lg text-xs w-fit ms-2">
-                  <span className='leading-none font-bold'>(Likely to sell out)</span>
-                </div>
-              )
-            }
-          
+            {tripData.id == 125 && (
+              <div className="flex items-center gap-2 mb-3">
+                {showCountdown && (
+                  <div className="h-fit px-2 py-1 bg-red-100 text-red-700 rounded-lg text-xs w-fit border border-red-200">
+                    <span className='leading-none font-bold'>{t.hurryUp}</span>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="space-y-3 mt-3">
               <div className={`flex justify-between items-end`}>
@@ -203,7 +281,7 @@ function MainBookingCard({ tripData, locale }) {
           {isAvail ? (
             <a
               href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum.adults}&time=${selectedTime}&children=${selectedSeatsNum.children}&infants=${selectedSeatsNum.infants}`}
-              className={`bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105 shadow-lg`}
+              className={`bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-lg`}
             >
               {t.bookNow}
               <ArrowRight size={18} />
