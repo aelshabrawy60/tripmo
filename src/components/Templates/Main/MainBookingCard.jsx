@@ -157,6 +157,15 @@ function MainBookingCard({ tripData, locale }) {
               <h3 className="font-semibold text-blue-800">{t.available}</h3>
             </div>
 
+            {
+              tripData.id == 125 && (
+                <div className="h-fit px-1 py-1 text-blue-800 rounded-lg text-xs w-fit ms-2">
+                  <span className='leading-none font-bold'>(Likely to sell out)</span>
+                </div>
+              )
+            }
+          
+
             <div className="space-y-3 mt-3">
               <div className={`flex justify-between items-end`}>
                 <span className="font-bold">{t.totalPrice}</span>
