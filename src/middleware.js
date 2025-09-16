@@ -218,7 +218,10 @@ export function middleware(request) {
                    request.headers.get('x-vercel-ip-country') || // Vercel
                    'EG' // Default fallback
 
-    const selectedCurrency = country === 'EG' ? 'EGP' : 'USD'
+    const selectedCurrency =
+      country === "EG" ? "EGP" :
+      country === "UK" || country === "GB" ? "GBP" :
+      "USD";
     console.log(`[MIDDLEWARE] Setting currency cookie: ${selectedCurrency} for country: ${country}`)
 
     response.cookies.set('currency', selectedCurrency, {

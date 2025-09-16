@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react'
 const currencies = {
   EGP: { name: 'Egyptian Pound', code: 'EGP', symbol: '£' },
   USD: { name: 'US Dollar', code: 'USD', symbol: '$' },
+  GBP: { name: 'British Pound', code: 'GBP', symbol: '£' },
 }
 
 export default function CurrencySwitcher({ className = '', onCurrencyChange }) {

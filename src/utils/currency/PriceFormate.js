@@ -2,7 +2,7 @@ import { exchangeRates } from "./exhangeRates";
 
 export default function formatPrice(amount, currency = "EGP") {
   // Validate currency, fallback to EGP
-  if (currency !== "EGP" && currency !== "USD") {
+  if (currency !== "EGP" && currency !== "USD" && currency !== "GBP") {
     currency = "EGP";
   }
 
@@ -10,10 +10,17 @@ export default function formatPrice(amount, currency = "EGP") {
   const priceInCurrency = Math.round(amount * (exchangeRates[currency] || 1));
 
   // Format the currency string
-  return new Intl.NumberFormat(currency === "USD" ? "en-US" : "en-EG", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(priceInCurrency);
+  return new Intl.NumberFormat(
+    currency === "USD"
+      ? "en-US"
+      : currency === "GBP"
+      ? "en-GB"
+      : "ar-EG",
+    {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }
+  ).format(priceInCurrency);
 }
