@@ -15,7 +15,7 @@ export default function formatPrice(amount, currency = "EGP") {
       ? "en-US"
       : currency === "GBP"
       ? "en-GB"
-      : "ar-EG",
+      : "en-EG",
     {
       style: "currency",
       currency,
