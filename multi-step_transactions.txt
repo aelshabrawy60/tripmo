@@ -19,3 +19,21 @@ Host
 
 
 
+
+
+
+[
+    {
+     steps: [
+        {
+            title: "visit luxor temple"
+            description: "here we go"
+            duration: 4
+            type: 
+        },
+        {
+            
+        }
+     ]
+    }
+]

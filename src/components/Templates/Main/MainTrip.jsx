@@ -49,6 +49,7 @@ function MainTrip({tripData, locale}) {
               duration={tripData.duration}
               translation={tripData.translation}
               guideLangs={tripData.guide_langs}
+              itinerary={tripData?.itinerary}
             />
           </div>
           

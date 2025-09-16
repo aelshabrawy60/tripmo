@@ -73,7 +73,7 @@ const AccordionItem = ({
       <button
         onClick={handleToggle}
         disabled={disabled}
-        className="relative w-full px-2 py-4 text-left focus:outline-none focus:ring-offset-2  transition-all duration-200 disabled:cursor-not-allowed"
+        className="relative w-full py-4 text-left focus:outline-none focus:ring-offset-2  transition-all duration-200 disabled:cursor-not-allowed"
         aria-expanded={isOpen}
         aria-disabled={disabled}
       >
@@ -99,9 +99,8 @@ const AccordionItem = ({
             {/* Chevron indicator */}
             <div className={`
               p-1 rounded-full transition-all duration-300 ease-out
-              ${isOpen 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-slate-200 text-slate-600 group-hover:bg-blue-400 group-hover:text-white'
+              ${ 
+                'bg-slate-200 text-slate-600'
               }
               ${disabled ? 'opacity-50' : ''}
             `}>
@@ -121,17 +120,10 @@ const AccordionItem = ({
       <div
         className={`
           overflow-hidden transition-all duration-500 ease-out
-          ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}
+          ${isOpen ? 'opacity-100' : 'max-h-0 opacity-0'}
         `}
       >
-        <div className="relative px-4 pb-4">
-          {/* Subtle separator line */}
-          <div className={`
-            h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent mb-4
-            transition-opacity duration-300
-            ${isOpen ? 'opacity-100' : 'opacity-0'}
-          `} />
-          
+        <div className="relative pb-4">          
           <div className={`
             text-slate-700 leading-relaxed transition-all duration-500 ease-out
             ${isOpen ? 'transform translate-y-0' : 'transform -translate-y-2'}

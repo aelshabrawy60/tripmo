@@ -8,8 +8,9 @@ import ProfileCard from '@/components/website/ProfileCard'
 import { Bus, BusFront, Clock, Languages, Eye, EyeOff } from 'lucide-react'
 import React, { useState } from 'react'
 import { getLangFullName } from '@/utils/translation/helpers'
+import Itinerary from '@/components/Itinerary/Itinerary/Itinerary'
 
-function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration, translation, guideLangs}) {
+function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration, translation, guideLangs, itinerary = null}) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [showOriginal, setShowOriginal] = useState(false)
   
@@ -150,19 +151,17 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
 
         <div className='text-lg mt-10 mb-2'>
           <span dangerouslySetInnerHTML={{ __html: displayText.replace(/\n/g, "<br />") }} />
-          <div className="flex items-center flex-wrap gap-2 mt-2">
-            {shouldShowReadMore && (
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className='hover:text-blue-600 underline underline-offset-4 cursor-pointer focus:outline-none'
-              >
-                {isExpanded 
-                  ? (locale == "en" ? "Show less" : "عرض أقل")
-                  : (locale == "en" ? "Show more" : "عرض المزيد")
-                }
-              </button>
-            )}
-          </div>
+          {shouldShowReadMore && (
+            <span
+              onClick={() => setIsExpanded(!isExpanded)}
+              className='hover:text-blue-600 text-sm font-bold underline underline-offset-2 cursor-pointer focus:outline-none ml-2'
+            >
+              {isExpanded 
+                ? (locale == "en" ? "Show less" : "عرض أقل")
+                : (locale == "en" ? "Show more" : "عرض المزيد")
+              }
+            </span>
+          )}
         </div>
         
         <div className='mb-6 mt-10'>
@@ -189,11 +188,22 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
             null
           }
 
+          {
+            itinerary && itinerary.length > 0 ? (
+              <AccordionItem title={locale == "en"? "Itinerary": "خط السير"}>
+                <div className='mt-4'>
+                  <Itinerary data={itinerary} locale={locale} />
+                </div>
+              </AccordionItem>
+            ) : null
+          }
+
           <AccordionItem
             title={locale == "en"? "cancellation policy": "سياسة الإلغاء"}
           >
             <DetailedCancelationPolicy policy={policy} locale={locale}/>
           </AccordionItem>
+
         </div>
         <ProfileCard type={1} profileId={groupId}/>
     </div>

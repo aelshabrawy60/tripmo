@@ -1,4 +1,4 @@
-import { exchangeRates } from "./exhangeRates";
+import { currencyConversion } from "./exhangeRates";
 
 export default function formatPrice(amount, currency = "EGP") {
   // Validate currency, fallback to EGP
@@ -7,7 +7,7 @@ export default function formatPrice(amount, currency = "EGP") {
   }
 
   // Convert amount using exchange rate and round it
-  const priceInCurrency = Math.round(amount * (exchangeRates[currency] || 1));
+  const priceInCurrency = currencyConversion(amount, currency);
 
   // Format the currency string
   return new Intl.NumberFormat(
