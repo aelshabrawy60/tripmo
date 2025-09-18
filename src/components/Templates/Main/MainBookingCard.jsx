@@ -198,7 +198,7 @@ function MainBookingCard({ tripData, locale }) {
 
         {/* FOMO Countdown Banner */}
         {showCountdown && isAvail && (hasSale || tripData.id === 125) && (
-          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-3 rounded-lg shadow-lg">
+          <div className="bg-gradient-to-r from-tripmo-500 to-blue-500 text-white p-3 rounded-lg shadow-lg">
             <div className={` ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
               <div className="text-xs mb-1">{t.offerEnds}</div>
               <div className="flex items-center gap-1 font-mono font-bold">
@@ -299,7 +299,7 @@ function MainBookingCard({ tripData, locale }) {
           {/* Chat with us link */}
           <div className="text-center">
             <a
-              href="https://tawk.to/chat/689a083963e952192907c216/1j2cr084q"
+              href="https://wa.me/201061410951"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200 hover:underline"
