@@ -3,7 +3,7 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone, FileText }
 import { phoneNumber , addressEn, addressAr} from '../../../app/[locale]/data'
 import locales from '../../../../messages/locales';
 
-export default function MainFooter({ logo, pages, socialMedia, contactInfo, theme = "#3B82F6", locale }) {
+export default function MainFooter({ logo, pages, socialMedia, contactInfo, theme = "#3B82F6", locale, addButtomSpace = false }) {
   // Function to render the appropriate social media icon
   const getSocialIcon = (name) => {
     const iconProps = { size: 20, style: { color: theme } };
@@ -28,7 +28,7 @@ export default function MainFooter({ logo, pages, socialMedia, contactInfo, them
   const contact = contactInfo || defaultContactInfo;
 
   return (
-    <footer className="text-gray-800 mt-10 bg-[#f3f3f3]">
+    <footer className={`text-gray-800 mt-10 bg-[#f3f3f3] ${addButtomSpace ? 'pb-12': null} md:pb-0`}>
       {/* Main Footer Content */}
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row justify-between gap-x-20 gap-y-8">

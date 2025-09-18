@@ -100,7 +100,7 @@ const AccordionItem = ({
             <div className={`
               p-1 rounded-full transition-all duration-300 ease-out
               ${ 
-                'bg-slate-200 text-slate-600'
+                'text-slate-600'
               }
               ${disabled ? 'opacity-50' : ''}
             `}>

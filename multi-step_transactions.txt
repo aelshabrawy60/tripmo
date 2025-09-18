@@ -15,25 +15,3 @@ Host
         1. init payout
         2. add withdraw record
         3. rest balance
-
-
-
-
-
-
-
-[
-    {
-     steps: [
-        {
-            title: "visit luxor temple"
-            description: "here we go"
-            duration: 4
-            type: 
-        },
-        {
-            
-        }
-     ]
-    }
-]

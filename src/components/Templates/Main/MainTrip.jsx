@@ -66,7 +66,7 @@ function MainTrip({tripData, locale}) {
           <MiniBookingCard pricing={tripData.pricing} locale={locale}/>
         </div>
       </div>
-      <MainRatingsSection ratings={tripData.ratings} tripId={tripData.id}/>
+      <MainRatingsSection ratings={tripData.ratings} tripId={tripData.id} locale={locale}/>
     </div>
   )
 }

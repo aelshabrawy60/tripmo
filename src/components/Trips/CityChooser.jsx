@@ -320,7 +320,7 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
         width: dropdownPosition.width,
         zIndex: 99999
       }}
-      className="bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-y-auto"
+      className="bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-y-auto no-scrollbar"
       onMouseDown={(e) => e.preventDefault()}
     >
       {filteredCities.length > 0 ? (
@@ -329,7 +329,8 @@ const CityChooser = forwardRef(({ onChange, defaultCity = null, placeholder = "Ø
             key={city.id}
             onClick={() => handleCitySelect(city)}
             onMouseEnter={() => setHighlightedIndex(index)}
-            className={`px-4 py-3 cursor-pointer transition-colors duration-150 ${
+            dir={locale == "en" ? "ltr" : "rtl"}
+            className={`px-4 py-3 cursor-pointer transition-colors duration-150  ${
               index === highlightedIndex
                 ? 'bg-blue-100 text-blue-900'
                 : 'hover:bg-gray-100'

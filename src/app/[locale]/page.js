@@ -6,6 +6,7 @@ import TopDestinations from '@/components/website/TopDestinations'
 import TripsStripSection from '@/components/website/TripsStripSection'
 import PaymentWays from '@/components/website/PaymentWays'
 import locales from '../../../messages/locales'
+import WhyChooseUs from '@/components/website/WhyChooseUs'
 
 export const revalidate = 21600 // Revalidate every 6 hours //
 
@@ -64,8 +65,8 @@ async function page({params}) {
               }
             </div>
 
-            <div className='mt-20'>
-              <PaymentWays/>
+            <div className='mt-20 mb-20'>
+              <WhyChooseUs/>
             </div>
         </div>
     </>

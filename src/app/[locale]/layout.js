@@ -95,6 +95,7 @@ export default function RootLayout({ children, params }) {
   const pathname = headersList.get("x-pathname") || "";
 
   const shouldHideNavbar = shouldHideNavbarForPath(pathname);
+  const shouldFooterAddBottomSpace = pathname.includes('/trips')
 
   // 👇 choose font depending on locale
   const fontClass = locale === "ar" ? tajawal.className : roboto.className;
@@ -117,6 +118,7 @@ export default function RootLayout({ children, params }) {
             pages={footerPages}
             socialMedia={socialMedia}
             locale={locale}
+            addButtomSpace={shouldFooterAddBottomSpace}
           />
         )}
       </div>
