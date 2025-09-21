@@ -2,21 +2,28 @@
 
 import DateChooser from '@/components/Bookings/DateChooser'
 import PersonsNumChooser from '@/components/Bookings/PersonsNumChooser'
-import React, { useState, useEffect } from 'react'
-import { Check, X, Loader, ArrowRight, MessageCircle, Clock } from 'lucide-react'
+import React, { useState, useEffect, useRef } from 'react'
+import { Check, X, Loader, ArrowRight, MessageCircle } from 'lucide-react'
 import Cookies from 'js-cookie';
 import formatPrice from '@/utils/currency/PriceFormate';
 import TimeChooser from '@/components/Trips/TimeChooser'
 
-function MainBookingCard({ tripData, locale }) {
-  const [selectedDate, setSelectedDate] = useState(new Date())
+function MainBookingCard({ tripData, locale, initData }) {
+  const [selectedDate, setSelectedDate] = useState(initData.deafultDate)
   const [selectedSeatsNum, setSelectedSeatsNum] = useState({ adults: 1, children: 0, infants: 0 })
-  const [selectedTime, setSelectedTime] = useState(null)
-  const [totalPrice, setTotalPrice] = useState(null)
-  const [depositPrice, setDepositPrice] = useState(null)
-  const [isAvail, setIsAvail] = useState(null)
+  const [selectedTime, setSelectedTime] = useState(initData.deafultTime)
+  const [totalPrice, setTotalPrice] = useState(initData.totalPrice)
+  const [depositPrice, setDepositPrice] = useState(initData.depoistPrice)
+  const [isAvail, setIsAvail] = useState(initData.isAvail)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+
+
+  const prevValuesRef = useRef({
+    date: selectedDate,
+    seats: selectedSeatsNum,
+    time: selectedTime,
+  });
   
   // FOMO Countdown states
   const [timeLeft, setTimeLeft] = useState({
@@ -144,11 +151,36 @@ function MainBookingCard({ tripData, locale }) {
   }
 
   useEffect(() => {
+
+    const prev = prevValuesRef.current;
+    // Compare deeply for seats (object)
+    const seatsChanged =
+      prev.seats.adults !== selectedSeatsNum.adults ||
+      prev.seats.children !== selectedSeatsNum.children ||
+      prev.seats.infants !== selectedSeatsNum.infants;
+
+    const dateChanged = prev.date !== selectedDate;
+    const timeChanged = prev.time !== selectedTime;
+
+    console.log("dateOld", prev.date, "dateNew", selectedDate)
+    console.log("timeOld", prev.time, "timeNew", selectedTime)
+    
+
+    // If nothing changed, do nothing
+    if (!dateChanged && !seatsChanged && !timeChanged) return;
+
     const timer = setTimeout(() => {
       if (selectedDate && selectedSeatsNum) {
         checkAvailAndPricing()
       }
     }, 150)
+
+    // Update stored previous values
+    prevValuesRef.current = {
+      date: selectedDate,
+      seats: selectedSeatsNum,
+      time: selectedTime,
+    };
 
     return () => clearTimeout(timer)
   }, [selectedDate, selectedSeatsNum, selectedTime])

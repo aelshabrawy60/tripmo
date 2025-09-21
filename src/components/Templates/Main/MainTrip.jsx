@@ -5,13 +5,17 @@ import MainRatingsSection from './MainRatingsSection'
 import StarsRates from '@/components/website/StarsRates'
 import InlineCancelationPolicy from '@/components/Trips/InlineCancelationPolicy'
 import MiniBookingCard from '@/components/website/MiniBookingCard'
+import {checkBookingAvailability, getBookingPrice } from "@/utils/booking_engine/booking_engine";
 
-function MainTrip({tripData, locale}) {
+
+async function MainTrip({tripData, locale}) {
+
+  const availAndPricing = await checkAvailAndPricing(tripData)
+
 
   return (
     <div className="max-w-7xl mx-auto p-2">
       {/* Gallery Section */}
-      
       
       <div className="w-full relative overflow-hidden">
         <GalleryViewer images={tripData.images} locale={locale}/>
@@ -59,6 +63,7 @@ function MainTrip({tripData, locale}) {
               <MainBookingCard 
                 tripData={tripData}
                 locale={locale}
+                initData={availAndPricing}
               />
             </div>
           </div>
@@ -72,3 +77,45 @@ function MainTrip({tripData, locale}) {
 }
 
 export default MainTrip
+
+
+
+async function checkAvailAndPricing(tripData) {
+    try {
+
+
+      const formattedDate = selectDeafultDate(tripData)
+      const time = tripData?.start_times && tripData?.start_times.length > 0 ? tripData?.start_times[0] : null
+
+
+      const result = await checkBookingAvailability(tripData.id, formattedDate, parseInt(1) + parseInt(0) + parseInt(0), time);
+      const price = await getBookingPrice(tripData.id, formattedDate, 1, null, 0, 0)
+
+      if (result.success) {
+        return {isAvail: true, totalPrice: price.price, depoistPrice: price.deposit, deafultDate: formattedDate, deafultTime: time}
+      } else {
+        return {isAvail: false, totalPrice: null, depoistPrice: null, deafultDate: formattedDate, deafultTime: time}
+      }
+    } catch (err) {
+      return {isAvail: false, totalPrice: null, depoistPrice: null, deafultDate: null, deafultTime: null}
+    }
+}
+
+function selectDeafultDate(tripData){
+  if (tripData.availability_type === "fixed") {
+    return tripData.available_day
+  } else if (tripData.availability_type === "weekly" && tripData.weekly_days?.length > 0) {
+    const nearestDate = findNearestWeeklyDay(tripData.weekly_days);
+    return formateDate(nearestDate)
+  } else {
+    return formateDate(new Date());
+  }
+}
+
+const formateDate = (dateObj) => {
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const localDateString = `${year}-${month}-${day}`;
+    return localDateString
+};
