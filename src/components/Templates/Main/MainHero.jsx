@@ -10,7 +10,7 @@ function MainHero({img, title, subtitle = null, locale}) {
   return (
     <div className='w-full h-screen relative rounded-2xl lg:rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black max-h-[520px] lg:max-h-[400px] xl:max-h-[320px] mb-16 sm:mb-20 md:mb-10'>
         {/* Background overlay for smooth transition */}
-        <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/60 to-black/40 rounded-2xl lg:rounded-3xl opacity-0 z-[1]`} />
+        <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/60 via-gray-800/40 to-black/40 rounded-2xl lg:rounded-3xl opacity-0 z-[1]`} />
         
         {/* Loading skeleton */}
         <div className={`absolute inset-0 rounded-2xl lg:rounded-3xl opacity-0 z-[2]`}>
@@ -45,7 +45,7 @@ function MainHero({img, title, subtitle = null, locale}) {
         )}
         
         {/* Hero Content - Enhanced with smooth entrance */}
-        <div className={`absolute min-w-[300px] top-1/5 sm:top-1/3 left-1/2 transform -translate-x-1/2 z-20 opacity-100 translate-y-0`}>
+        <div className={`absolute min-w-[300px] top-1/6 sm:top-1/3 left-1/2 transform -translate-x-1/2 z-20 opacity-100 translate-y-0`}>
           <h1 className='text-4xl mb-3 md:mb-5 md:text-5xl text-center text-white font-bold drop-shadow-2xl'>
             {title}
           </h1>

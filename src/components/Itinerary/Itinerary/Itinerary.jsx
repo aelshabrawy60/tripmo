@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import ItinerarySteps from '../ItinerarySteps/ItinerarySteps'
 import AccordionItem from '@/components/website/AccordionItem'

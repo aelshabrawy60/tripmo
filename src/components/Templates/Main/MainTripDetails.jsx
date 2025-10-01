@@ -5,12 +5,14 @@ import FromTo from '@/components/Trips/FromTo'
 import AccordionItem from '@/components/website/AccordionItem'
 import PointMap from '@/components/website/PointMap'
 import ProfileCard from '@/components/website/ProfileCard'
-import { Bus, BusFront, Clock, Languages, Eye, EyeOff } from 'lucide-react'
+import { BusFront, Clock, Languages, Eye, EyeOff, Coins, CoinsIcon, HandCoins } from 'lucide-react'
 import React, { useState } from 'react'
 import { getLangFullName } from '@/utils/translation/helpers'
 import Itinerary from '@/components/Itinerary/Itinerary/Itinerary'
+import { FaCoins } from 'react-icons/fa'
+import { PiCoins, PiCoinsBold, PiCoinsDuotone, PiCoinsLight } from 'react-icons/pi'
 
-function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration, translation, guideLangs, itinerary = null}) {
+function MainTripDetails({name, about, groupId, depature_city, dest_city, locale, startLocation, policy, duration, translation, guideLangs, itinerary = null, pricing}) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [showOriginal, setShowOriginal] = useState(false)
   
@@ -86,8 +88,25 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
         </div>
 
         <div className='mt-8'>
-          {duration !== null && duration != 0?
+          {
+            pricing.AdvancePaymentPercentage < 50 ?
             <div className='flex gap-3'>
+              <div className='min-w-[25px]'>
+                <HandCoins size={25}/>
+              </div>
+              <div>
+                <div className='font-medium'>{locale == "en"? `Book with only ${pricing.AdvancePaymentPercentage}% Depoist`: `احجز بدفع ${pricing.AdvancePaymentPercentage}% فقط مقدم`}</div>
+                <div className='text-sm text-gray-600'>
+                  {locale == "en"? `Secure your spot by paying only ${pricing.AdvancePaymentPercentage}% of the total price.`: `يمكنك حجز رحلتك بدفع ${pricing.AdvancePaymentPercentage}% فقط من السعر الإجمالي كوديعة.`}
+                </div>
+              </div>
+            </div>
+            :
+            null
+          }
+          
+          {duration !== null && duration != 0?
+            <div className='flex gap-3 mt-4'>
               <div className='min-w-[25px]'>
                 <Clock size={25}/>
               </div>
