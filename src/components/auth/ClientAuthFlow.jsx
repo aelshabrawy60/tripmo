@@ -6,7 +6,13 @@ import OTPInputForm from './OTPInputForm';
 import NameInputForm from './NameInputForm';
 import LoadingCirc from '../Loading/LoadingCirc';
 import TermsAcceptance from '../website/TermsAcceptance';
+import { country_codes } from "./country_codes";
 
+
+const countryMap = {};
+country_codes.forEach(c => {
+  countryMap[c.name.toLowerCase()] = c;
+});
 
 const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB', locale }) => {
   const [currentStep, setCurrentStep] = useState('loading'); // loading, phone, otp, name
@@ -57,6 +63,31 @@ const ClientAuthFlow = ({ onSuccess, onFail, primary_color = '#2563EB', locale }
 
     checkExistingToken();
   }, [onSuccess]);
+
+
+  useEffect(() => {
+    const fetchCountryByIP = async () => {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+
+        const countryName = data.country_name; // e.g. "Egypt"
+        const match = countryMap[countryName.toLowerCase()];
+
+        if (match) {
+          setSelectedCountryCode(match);
+        } else {
+          // fallback to Egypt if not found
+          setSelectedCountryCode(country_codes.find(c => c.name === "Egypt"));
+        }
+      } catch (err) {
+        console.error("Failed to fetch country:", err);
+        setSelectedCountryCode(country_codes.find(c => c.name === "Egypt"));
+      }
+    };
+
+    fetchCountryByIP();
+  }, []);
 
   const handlePhoneSuccess = (phone, verificationId) => {
     setPhoneNumber(phone);
