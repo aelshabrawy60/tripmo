@@ -10,7 +10,7 @@ const WhatsAppPopup = () => {
     // Check if popup was already shown in this session
     const popupShown = sessionStorage.getItem("whatsappPopupShown");
 
-    if (!popupShown) {
+    if (true) {
       const timer = setTimeout(() => {
         setShowPopup(true);
         setIsAnimating(true);
@@ -58,12 +58,13 @@ const WhatsAppPopup = () => {
         <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-400/20 rounded-full blur-3xl"></div>
 
         {/* Close button */}
+        {/* Close button */}
         <button
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200/80 transition-all duration-200 group z-10"
+          className="absolute top-4 right-4 p-2 rounded-full bg-red-500 hover:bg-gray-200 transition-all duration-200 group z-30 shadow-md"
           onClick={handleClose}
           aria-label="Close popup"
         >
-          <X className="w-6 h-6 text-gray-600 group-hover:text-gray-900 transition-colors" />
+          <X className="w-5 h-5 text-white group-hover:text-gray-900 transition-colors" />
         </button>
 
         {/* Content */}
