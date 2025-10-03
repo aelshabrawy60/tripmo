@@ -1,4 +1,5 @@
 import MainTripPage from "@/components/Templates/Main/MainTripPage";
+import WhatsAppPopup from "@/components/website/HelpPopup";
 import MetaPixelTripEvent from "@/components/website/MetaPixelTripViewEvent";
 import TripsStripSection from "@/components/website/TripsStripSection";
 import { getSimilarTrips } from "@/utils/trips_engine/trips_engine";
@@ -141,6 +142,7 @@ export default async function Page({ params }) {
           </div>
         )
       }
+      <WhatsAppPopup/>
       
     </div>
   );
