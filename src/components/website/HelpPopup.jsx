@@ -10,7 +10,7 @@ const WhatsAppPopup = () => {
     // Check if popup was already shown in this session
     const popupShown = sessionStorage.getItem("whatsappPopupShown");
 
-    if (true) {
+    if (!popupShown) {
       const timer = setTimeout(() => {
         setShowPopup(true);
         setIsAnimating(true);
