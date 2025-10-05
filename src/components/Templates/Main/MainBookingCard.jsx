@@ -43,7 +43,7 @@ function MainBookingCard({ tripData, locale, initData }) {
     save: locale === 'ar' ? 'وفر' : 'SAVE',
     youSave: locale === 'ar' ? 'توفر' : 'You save',
     sale: locale === 'ar' ? 'تخفيض!' : 'SALE!',
-    chatWithUs: locale === 'ar' ? 'تحدث معنا' : 'Chat with us',
+    chatWithUs: locale === 'ar' ? 'تحدث معنا' : 'Got questions? Chat now',
     limitedOffer: locale === 'ar' ? 'عرض محدود!' : 'Limited Time Offer!',
     offerEnds: locale === 'ar' ? 'ينتهي العرض في:' : 'Offer ends in:',
     hours: locale === 'ar' ? 'ساعة' : 'h',
@@ -194,6 +194,7 @@ function MainBookingCard({ tripData, locale, initData }) {
   }
 
   return (
+    <>
     <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 lg:max-w-md w-full">
       <div className="space-y-6">
 
@@ -327,22 +328,26 @@ function MainBookingCard({ tripData, locale, initData }) {
               <ArrowRight size={18} />
             </button>
           )}
+        </div>
 
-          {/* Chat with us link */}
-          <div className="text-center">
-            <a
-              href="https://wa.me/201061410951"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold transition-colors duration-200 hover:underline"
-            >
-              <MessageCircle size={16} />
-              {t.chatWithUs}
-            </a>
-          </div>
+        {/* Chat with us link */}
+        <div className="text-center">
+          <a
+            href="https://wa.me/201061410951"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold transition-colors duration-200 hover:underline"
+          >
+            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1022px-WhatsApp.svg.png' width={26}></img>
+            {t.chatWithUs}
+          </a>
+          <div className='text-xs text-gray-500'>we respond in minutes</div>
         </div>
       </div>
+      
     </div>
+    
+    </>
   )
 }
 

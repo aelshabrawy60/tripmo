@@ -142,11 +142,6 @@ export default async function Page({ params }) {
           </div>
         )
       }
-      {
-        tripData.id == 151 && (
-          <WhatsAppPopup tripImg={tripData.images[0]}/>
-        )
-      }
     </div>
   );
 }
