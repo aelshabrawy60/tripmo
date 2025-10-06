@@ -157,7 +157,7 @@ function ProfileCard({ profileData, type = 0, profileId = null, showPhone = fals
   }
 
   return (
-    <div className='flex flex-col justify-center items-center min-w-[300px] max-w-[340px] w-full p-6 shadow-sm rounded-2xl bg-white border border-gray-100'>
+    <div className='flex flex-col justify-center items-center min-w-[300px] md:max-w-[340px] w-full p-6 shadow-sm rounded-2xl bg-white border border-gray-100'>
       <div className='relative w-[104px] h-[104px] rounded-full overflow-hidden mb-2'>
         <Image
           src={imageSrc}
