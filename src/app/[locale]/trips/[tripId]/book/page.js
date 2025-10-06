@@ -7,6 +7,7 @@ import LoadingCirc from '@/components/Loading/LoadingCirc';
 import Loading from '@/components/Loading';
 import TermsAcceptance from '@/components/website/TermsAcceptance';
 import PaymentWays from '@/components/website/PaymentWays';
+import { ShieldCheck } from 'lucide-react';
 
 function BookingPage() {
   const params = useParams();
@@ -291,9 +292,14 @@ function BookingPage() {
                 <button
                   onClick={handlePaymentClick}
                   disabled={isSubmitting}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200"
                 >
-                  {isSubmitting ? t.processing[locale] : t.pay[locale]}
+                  <span className='text-lg'>
+                    {isSubmitting ? t.processing[locale] : t.pay[locale]}
+                  </span>
+                  <span className="inline-block ml-2">
+                    <ShieldCheck/>
+                  </span>
                 </button>
                 <TermsAcceptance link={t.termsLink} locale={locale}/>
               </>
