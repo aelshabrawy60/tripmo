@@ -3,6 +3,10 @@ import AddComment from './AddComment'
 import CommentCard from './CommentCard'
 
 function MainRatingsSection({ratings, locale}) {
+
+  if(ratings.length === 0){
+    return null
+  }
   return (
     <div className='flex gap-5 flex-wrap flex-col-reverse md:flex-row mt-10'>
         <div className='flex flex-2 flex-col gap-2 min-w-[300px]'>
