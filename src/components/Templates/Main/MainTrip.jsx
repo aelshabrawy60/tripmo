@@ -6,6 +6,7 @@ import StarsRates from '@/components/website/StarsRates'
 import InlineCancelationPolicy from '@/components/Trips/InlineCancelationPolicy'
 import MiniBookingCard from '@/components/website/MiniBookingCard'
 import {checkBookingAvailability, getBookingPrice } from "@/utils/booking_engine/booking_engine";
+import ProfileCard from '@/components/website/ProfileCard'
 
 
 async function MainTrip({tripData, locale}) {
@@ -69,10 +70,15 @@ async function MainTrip({tripData, locale}) {
             </div>
           </div>
 
+
           <MiniBookingCard pricing={tripData.pricing} locale={locale}/>
         </div>
+
       </div>
       <MainRatingsSection ratings={tripData.ratings} tripId={tripData.id} locale={locale}/>
+      <div className='md:hidden mt-4'>
+        <ProfileCard type={0} profileId={tripData.group_id}/>
+      </div>
     </div>
   )
 }

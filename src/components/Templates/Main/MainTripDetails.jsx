@@ -224,7 +224,9 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
           </AccordionItem>
 
         </div>
-        <ProfileCard type={1} profileId={groupId}/>
+        <div className='hidden md:block'>
+          <ProfileCard type={1} profileId={groupId}/>
+        </div>
     </div>
   )
 }
