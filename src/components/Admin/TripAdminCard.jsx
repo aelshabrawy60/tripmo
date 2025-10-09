@@ -5,10 +5,21 @@ import { Users, MapPin, Star, Calendar, ExternalLink, Shield, ChevronRight } fro
 import Image from 'next/image';
 import BlockTripModal from './BlockTripModal';
 import { useRouter } from 'next/navigation';
+import AddBookingAdmin from '../Bookings/AddBookingAdmin';
 
 function TripAdminCard({ data, onStatusChange }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+
+  const selectedTrip = data;
+  const selectedDate = new Date().toISOString().split('T')[0]; // Default to today
+  // Get the initial date for booking forms
+  const getInitialDate = () => {
+    if (!selectedTrip) return selectedDate;
+    return selectedTrip.availability_type === "fixed" 
+      ? selectedTrip.available_day 
+      : selectedDate;
+  };
 
   
   // Status configuration with Arabic labels and colors
@@ -102,9 +113,11 @@ function TripAdminCard({ data, onStatusChange }) {
   const isBlocked = data.status === 'blocked';
 
   return (
+
+    <>
+    
     <div
-      onClick={() => router.push(`/trips/${data.id}`)}
-      className="group relative bg-white rounded-2xl border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/50 overflow-hidden cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+      className="group relative bg-white rounded-2xl border border-gray-100 hover:border-gray-200 transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/50 overflow-hidden"
     >
       {/* Mobile-first layout */}
       <div className="p-4 sm:p-5">
@@ -133,9 +146,9 @@ function TripAdminCard({ data, onStatusChange }) {
 
             {/* Trip details */}
             <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-gray-900 text-sm sm:text-base leading-tight mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
+              <a href={`/trips/${data.id}`} className="font-bold text-gray-900 text-sm sm:text-base leading-tight mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
                 {data.name}
-              </h3>
+              </a>
               
               {/* Mobile: Show only essential info */}
               <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-1">
@@ -152,7 +165,6 @@ function TripAdminCard({ data, onStatusChange }) {
               </div>
             </div>
           </div>
-
           {/* Status badge - always visible */}
           <div className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs font-medium border flex items-center gap-1.5 ${currentStatus.color} ${currentStatus.ring} ring-1 shadow-sm`}>
             <div className={`w-1.5 h-1.5 rounded-full ${currentStatus.dot}`}></div>
@@ -234,7 +246,11 @@ function TripAdminCard({ data, onStatusChange }) {
         <ExternalLink className="w-4 h-4 text-gray-600" />
       </button>
 
+      <div className='m-4 z-50'>
+        <AddBookingAdmin groupId={selectedTrip.group_id} initialData={{"tripData": selectedTrip, "date": getInitialDate()}} onClose={false}/>
+      </div>
     </div>
+    </>
   );
 }
 

@@ -184,7 +184,7 @@ export async function confirmDeposit(bookId) {
     // Single query to check status and get phone in one go
     const { data: booking, error: fetchError } = await supabaseAdmin
         .from("bookings")
-        .select("Group(*), *, trips(name, id, dest_city (name, country)), deposits(payment_id, tracking_data), clients(phone)")
+        .select("Group(*), *, trips(name, id, dest_city (name, country)), deposits(payment_id, tracking_data), clients(phone), client_phone")
         .eq("id", bookId)
         .single();
 
@@ -224,7 +224,12 @@ export async function confirmDeposit(bookId) {
     }
 
     // Send notification asynchronously (don't await)
-    const phone = booking?.clients?.phone;
+    let phone = booking?.clients?.phone;
+
+    if(!phone){
+        phone = booking?.client_phone
+    }
+    
     if (phone) {
         const notifications = new NotificationService();
         await notifications.sendBookConfirmation("whatsapp", phone, bookingResult.data, bookingResult.data.Group.notifications_number)

@@ -235,6 +235,8 @@ function TripsAdminList() {
         </div>
       )}
 
+      
+
       {/* Trips List */}
       {!loading && !error && (
         <div className="space-y-4">

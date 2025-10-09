@@ -1,7 +1,7 @@
 import TripCreationWizardAdmin from '@/components/Trips/TripCreationFormAdmin'
 
 
-function page({searchParams }) {
+function page({searchParams}) {
   const groupId = searchParams?.groupId || null
   return (
     <div>
