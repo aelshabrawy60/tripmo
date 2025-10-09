@@ -89,16 +89,15 @@ export default function ServiceProviderTerms() {
               </p>
               <ul className="list-disc list-inside text-gray-700 leading-relaxed mr-4 space-y-2">
                 <li>
-                  <strong>20%</strong> إذا كانت قيمة الحجز أقل من أو تساوي <strong>2000 جنيه مصري</strong>.
+                  <strong>20%</strong> إذا كانت قيمة الحجز أقل من <strong>4000 جنيه مصري</strong>.
                 </li>
                 <li>
-                  <strong>15%</strong> إذا كانت قيمة الحجز بين <strong>2001</strong> و <strong>8000 جنيه مصري</strong>.
+                  <strong>15%</strong> إذا كانت قيمة الحجز بين <strong>4000</strong> و <strong>8000 جنيه مصري</strong>.
                 </li>
                 <li>
                   <strong>10%</strong> إذا كانت قيمة الحجز أكثر من <strong>8000 جنيه مصري</strong>.
                 </li>
               </ul>
-
               <p className="text-gray-700 leading-relaxed">
                 يتم خصم العمولة تلقائيًا من المبلغ المدفوع من قبل العميل.
               </p>
