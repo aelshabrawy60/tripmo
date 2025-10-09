@@ -80,7 +80,11 @@ function AdminHostCard({ data, onStatusChange }) {
                   <span>{data.clients_contact_phone}</span>
                 </div>
               </div>
+              
             </div>
+            <a href={`/trips/create?groupId=${data.id}`}  className="px-4 p-2 rounded-md bg-blue-400 hover:bg-gray-200 text-white hover:text-gray-700 transition-colors duration-300">
+                اضافة رحلة
+              </a>
           </div>
         </div>
       </div>
