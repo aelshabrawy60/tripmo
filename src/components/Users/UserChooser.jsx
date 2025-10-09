@@ -1,20 +1,10 @@
 import { useEffect, useState } from "react"
 
+import { country_codes } from "../auth/country_codes";
 
 const UserChooser = ({ groupId, onChange }) => {
     // Country codes data - focused on Middle Eastern countries
-    const countryCodes = [
-        { code: "+966", flag: "🇸🇦", name: "السعودية" },
-        { code: "+971", flag: "🇦🇪", name: "الإمارات" },
-        { code: "+20", flag: "🇪🇬", name: "مصر" },
-        { code: "+962", flag: "🇯🇴", name: "الأردن" },
-        { code: "+965", flag: "🇰🇼", name: "الكويت" },
-        { code: "+973", flag: "🇧🇭", name: "البحرين" },
-        { code: "+968", flag: "🇴🇲", name: "عمان" },
-        { code: "+974", flag: "🇶🇦", name: "قطر" },
-        { code: "+961", flag: "🇱🇧", name: "لبنان" },
-        { code: "+963", flag: "🇸🇾", name: "سوريا" },
-    ];
+    const countryCodes = country_codes
 
     const [playersData, setPlayersData] = useState([])
     const [choosedPlayer, setChoosedPlayer] = useState(undefined)
