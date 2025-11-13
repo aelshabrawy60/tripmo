@@ -137,7 +137,7 @@ export default function SettingsSwitcher({ className = '', onCurrencyChange }) {
       <button
         ref={buttonRef}
         onClick={handleToggleDropdown}
-        className="group flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200"
+        className="group flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-tripmo-500 focus:ring-offset-1 transition-all duration-200"
         aria-haspopup="true"
         aria-expanded={isOpen}
         title="Language and Currency Settings"
@@ -212,7 +212,7 @@ export default function SettingsSwitcher({ className = '', onCurrencyChange }) {
                     onClick={() => switchLanguage(locale)}
                     className={`w-full text-left px-2 py-2 text-sm rounded-lg hover:bg-gray-50 flex items-center justify-between group transition-colors duration-150 ${
                       locale === currentLocale
-                        ? 'bg-blue-50 text-blue-700'
+                        ? 'bg-tripmo-50 text-tripmo-700'
                         : 'text-gray-700 hover:text-gray-900'
                     }`}
                     dir={dir}
@@ -233,7 +233,7 @@ export default function SettingsSwitcher({ className = '', onCurrencyChange }) {
                     </div>
                     
                     {locale === currentLocale && (
-                      <svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 text-tripmo-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
@@ -257,7 +257,7 @@ export default function SettingsSwitcher({ className = '', onCurrencyChange }) {
                     onClick={() => switchCurrency(currency)}
                     className={`w-full text-left px-2 py-2 text-sm rounded-lg hover:bg-gray-50 flex items-center justify-between group transition-colors duration-150 ${
                       currency === currentCurrency
-                        ? 'bg-blue-50 text-blue-700'
+                        ? 'bg-tripmo-50 text-tripmo-700'
                         : 'text-gray-700 hover:text-gray-900'
                     }`}
                   >
@@ -277,7 +277,7 @@ export default function SettingsSwitcher({ className = '', onCurrencyChange }) {
                     </div>
                     
                     {currency === currentCurrency && (
-                      <svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 text-tripmo-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}

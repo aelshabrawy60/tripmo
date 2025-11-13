@@ -2,9 +2,7 @@
 
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
-import LanguageSwitcher from '@/components/LanguageSwitcher/LanguageSwitcher';
-import CurrencySwitcher from '@/components/LanguageSwitcher/CurrencySwitcher';
+import Link from 'next/link'
 import SettingsSwitcher from '@/components/LanguageSwitcher/SettingsSwitcher';
 
 function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale, type = 0 }) {

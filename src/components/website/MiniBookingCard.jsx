@@ -76,7 +76,7 @@ function MiniBookingCard({ pricing, locale }) {
               <div className="text-sm text-gray-500 line-through decoration-1 decoration-red-500">
                 {formatPrice(originalPrice, Currency)}
               </div>
-              <div className="font-bold text-blue-600 text-lg flex items-center gap-2">
+              <div className="font-bold text-tripmo-600 text-lg flex items-center gap-2">
                 {formatPrice(finalPrice, Currency)}
                 <span className="text-sm text-gray-500 font-normal ml-1">
                   {t.person}
@@ -84,7 +84,7 @@ function MiniBookingCard({ pricing, locale }) {
               </div>
             </div>
           ) : (
-            <div className="font-bold text-blue-600 text-lg flex gap-2 items-center">
+            <div className="font-bold text-tripmo-600 text-lg flex gap-2 items-center">
               {formatPrice(finalPrice, Currency)}
               <span className="text-sm text-gray-500 font-normal ml-1">
                 {t.person}
@@ -96,7 +96,7 @@ function MiniBookingCard({ pricing, locale }) {
         {/* Book Button */}
         <button
           onClick={handleBookNowClick}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center gap-2 min-w-[120px] justify-center"
+          className="bg-tripmo-600 hover:bg-tripmo-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 flex items-center gap-2 min-w-[120px] justify-center"
         >
           {t.bookNow}
           <ArrowRight size={16} />

@@ -217,7 +217,7 @@ function MainBookingCard({ tripData, locale, initData }) {
         {/* Loading */}
         {isLoading && (
           <div className="flex items-center justify-center py-4">
-            <Loader className="w-6 h-6 text-blue-600 animate-spin" />
+            <Loader className="w-6 h-6 text-tripmo-600 animate-spin" />
           </div>
         )}
 
@@ -231,7 +231,7 @@ function MainBookingCard({ tripData, locale, initData }) {
 
         {/* FOMO Countdown Banner */}
         {showCountdown && isAvail && (hasSale || tripData.id === 125) && (
-          <div className="bg-gradient-to-r from-tripmo-500 to-blue-500 text-white p-3 rounded-lg shadow-lg">
+          <div className="bg-gradient-to-r from-tripmo-500 to-tripmo-500 text-white p-3 rounded-lg shadow-lg">
             <div className={` ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
               <div className="text-xs mb-1">{t.offerEnds}</div>
               <div className="flex items-center gap-1 font-mono font-bold">
@@ -253,7 +253,7 @@ function MainBookingCard({ tripData, locale, initData }) {
 
         {/* Availability */}
         {isAvail && !isLoading && totalPrice && (
-          <div className="bg-blue-50 p-4 rounded-lg relative overflow-hidden">
+          <div className="bg-tripmo-50 p-4 rounded-lg relative overflow-hidden">
             {hasSale && (
               <div className={`absolute -top-1 bg-red-500 text-white text-sm font-bold px-3 py-1 shadow-lg ${
                 locale === 'ar' ? '-left-2 rounded-br-lg rounded-tr-lg' : '-right-2 rounded-bl-lg rounded-tr-lg'
@@ -263,8 +263,8 @@ function MainBookingCard({ tripData, locale, initData }) {
             )}
             
             <div className="flex items-center mb-2">
-              <Check className={`text-blue-600 w-5 h-5 ${locale == "ar"? "ml-2" : "mr-2"}`} />
-              <h3 className="font-semibold text-blue-800">{t.available}</h3>
+              <Check className={`text-tripmo-600 w-5 h-5 ${locale == "ar"? "ml-2" : "mr-2"}`} />
+              <h3 className="font-semibold text-tripmo-800">{t.available}</h3>
             </div>
 
             {tripData.id == 125 && (
@@ -286,12 +286,12 @@ function MainBookingCard({ tripData, locale, initData }) {
                       <div className="text-md text-gray-800 line-through decoration-1 decoration-red-500 opacity-80">
                         {formatPrice(originalPrice, Currency)}
                       </div>
-                      <div className="font-bold text-blue-600 text-xl md:text-2xl">
+                      <div className="font-bold text-tripmo-600 text-xl md:text-2xl">
                         {formatPrice(finalPrice, Currency)}
                       </div>
                     </div>
                   ) : (
-                    <span className="font-bold text-blue-600 text-lg md:text-xl">
+                    <span className="font-bold text-tripmo-600 text-lg md:text-xl">
                       {formatPrice(finalPrice, Currency)}
                     </span>
                   )}
@@ -314,7 +314,7 @@ function MainBookingCard({ tripData, locale, initData }) {
           {isAvail ? (
             <a
               href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum.adults}&time=${selectedTime}&children=${selectedSeatsNum.children}&infants=${selectedSeatsNum.infants}`}
-              className={`bg-blue-600 w-full hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-lg`}
+              className={`bg-tripmo-600 w-full hover:bg-tripmo-700 text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-lg`}
             >
               {t.bookNow}
               <ArrowRight size={18} />
@@ -336,7 +336,7 @@ function MainBookingCard({ tripData, locale, initData }) {
             href="https://wa.me/201061410951"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold transition-colors duration-200 hover:underline"
+            className="inline-flex items-center gap-2 text-tripmo-600 hover:text-tripmo-700 font-bold transition-colors duration-200 hover:underline"
           >
             <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1022px-WhatsApp.svg.png' width={26}></img>
             {t.chatWithUs}

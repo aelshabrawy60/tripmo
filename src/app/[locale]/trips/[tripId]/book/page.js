@@ -292,7 +292,7 @@ function BookingPage() {
                 <button
                   onClick={handlePaymentClick}
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="w-full flex items-center justify-center bg-tripmo-600 hover:bg-tripmo-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200"
                 >
                   <span className='text-lg'>
                     {isSubmitting ? t.processing[locale] : t.pay[locale]}

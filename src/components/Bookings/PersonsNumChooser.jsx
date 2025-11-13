@@ -243,7 +243,7 @@ function PersonsNumChooser({
           setTempCounts(counts);
           setIsPopupOpen(true);
         }}
-        className="flex w-full items-center space-x-2 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex w-full items-center space-x-2 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-tripmo-500"
       >
         <Users className="text-gray-600" size={20} />
         <span className="font-medium">{getTotalCount()}</span>
@@ -271,7 +271,7 @@ function PersonsNumChooser({
               <button
                 type="button"
                 onClick={handleSave}
-                className="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="flex-1 px-3 py-2 text-sm bg-tripmo-600 text-white rounded-md hover:bg-tripmo-700 transition-colors"
               >
                 {t.save}
               </button>

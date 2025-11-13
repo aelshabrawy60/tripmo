@@ -39,7 +39,7 @@ async function page({params}) {
   return (
     <>
         <MainHero 
-            img="/hero4.jpg" 
+            img="/hero5.jpg" 
             title={locale == "en"? locales.Home.title.en : locales.Home.title.ar}
             subtitle={locale == "en"? locales.Home.subtitle.en : locales.Home.subtitle.ar}
             locale={locale}

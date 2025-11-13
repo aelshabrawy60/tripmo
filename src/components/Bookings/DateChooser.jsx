@@ -148,8 +148,8 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
           key={`day-${day}`}
           onClick={(e) => isSelectable && handleDateClick(e, date)}
           className={`h-12 w-full flex flex-col items-center justify-center rounded text-sm
-            ${isSelected ? 'bg-blue-600 text-white' : ''}
-            ${isSelectable && !isSelected ? 'hover:bg-blue-100 cursor-pointer' : ''}
+            ${isSelected ? 'bg-tripmo-600 text-white' : ''}
+            ${isSelectable && !isSelected ? 'hover:bg-tripmo-50 cursor-pointer' : ''}
             ${!isSelectable ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700'}`}
         >
           <span>{day}</span>
@@ -201,7 +201,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
           key={day}
           className={`h-8 w-8 flex items-center justify-center text-xs font-medium ${
             tripData.availability_type === "weekly" && tripData.weekly_days?.includes(index)
-              ? 'text-blue-600 font-bold'
+              ? 'text-tripmo-600 font-bold'
               : 'text-gray-500'
           }`}
         >
@@ -254,7 +254,7 @@ function DateChooser({ tripData = {}, onDateChange, intiateDate = null, locale =
         <button
           type="button"
           ref={buttonRef}
-          className="w-full flex items-center gap-2 px-3 py-3 border bg-white border-gray-200 rounded-lg hover:bg-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full flex items-center gap-2 px-3 py-3 border bg-white border-gray-200 rounded-lg hover:bg-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-tripmo-500"
           onClick={() => setShowCalendar(!showCalendar)}
         >
           <Calendar className="h-5 w-5 text-gray-400" />

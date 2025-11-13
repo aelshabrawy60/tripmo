@@ -8,8 +8,12 @@
 }
 
 @theme{
-  --color-tripmo-400: #3b75f5;
-  --color-tripmo-500: #2563EB;
+  --color-tripmo-50: #fff7f2;
+  --color-tripmo-400: #ff893a;
+  --color-tripmo-500: #f96800;
+  --color-tripmo-600: #e04e00;
+  --color-tripmo-700: #b33c00;
+  --color-tripmo-800: #802800;
 }
 
 

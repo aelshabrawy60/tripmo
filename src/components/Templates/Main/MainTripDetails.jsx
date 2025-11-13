@@ -156,7 +156,7 @@ function MainTripDetails({name, about, groupId, depature_city, dest_city, locale
                 </div>
                 <div className='text-sm text-gray-600 flex gap-2 items-start flex-wrap'>
                   {guideLangs.map((lang, index) => (
-                    <span key={index} className='bg-gray-100 text-blue-500 px-2 py-1 text-xs'>
+                    <span key={index} className='bg-gray-100 text-tripmo-500 px-2 py-1 text-xs'>
                       {getLangFullName(lang, locale)}
                     </span>
                   ))}

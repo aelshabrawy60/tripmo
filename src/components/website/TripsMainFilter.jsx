@@ -66,8 +66,8 @@ function TripsMainFilter({ locale }) {
                 ${isSearchDisabled 
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                   : isSearching
-                  ? 'bg-blue-500 text-white cursor-wait'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md'
+                  ? 'bg-tripmo-400 text-white cursor-wait'
+                  : 'bg-tripmo-500 text-white hover:bg-tripmo-400 shadow-sm hover:shadow-md'
                 }
               `}
             >
@@ -113,12 +113,12 @@ function TripsMainFilter({ locale }) {
               href={`/trips?${selectedDepartureCity ? `depature_city=${selectedDepartureCity?.id}` : ''}${selectedDestinationCity ? `&dest_city=${selectedDestinationCity?.id}` : ''}`}
               disabled={isSearchDisabled || isSearching}
               className={`
-                w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-tripmo-500 focus:ring-offset-2
                 ${isSearchDisabled 
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                   : isSearching
-                  ? 'bg-blue-500 text-white cursor-wait'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md active:transform active:scale-95'
+                  ? 'bg-tripmo-500 text-white cursor-wait'
+                  : 'bg-tripmo-500 text-white hover:bg-tripmo-400 shadow-sm hover:shadow-md active:transform active:scale-95'
                 }
               `}
             >
