@@ -4,7 +4,6 @@ import { unstable_cache } from 'next/cache'
 import { TrendingDestinations, popularTrips } from '@/utils/trips_engine/trips_engine'
 import TopDestinations from '@/components/website/TopDestinations'
 import TripsStripSection from '@/components/website/TripsStripSection'
-import PaymentWays from '@/components/website/PaymentWays'
 import locales from '../../../messages/locales'
 import WhyChooseUs from '@/components/website/WhyChooseUs'
 

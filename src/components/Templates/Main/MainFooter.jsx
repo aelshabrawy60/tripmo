@@ -3,7 +3,7 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone, FileText }
 import { phoneNumber , addressEn, addressAr} from '../../../app/[locale]/data'
 import locales from '../../../../messages/locales';
 
-export default function MainFooter({ logo, pages, socialMedia, contactInfo, theme = "#f96800", locale, addButtomSpace = false }) {
+export default function MainFooter({ logo, pages, socialMedia, contactInfo, theme = "#007ac6", locale, addButtomSpace = false }) {
   // Function to render the appropriate social media icon
   const getSocialIcon = (name) => {
     const iconProps = { size: 20, style: { color: theme } };

@@ -93,7 +93,7 @@ export default function RootLayout({ children, params }) {
   const { locale } = params;
   const headersList = headers();
   const pathname = headersList.get("x-pathname") || "";
-
+  
   const shouldHideNavbar = shouldHideNavbarForPath(pathname);
   const shouldFooterAddBottomSpace = pathname.includes('/trips')
 
