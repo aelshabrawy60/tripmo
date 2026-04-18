@@ -7,13 +7,13 @@
   --foreground: #171717;
 }
 
-@theme{
+@theme {
   --color-tripmo-50: #eaf2f7;
-  --color-tripmo-400: #0083da;
-  --color-tripmo-500: #007ac6;
-  --color-tripmo-600: #006eb2;
-  --color-tripmo-700: #025e97;
-  --color-tripmo-800: #004672;
+  --color-tripmo-400: #a211f0;
+  --color-tripmo-500: #950ddd;
+  --color-tripmo-600: #8313bf;
+  --color-tripmo-700: #7713ad;
+  --color-tripmo-800: #5f118a;
 }
 
 
@@ -26,6 +26,7 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;

@@ -24,7 +24,7 @@ function MainBookingCard({ tripData, locale, initData }) {
     seats: selectedSeatsNum,
     time: selectedTime,
   });
-  
+
   // FOMO Countdown states
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
@@ -98,16 +98,16 @@ function MainBookingCard({ tripData, locale, initData }) {
   // Calculate prices for sale display
   const calculatePrices = () => {
     if (!totalPrice) return { finalPrice: 0, originalPrice: 0, hasSale: false };
-    
+
     const finalPrice = totalPrice; // Customer pays this amount
     const saleUp = tripData?.pricing?.sale_up;
-    
+
     if (saleUp && saleUp > 0) {
       // Calculate what the original price would have been before discount
       const originalPrice = finalPrice + (finalPrice * (saleUp));
       return { finalPrice, originalPrice, hasSale: true };
     }
-    
+
     return { finalPrice, originalPrice: finalPrice, hasSale: false };
   };
 
@@ -164,7 +164,7 @@ function MainBookingCard({ tripData, locale, initData }) {
 
     console.log("dateOld", prev.date, "dateNew", selectedDate)
     console.log("timeOld", prev.time, "timeNew", selectedTime)
-    
+
 
     // If nothing changed, do nothing
     if (!dateChanged && !seatsChanged && !timeChanged) return;
@@ -195,158 +195,157 @@ function MainBookingCard({ tripData, locale, initData }) {
 
   return (
     <>
-    <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 lg:max-w-md w-full">
-      <div className="space-y-6">
+      <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 lg:max-w-md w-full">
+        <div className="space-y-6">
 
-        <div className='flex flex-col gap-4'>
-          {/* Date & Person Selectors */}
-          <div className="flex gap-2 rounded-lg">
-            <DateChooser tripData={tripData} onDateChange={handleDateChange} locale={locale} />
-            <PersonsNumChooser onChange={handleSeatsChange} locale={locale} 
-              tripPersonsGroups={{
-                ChildPrice: tripData.pricing.ChildPrice ?? null,
-                InfantPrice: tripData.pricing.InfantPrice ?? null
-              }}
-            />
-          </div>
-          <div>
-            <TimeChooser tripData={tripData} onChange={setSelectedTime} locale={locale}/>
-          </div>
-        </div>
-
-        {/* Loading */}
-        {isLoading && (
-          <div className="flex items-center justify-center py-4">
-            <Loader className="w-6 h-6 text-tripmo-600 animate-spin" />
-          </div>
-        )}
-
-        {/* Error */}
-        {error && !isLoading && (
-          <div className="bg-red-50 text-red-700 p-4 rounded-lg flex items-center">
-            <X className="w-5 h-5 mr-2" />
-            <p>{error}</p>
-          </div>
-        )}
-
-        {/* FOMO Countdown Banner */}
-        {showCountdown && isAvail && (hasSale || tripData.id === 125) && (
-          <div className="bg-gradient-to-r from-tripmo-500 to-tripmo-500 text-white p-3 rounded-lg shadow-lg">
-            <div className={` ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
-              <div className="text-xs mb-1">{t.offerEnds}</div>
-              <div className="flex items-center gap-1 font-mono font-bold">
-                <span className="bg-white/20 px-2 py-1 rounded text-sm">
-                  {String(timeLeft.hours).padStart(2, '0')}{t.hours}
-                </span>
-                <span>:</span>
-                <span className="bg-white/20 px-2 py-1 rounded text-sm">
-                  {String(timeLeft.minutes).padStart(2, '0')}{t.minutes}
-                </span>
-                <span>:</span>
-                <span className="bg-white/20 px-2 py-1 rounded text-sm">
-                  {String(timeLeft.seconds).padStart(2, '0')}{t.seconds}
-                </span>
-              </div>
+          <div className='flex flex-col gap-4'>
+            {/* Date & Person Selectors */}
+            <div className="flex gap-2 rounded-lg">
+              <DateChooser tripData={tripData} onDateChange={handleDateChange} locale={locale} />
+              <PersonsNumChooser onChange={handleSeatsChange} locale={locale}
+                tripPersonsGroups={{
+                  ChildPrice: tripData.pricing.ChildPrice ?? null,
+                  InfantPrice: tripData.pricing.InfantPrice ?? null
+                }}
+              />
+            </div>
+            <div>
+              <TimeChooser tripData={tripData} onChange={setSelectedTime} locale={locale} />
             </div>
           </div>
-        )}
 
-        {/* Availability */}
-        {isAvail && !isLoading && totalPrice && (
-          <div className="bg-tripmo-50 p-4 rounded-lg relative overflow-hidden">
-            {hasSale && (
-              <div className={`absolute -top-1 bg-red-500 text-white text-sm font-bold px-3 py-1 shadow-lg ${
-                locale === 'ar' ? '-left-2 rounded-br-lg rounded-tr-lg' : '-right-2 rounded-bl-lg rounded-tr-lg'
-              }`}>
-                {t.save} {tripData.pricing.sale_up * 100}%
-              </div>
-            )}
-            
-            <div className="flex items-center mb-2">
-              <Check className={`text-tripmo-600 w-5 h-5 ${locale == "ar"? "ml-2" : "mr-2"}`} />
-              <h3 className="font-semibold text-tripmo-800">{t.available}</h3>
+          {/* Loading */}
+          {isLoading && (
+            <div className="flex items-center justify-center py-4">
+              <Loader className="w-6 h-6 text-tripmo-600 animate-spin" />
             </div>
+          )}
 
-            {tripData.id == 125 && (
-              <div className="flex items-center gap-2 mb-3">
-                {showCountdown && (
-                  <div className="h-fit px-2 py-1 bg-red-100 text-red-700 rounded-lg text-xs w-fit border border-red-200">
-                    <span className='leading-none font-bold'>{t.hurryUp}</span>
-                  </div>
-                )}
-              </div>
-            )}
+          {/* Error */}
+          {error && !isLoading && (
+            <div className="bg-red-50 text-red-700 p-4 rounded-lg flex items-center">
+              <X className="w-5 h-5 mr-2" />
+              <p>{error}</p>
+            </div>
+          )}
 
-            <div className="space-y-3 mt-3">
-              <div className={`flex justify-between items-end`}>
-                <span className="font-bold">{t.totalPrice}</span>
-                <div className={`${locale === 'ar' ? 'text-left' : 'text-right'}`}>
-                  {hasSale ? (
-                    <div className="space-y-1">
-                      <div className="text-md text-gray-800 line-through decoration-1 decoration-red-500 opacity-80">
-                        {formatPrice(originalPrice, Currency)}
-                      </div>
-                      <div className="font-bold text-tripmo-600 text-xl md:text-2xl">
-                        {formatPrice(finalPrice, Currency)}
-                      </div>
-                    </div>
-                  ) : (
-                    <span className="font-bold text-tripmo-600 text-lg md:text-xl">
-                      {formatPrice(finalPrice, Currency)}
-                    </span>
-                  )}
+          {/* FOMO Countdown Banner */}
+          {showCountdown && isAvail && (hasSale || tripData.id === 125) && (
+            <div className="bg-gradient-to-r from-tripmo-500 to-tripmo-500 text-white p-3 rounded-lg shadow-lg">
+              <div className={` ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+                <div className="text-xs mb-1">{t.offerEnds}</div>
+                <div className="flex items-center gap-1 font-mono font-bold">
+                  <span className="bg-white/20 px-2 py-1 rounded text-sm">
+                    {String(timeLeft.hours).padStart(2, '0')}{t.hours}
+                  </span>
+                  <span>:</span>
+                  <span className="bg-white/20 px-2 py-1 rounded text-sm">
+                    {String(timeLeft.minutes).padStart(2, '0')}{t.minutes}
+                  </span>
+                  <span>:</span>
+                  <span className="bg-white/20 px-2 py-1 rounded text-sm">
+                    {String(timeLeft.seconds).padStart(2, '0')}{t.seconds}
+                  </span>
                 </div>
               </div>
+            </div>
+          )}
 
-              <div className={`flex justify-between text-sm`}>
-                <span className="text-gray-600">{t.deposit}</span>
-                <span className="font-medium text-md md:text-lg">
-                  {formatPrice(depositPrice, Currency)}
-                </span>
+          {/* Availability */}
+          {isAvail && !isLoading && totalPrice && (
+            <div className="bg-tripmo-50 p-4 rounded-lg relative overflow-hidden">
+              {hasSale && (
+                <div className={`absolute -top-1 bg-red-500 text-white text-sm font-bold px-3 py-1 shadow-lg ${locale === 'ar' ? '-left-2 rounded-br-lg rounded-tr-lg' : '-right-2 rounded-bl-lg rounded-tr-lg'
+                  }`}>
+                  {t.save} {tripData.pricing.sale_up * 100}%
+                </div>
+              )}
+
+              <div className="flex items-center mb-2">
+                <Check className={`text-tripmo-600 w-5 h-5 ${locale == "ar" ? "ml-2" : "mr-2"}`} />
+                <h3 className="font-semibold text-tripmo-800">{t.available}</h3>
+              </div>
+
+              {tripData.id == 125 && (
+                <div className="flex items-center gap-2 mb-3">
+                  {showCountdown && (
+                    <div className="h-fit px-2 py-1 bg-red-100 text-red-700 rounded-lg text-xs w-fit border border-red-200">
+                      <span className='leading-none font-bold'>{t.hurryUp}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="space-y-3 mt-3">
+                <div className={`flex justify-between items-end`}>
+                  <span className="font-bold">{t.totalPrice}</span>
+                  <div className={`${locale === 'ar' ? 'text-left' : 'text-right'}`}>
+                    {hasSale ? (
+                      <div className="space-y-1">
+                        <div className="text-md text-gray-800 line-through decoration-1 decoration-red-500 opacity-80">
+                          {formatPrice(originalPrice, Currency)}
+                        </div>
+                        <div className="font-bold text-tripmo-600 text-xl md:text-2xl">
+                          {formatPrice(finalPrice, Currency)}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="font-bold text-tripmo-600 text-lg md:text-xl">
+                        {formatPrice(finalPrice, Currency)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className={`flex justify-between text-sm`}>
+                  <span className="text-gray-600">{t.deposit}</span>
+                  <span className="font-medium text-md md:text-lg">
+                    {formatPrice(depositPrice, Currency)}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Book Button & Chat Link */}
-        <div className="space-y-3">
-          {/* Book Button */}
-          {isAvail ? (
-            <a
-              href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum.adults}&time=${selectedTime}&children=${selectedSeatsNum.children}&infants=${selectedSeatsNum.infants}`}
-              className={`bg-tripmo-600 w-full hover:bg-tripmo-700 text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-lg`}
-            >
-              {t.bookNow}
-              <ArrowRight size={18} />
-            </a>
-          ) : (
-            <button
-              disabled
-              className="bg-gray-400 w-full text-gray-600 font-medium py-3 px-6 rounded-lg cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {t.bookNow}
-              <ArrowRight size={18} />
-            </button>
           )}
+
+          {/* Book Button & Chat Link */}
+          <div className="space-y-3">
+            {/* Book Button */}
+            {isAvail ? (
+              <a
+                href={`/trips/${tripData.id}/book?date=${selectedDate}&seats=${selectedSeatsNum.adults}&time=${selectedTime}&children=${selectedSeatsNum.children}&infants=${selectedSeatsNum.infants}`}
+                className={`bg-tripmo-600 w-full hover:bg-tripmo-700 text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-lg`}
+              >
+                {t.bookNow}
+                <ArrowRight size={18} />
+              </a>
+            ) : (
+              <button
+                disabled
+                className="bg-gray-400 w-full text-gray-600 font-medium py-3 px-6 rounded-lg cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {t.bookNow}
+                <ArrowRight size={18} />
+              </button>
+            )}
+          </div>
+
+          {/* Chat with us link */}
+          <div className="text-center">
+            <a
+              href="https://wa.me/201061410951"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-tripmo-600 hover:text-tripmo-700 font-bold transition-colors duration-200 hover:underline"
+            >
+              <img src='/WhatsApp.svg.png' width={26}></img>
+              {t.chatWithUs}
+            </a>
+            <div className='text-xs text-gray-500'>we respond in minutes</div>
+          </div>
         </div>
 
-        {/* Chat with us link */}
-        <div className="text-center">
-          <a
-            href="https://wa.me/201061410951"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-tripmo-600 hover:text-tripmo-700 font-bold transition-colors duration-200 hover:underline"
-          >
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1022px-WhatsApp.svg.png' width={26}></img>
-            {t.chatWithUs}
-          </a>
-          <div className='text-xs text-gray-500'>we respond in minutes</div>
-        </div>
       </div>
-      
-    </div>
-    
+
     </>
   )
 }

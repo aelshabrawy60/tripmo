@@ -16,7 +16,7 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale, type
           <Link href={'/'} className="flex items-center">
             <div className="flex-shrink-0">
               {logo ? (
-                <img className="h-14 w-auto" src={logo} alt="شعار الموقع" />
+                <img className="h-6 w-auto" src={logo} alt="شعار الموقع" />
               ) : (
                 <div className="text-xl font-bold" style={{ color: theme }}>شعاري</div>
               )}
@@ -35,21 +35,21 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale, type
                     ':hover': { color: theme }
                   }}
                 >
-                  {locale == "ar" ? page.name.ar: page.name.en}
+                  {locale == "ar" ? page.name.ar : page.name.en}
                 </a>
               ))}
             </div>
           </div>
 
-          {type == 0 ? 
+          {type == 0 ?
             <div>
-              <SettingsSwitcher/>
+              <SettingsSwitcher />
             </div>
-           :
+            :
             <a target='_blank' href='https://rehlanow.com' className='block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium text-right'>
               عرض الموقع
             </a>
-           }
+          }
 
         </div>
       </div>
@@ -66,7 +66,7 @@ function MainNavbar({ pages, logo = "/logo.png", theme = "#3B82F6", locale, type
                 ':hover': { color: theme }
               }}
             >
-              {locale == "ar" ? page.name.ar: page.name.en}
+              {locale == "ar" ? page.name.ar : page.name.en}
             </a>
           ))}
         </div>
