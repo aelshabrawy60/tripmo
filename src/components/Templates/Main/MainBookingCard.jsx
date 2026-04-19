@@ -229,7 +229,7 @@ function MainBookingCard({ tripData, locale, initData }) {
             </div>
           )}
 
-          {/* FOMO Countdown Banner */}
+          {/* FOMO Countdown Banner 
           {showCountdown && isAvail && (hasSale || tripData.id === 125) && (
             <div className="bg-gradient-to-r from-tripmo-500 to-tripmo-500 text-white p-3 rounded-lg shadow-lg">
               <div className={` ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
@@ -250,6 +250,7 @@ function MainBookingCard({ tripData, locale, initData }) {
               </div>
             </div>
           )}
+            */}
 
           {/* Availability */}
           {isAvail && !isLoading && totalPrice && (
